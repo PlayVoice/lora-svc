@@ -1,0 +1,6 @@
+[submodule "hubert"]
+	path = hubert
+	url = https://github.com/TencentGameMate/chinese_speech_pretrain
+[submodule "ppg"]
+	path = ppg
+	url = https://github.com/chenkui164/FastASR
