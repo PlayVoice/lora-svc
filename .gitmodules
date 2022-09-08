@@ -4,3 +4,9 @@
 [submodule "ppg"]
 	path = ppg
 	url = https://github.com/chenkui164/FastASR
+[submodule "pitch"]
+	path = pitch
+	url = https://github.com/maxrmorrison/torchcrepe
+[submodule "svs"]
+	path = svs
+	url = https://github.com/dtx525942103/vits-singing-voice-synthesis
