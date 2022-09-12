@@ -54,6 +54,15 @@ https://www.bilibili.com/video/BV1bY4y1M7NX
 
 https://www.bilibili.com/video/BV1wB4y1n7WE
 
-# 16k to 48k
-https://github.com/brentspell/hifi-gan-bwe
+# 鹿鸣
+【VI-SVC歌声生成】原神一梦千宵，米哈游鹿鸣复刻
+
+https://www.bilibili.com/video/BV1He411u7Pa
+
+
+【VI-SVC歌声转换】能唱能跳的鹿鸣你见过吗？
+
+https://www.bilibili.com/video/BV1PG41137KB
+
+
 

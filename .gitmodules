@@ -10,3 +10,6 @@
 [submodule "svs"]
 	path = svs
 	url = https://github.com/dtx525942103/vits-singing-voice-synthesis
+[submodule "svEx"]
+	path = svEx
+	url = https://github.com/brentspell/hifi-gan-bwe
