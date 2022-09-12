@@ -54,3 +54,6 @@ https://www.bilibili.com/video/BV1bY4y1M7NX
 
 https://www.bilibili.com/video/BV1wB4y1n7WE
 
+# 16k to 48k
+https://github.com/brentspell/hifi-gan-bwe
+
