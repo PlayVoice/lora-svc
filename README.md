@@ -64,5 +64,8 @@ https://www.bilibili.com/video/BV1He411u7Pa
 
 https://www.bilibili.com/video/BV1PG41137KB
 
+# train
+[VI-SVC](/svc/README.md)
+
 
 
