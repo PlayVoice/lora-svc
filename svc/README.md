@@ -1,7 +1,7 @@
 # prework
-1, speaker embedding exteact (wait)
+1, speaker embedding extract (wait)
 
-2, hubert & ppg extact (wait)
+2, hubert & ppg extract (wait)
 
 # visvc
 1, python prepare/preprocess_wave.py
