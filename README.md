@@ -1,7 +1,7 @@
 # vits-singing-voice-conversion
 vits singing voice conversion based on ppg &amp; hubert
 
-code will release some days later
+VI-SVC model is just VITS without MAS and DurationPredictor. Big data [more and more wave] make things to be interesing!
 
 # data-sets
 KiSing      http://shijt.site/index.php/2021/05/16/kising-the-first-open-source-mandarin-singing-voice-synthesis-corpus/
