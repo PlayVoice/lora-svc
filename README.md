@@ -55,14 +55,25 @@ https://www.bilibili.com/video/BV1bY4y1M7NX
 https://www.bilibili.com/video/BV1wB4y1n7WE
 
 # 鹿鸣
+【VI-SVC】鹿鸣复刻与歌声生成，音色对比
+
+https://www.bilibili.com/video/BV1ue4y187Ci
+
 【VI-SVC歌声生成】原神一梦千宵，米哈游鹿鸣复刻
 
 https://www.bilibili.com/video/BV1He411u7Pa
 
-
 【VI-SVC歌声转换】能唱能跳的鹿鸣你见过吗？
 
 https://www.bilibili.com/video/BV1PG41137KB
+
+[虚拟歌姬]数字人鹿鸣音色复刻，跨语言测试
+
+https://www.bilibili.com/video/BV1n14y1v7oQ
+
+[虚拟歌姬]数字人鹿鸣音色复刻《如愿》
+
+https://www.bilibili.com/video/BV1ue4y187Ci
 
 # train
 [VI-SVC](/svc/README.md)
