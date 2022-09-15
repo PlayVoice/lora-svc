@@ -78,5 +78,6 @@ https://www.bilibili.com/video/BV1ue4y187Ci
 # train
 [VI-SVC](/svc/README.md)
 
-
+# how to clone your voice
+use base model and your voice data to fine tune, just voice data without lables.(无需标注)
 
