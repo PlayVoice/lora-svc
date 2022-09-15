@@ -37,11 +37,11 @@ if __name__ == "__main__":
     pitch = featureInput.coarse_f0(pitch)
 
     p_len = len(phone)
-    phone = phone[:p_len, :]
+    phone = phone[:p_len]
     pitch = pitch[:p_len]
 
     p_len = torch.LongTensor([p_len]).to(dev)
-    phone = torch.FloatTensor(phone).unsqueeze(0).to(dev)
+    phone = torch.LongTensor(phone).unsqueeze(0).to(dev)
     pitch = torch.LongTensor(pitch).unsqueeze(0).to(dev)
     speaker = torch.FloatTensor(speaker).unsqueeze(0).to(dev)
     with torch.no_grad():
