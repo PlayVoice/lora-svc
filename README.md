@@ -54,7 +54,7 @@ https://www.bilibili.com/video/BV1bY4y1M7NX
 
 https://www.bilibili.com/video/BV1wB4y1n7WE
 
-# 鹿鸣
+# @yoyo鹿鸣_Lumi 哔哩哔哩
 【VI-SVC】鹿鸣复刻与歌声生成，音色对比
 
 https://www.bilibili.com/video/BV1ue4y187Ci
