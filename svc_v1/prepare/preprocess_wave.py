@@ -17,6 +17,39 @@ class FeatureInput(object):
         self.f0_mel_min = 1127 * np.log(1 + self.f0_min / 700)
         self.f0_mel_max = 1127 * np.log(1 + self.f0_max / 700)
 
+    def compute_f0_nn(self, filename, device):
+        import torchcrepe
+
+        # Load audio
+        audio, sr = torchcrepe.load.audio(filename)
+        # Here we'll use a 10 millisecond hop length
+        hop_length = int(sr / 100.0)
+        # Provide a sensible frequency range for your domain (upper limit is 2006 Hz)
+        # This would be a reasonable range for speech
+        fmin = 50
+        fmax = 1000
+        # Select a model capacity--one of "tiny" or "full"
+        model = "tiny"
+        # Pick a batch size that doesn't cause memory errors on your gpu
+        batch_size = 2048
+        # Compute pitch using first gpu
+        pitch, periodicity = torchcrepe.predict(
+            audio,
+            sr,
+            hop_length,
+            fmin,
+            fmax,
+            model,
+            batch_size=batch_size,
+            device=device,
+            return_periodicity=True,
+        )
+        # CREPE was not trained on silent audio. some error on silent need filter.
+        periodicity = torchcrepe.filter.median(periodicity, 9)
+        pitch = torchcrepe.filter.mean(pitch, 9)
+        pitch[periodicity < 0.1] = 0
+        return pitch
+
     def compute_f0(self, path):
         x, sr = librosa.load(path, sr=self.fs)
         assert sr == self.fs
