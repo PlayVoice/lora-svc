@@ -13,3 +13,6 @@
 [submodule "svEx"]
 	path = svEx
 	url = https://github.com/brentspell/hifi-gan-bwe
+[submodule "spk"]
+	path = spk
+	url = https://github.com/PlayVoice/VI-Speaker

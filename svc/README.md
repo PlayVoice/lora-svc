@@ -1,7 +1,9 @@
 # prework
-1, speaker embedding extract (wait)
+1, speaker embedding extract
 
-2, hubert & ppg extract (wait)
+https://github.com/PlayVoice/VI-Speaker
+
+2, hubert & ppg extract
 
 # visvc
 1, python prepare/preprocess_wave.py

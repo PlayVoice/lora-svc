@@ -1,5 +1,7 @@
 # prework
-1, speaker embedding extract (wait)
+1, speaker embedding extract
+
+https://github.com/PlayVoice/VI-Speaker
 
 2, use discrete hubert
 
