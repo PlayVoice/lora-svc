@@ -39,5 +39,5 @@ VCTK 		    https://datashare.ed.ac.uk/handle/10283/2651
 [VI-SVC](/svc/README.md)
 
 # how to clone your voice
-use base model and your voice data to fine tune, just voice data（speech or song） without lables.(**无需标注**)
+use base model and your voice data to fine tune, just voice data（speech or song） without lables.
 
