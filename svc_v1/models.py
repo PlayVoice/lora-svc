@@ -12,6 +12,75 @@ from torch.nn import Conv1d, ConvTranspose1d, AvgPool1d, Conv2d
 from torch.nn.utils import weight_norm, remove_weight_norm, spectral_norm
 from commons import init_weights, get_padding
 
+class SinusoidalPositionalEmbedding(nn.Module):
+    """This module produces sinusoidal positional embeddings of any length.
+    Padding symbols are ignored.
+    """
+
+    def __init__(self, embedding_dim, padding_idx, init_size=5000):
+        super().__init__()
+        self.embedding_dim = embedding_dim
+        self.padding_idx = padding_idx
+        self.weights = SinusoidalPositionalEmbedding.get_embedding(
+            init_size,
+            embedding_dim,
+            padding_idx,
+        )
+        self.register_buffer("_float_tensor", torch.FloatTensor(1))
+
+    @staticmethod
+    def get_embedding(num_embeddings, embedding_dim, padding_idx=None):
+        """Build sinusoidal embeddings.
+        This matches the implementation in tensor2tensor, but differs slightly
+        from the description in Section 3.5 of "Attention Is All You Need".
+        """
+        half_dim = embedding_dim // 2
+        emb = math.log(10000) / (half_dim - 1)
+        emb = torch.exp(torch.arange(half_dim, dtype=torch.float) * -emb)
+        emb = torch.arange(num_embeddings, dtype=torch.float).unsqueeze(
+            1
+        ) * emb.unsqueeze(0)
+        emb = torch.cat([torch.sin(emb), torch.cos(emb)], dim=1).view(
+            num_embeddings, -1
+        )
+        if embedding_dim % 2 == 1:
+            # zero pad
+            emb = torch.cat([emb, torch.zeros(num_embeddings, 1)], dim=1)
+        if padding_idx is not None:
+            emb[padding_idx, :] = 0
+        return emb
+
+    def make_positions(tensor, padding_idx):
+        """Replace non-padding symbols with their position numbers.
+        Position numbers begin at padding_idx+1. Padding symbols are ignored.
+        """
+        # The series of casts and type-conversions here are carefully
+        # balanced to both work with ONNX export and XLA. In particular XLA
+        # prefers ints, cumsum defaults to output longs, and ONNX doesn't know
+        # how to handle the dtype kwarg in cumsum.
+        mask = tensor.ne(padding_idx).int()
+        return (torch.cumsum(mask, dim=1).type_as(mask) * mask).long() + padding_idx
+
+    def forward(self, bsz, seq_len, input):
+        """Input is expected to be of size [bsz seqlen]."""
+        max_pos = self.padding_idx + 1 + seq_len
+        if self.weights is None or max_pos > self.weights.size(0):
+            # recompute/expand embeddings if needed
+            self.weights = SinusoidalPositionalEmbedding.get_embedding(
+                max_pos,
+                self.embedding_dim,
+                self.padding_idx,
+            )
+        self.weights = self.weights.to(self._float_tensor)
+        positions = SinusoidalPositionalEmbedding.make_positions(
+            input, self.padding_idx
+        )
+        return (
+            self.weights.index_select(0, positions.view(-1))
+            .view(bsz, seq_len, -1)
+            .detach()
+        )
+
 
 class TextEncoder(nn.Module):
     def __init__(
@@ -41,6 +110,13 @@ class TextEncoder(nn.Module):
         self.encoder = attentions.Encoder(
             hidden_channels, filter_channels, n_heads, n_layers, kernel_size, p_dropout
         )
+        # max mel = 6000, 60seconds
+        self.embed_positions = SinusoidalPositionalEmbedding(
+            hidden_channels,
+            padding_idx=0,
+            init_size=6000,
+        )
+        self.drop = nn.Dropout(p_dropout)
         self.proj = nn.Conv1d(hidden_channels, out_channels * 2, 1)
 
     def forward(self, phone, pitch, lengths):
@@ -51,6 +127,17 @@ class TextEncoder(nn.Module):
             x.dtype
         )
         x = self.encoder(x * x_mask, x_mask)
+
+        batch_size = x.shape[0]
+        seque_size = x.shape[-1]
+
+        pos_in = torch.transpose(x, 1, -1)[..., 0]
+        p = self.embed_positions(batch_size, seque_size, pos_in)
+        p = torch.transpose(p, 1, -1)  # [b, h, len]
+
+        x = x + p
+        x = self.drop(x)
+
         stats = self.proj(x) * x_mask
 
         m, logs = torch.split(stats, self.out_channels, dim=1)
