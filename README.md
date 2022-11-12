@@ -3,7 +3,6 @@ vits singing voice conversion based on ppg &amp; hubert
 
 VI-SVC model is just VITS without MAS and DurationPredictor. Big data [more and more wave] make things to be interesing!
 
-该项目方案已被某开源机构采用，这个项目终止；新项目发布后，会在这里通知！！！
 
 # data-sets
 KiSing      http://shijt.site/index.php/2021/05/16/kising-the-first-open-source-mandarin-singing-voice-synthesis-corpus/
@@ -37,9 +36,26 @@ Aishell-3 	http://www.aishelltech.com/aishell_3
 
 VCTK 		    https://datashare.ed.ac.uk/handle/10283/2651
 
+
+# framework
+
+![base_train](/assets/SVC1.png)
+
+![base_infer](/assets/SVC2.png)
+
+![pro_train](/assets/SVC1_pro.png)
+
+![pro_infer](/assets/SVC2_pro.png)
+
+![unix_infer](/assets/SVC2_unix.png)
+
+
 # train
 [VI-SVC](/svc/README.md)
 
 # how to clone your voice
 use base model and your voice data to fine tune, just voice data（speech or song） without lables.
+
+# TODO
+NSF-VI-SVC based on openai/whisper
 
