@@ -3,7 +3,9 @@
 
 https://github.com/PlayVoice/VI-Speaker
 
-2, hubert & ppg extract
+2, ppg extract
+
+https://github.com/PlayVoice/whisper_ppg
 
 # visvc
 1, python prepare/preprocess_wave.py
