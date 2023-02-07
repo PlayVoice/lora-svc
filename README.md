@@ -59,3 +59,5 @@ use base model and your voice data to fine tune, just voice data（speech or son
 # TODO
 NSF-VI-SVC based on openai/whisper
 
+https://github.com/PlayVoice/whisper_ppg
+
