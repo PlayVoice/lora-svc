@@ -5,6 +5,8 @@ VI-SVC model is just VITS without MAS and DurationPredictor. Big data [more and 
 
 https://user-images.githubusercontent.com/16432329/219535886-8f80346a-143d-47fc-8c84-29e6f5be5143.mp4
 
+DID image to video :https://studio.d-id.com/
+
 # data-sets
 KiSing      http://shijt.site/index.php/2021/05/16/kising-the-first-open-source-mandarin-singing-voice-synthesis-corpus/
 
