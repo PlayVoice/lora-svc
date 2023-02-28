@@ -1,4 +1,4 @@
-# vits-singing-voice-conversion
+# rewrite this project~~~~~~~~~~~~
 vits singing voice conversion based on ppg &amp; hubert
 
 VI-SVC model is just VITS without MAS and DurationPredictor. Big data [more and more wave] make things to be interesing!
