@@ -1,4 +1,7 @@
-# rewrite this project~~~~~~~~~~~~
+# rewrite this project~~~~~~~~~~~~for uni-svc alse vi[唯一]-svc
+
+vi-svc move to https://github.com/PlayVoice/VI-SVC/tree/vi_svc
+
 vits singing voice conversion based on ppg &amp; hubert
 
 VI-SVC model is just VITS without MAS and DurationPredictor. Big data [more and more wave] make things to be interesing!
