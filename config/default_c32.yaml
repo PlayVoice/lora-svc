@@ -1,0 +1,61 @@
+data:
+  train_dir: 'datasets/' # root path of train data (either relative/absoulte path is ok)
+  train_meta: 'metadata/libritts_train_clean_360_audiopath_text_sid_train.txt'  # relative path of metadata file from train_dir
+  val_dir: 'datasets/' # root path of validation data
+  val_meta: 'metadata/libritts_train_clean_360_audiopath_text_sid_val.txt'  # relative path of metadata file from val_dir
+#############################
+train:
+  num_workers: 8
+  batch_size: 32
+  optimizer: 'adam'
+  seed: 1234
+  adam:
+    lr: 0.0001
+    beta1: 0.5
+    beta2: 0.9
+  stft_lamb: 2.5
+  spk_balanced: False # Using balanced sampling for each speaker
+#############################
+audio:
+  n_mel_channels: 100
+  segment_length: 16384 # Should be multiple of 256
+  pad_short: 2000
+  filter_length: 1024
+  hop_length: 256 # WARNING: this can't be changed.
+  win_length: 1024
+  sampling_rate: 24000
+  mel_fmin: 0.0
+  mel_fmax: 12000.0
+#############################
+gen:
+  noise_dim: 64
+  channel_size: 32
+  dilations: [1, 3, 9, 27]
+  strides: [8, 8, 4]
+  lReLU_slope: 0.2
+  kpnet_conv_size: 3
+#############################
+mpd:
+  periods: [2,3,5,7,11]
+  kernel_size: 5
+  stride: 3
+  use_spectral_norm: False
+  lReLU_slope: 0.2
+#############################
+mrd:
+  resolutions: "[(1024, 120, 600), (2048, 240, 1200), (512, 50, 240)]" # (filter_length, hop_length, win_length)
+  use_spectral_norm: False
+  lReLU_slope: 0.2
+#############################
+dist_config:
+  dist_backend: "nccl"
+  dist_url: "tcp://localhost:54321"
+  world_size: 1
+#############################
+log:
+  summary_interval: 1
+  validation_interval: 1
+  save_interval: 1
+  num_audio: 5
+  chkpt_dir: 'chkpt'
+  log_dir: 'logs'
