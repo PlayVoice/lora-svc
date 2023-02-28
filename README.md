@@ -1,4 +1,4 @@
-# rewrite this project~~~~~~~~~~~~for uni-svc alse vi[唯一]-svc
+# rewrite this project~for uni-svc also vi[唯一]-svc
 
 vi-svc move to https://github.com/PlayVoice/VI-SVC/tree/vi_svc
 
