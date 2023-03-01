@@ -1,8 +1,6 @@
 data:
-  train_dir: 'datasets/' # root path of train data (either relative/absoulte path is ok)
-  train_meta: 'metadata/libritts_train_clean_360_audiopath_text_sid_train.txt'  # relative path of metadata file from train_dir
-  val_dir: 'datasets/' # root path of validation data
-  val_meta: 'metadata/libritts_train_clean_360_audiopath_text_sid_val.txt'  # relative path of metadata file from val_dir
+  train_file: 'filelists/train.txt'
+  val_file: 'filelists/train.txt'
 #############################
 train:
   num_workers: 8
@@ -14,16 +12,15 @@ train:
     beta1: 0.5
     beta2: 0.9
   stft_lamb: 2.5
-  spk_balanced: False # Using balanced sampling for each speaker
 #############################
 audio:
   n_mel_channels: 100
-  segment_length: 16384 # Should be multiple of 256
+  segment_length: 10240 # Should be multiple of 256
   pad_short: 2000
   filter_length: 1024
-  hop_length: 256 # WARNING: this can't be changed.
+  hop_length: 160 # WARNING: this can't be changed.
   win_length: 1024
-  sampling_rate: 24000
+  sampling_rate: 16000
   mel_fmin: 0.0
   mel_fmax: 12000.0
 #############################

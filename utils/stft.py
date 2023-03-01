@@ -46,7 +46,7 @@ class TacotronSTFT(torch.nn.Module):
         self.center = center
 
         mel = librosa_mel_fn(
-            sampling_rate, filter_length, n_mel_channels, mel_fmin, mel_fmax)
+            sr=sampling_rate, n_fft=filter_length, n_mels=n_mel_channels, fmin=mel_fmin, fmax=mel_fmax)
 
         mel_basis = torch.from_numpy(mel).float().to(device)
         hann_window = torch.hann_window(win_length).to(device)

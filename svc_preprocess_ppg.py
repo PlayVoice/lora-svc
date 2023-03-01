@@ -3,8 +3,8 @@ import numpy as np
 import argparse
 import torch
 
-from whisper_ppg.model import Whisper, ModelDimensions
-from whisper_ppg.audio import load_audio, pad_or_trim, log_mel_spectrogram
+from whisper.model import Whisper, ModelDimensions
+from whisper.audio import load_audio, pad_or_trim, log_mel_spectrogram
 
 
 def load_model(path) -> Whisper:

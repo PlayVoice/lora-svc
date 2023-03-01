@@ -1,10 +1,13 @@
-# rewrite this project~for uni-svc also vi[唯一]-svc
+# Rewrite this project for UNI-SVC
 
-vi-svc move to https://github.com/PlayVoice/VI-SVC/tree/vi_svc
+VI-SVC was dropped to https://github.com/PlayVoice/VI-SVC/tree/vi_svc
 
-vits singing voice conversion based on ppg &amp; hubert
+### Reference
+[UnivNet: A Neural Vocoder with Multi-Resolution Spectrogram Discriminators for High-Fidelity Waveform Generation](https://arxiv.org/abs/2106.07889)
 
-VI-SVC model is just VITS without MAS and DurationPredictor. Big data [more and more wave] make things to be interesing!
+https://github.com/mindslab-ai/univnet
+
+UNI-SVC will be for yoyo鹿鸣_Lumi
 
 https://user-images.githubusercontent.com/16432329/219535886-8f80346a-143d-47fc-8c84-29e6f5be5143.mp4
 
@@ -45,25 +48,7 @@ VCTK 		    https://datashare.ed.ac.uk/handle/10283/2651
 
 # framework
 
-![base_train](/assets/SVC1.png)
+python3 svc_trainer.py -c config/default_c32.yaml -n uni_svc
 
-![base_infer](/assets/SVC2.png)
-
-![pro_train](/assets/SVC1_pro.png)
-
-![pro_infer](/assets/SVC2_pro.png)
-
-![unix_infer](/assets/SVC2_unix.png)
-
-
-# train
-[VI-SVC](/svc/README.md)
-
-# how to clone your voice
-use base model and your voice data to fine tune, just voice data（speech or song） without lables.
-
-# TODO
-NSF-VI-SVC based on openai/whisper
-
-https://github.com/PlayVoice/whisper_ppg
+python3 svc_trainer.py -c config/default_c23.yaml -n uni_svc -p resume_check_point.pt
 

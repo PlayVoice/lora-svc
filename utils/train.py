@@ -11,13 +11,12 @@ from torch.nn.parallel import DistributedDataParallel
 import itertools
 import traceback
 
-from datasets.dataloader import create_dataloader
+from utils.dataloader import create_dataloader
 from utils.writer import MyWriter
 from utils.stft import TacotronSTFT
 from utils.stft_loss import MultiResolutionSTFTLoss
 from model.generator import Generator
 from model.discriminator import Discriminator
-from .utils import get_commit_hash
 from .validation import validate
 
 
@@ -37,8 +36,6 @@ def train(rank, args, chkpt_path, hp, hp_str):
         lr=hp.train.adam.lr, betas=(hp.train.adam.beta1, hp.train.adam.beta2))
     optim_d = torch.optim.AdamW(model_d.parameters(),
         lr=hp.train.adam.lr, betas=(hp.train.adam.beta1, hp.train.adam.beta2))
-
-    githash = get_commit_hash()
 
     init_epoch = -1
     step = 0
@@ -60,7 +57,7 @@ def train(rank, args, chkpt_path, hp, hp_str):
         )
         logger = logging.getLogger()
         writer = MyWriter(hp, log_dir)
-        valloader = create_dataloader(hp, args, False, device='cpu')
+        valloader = create_dataloader(hp, False)
         stft = TacotronSTFT(filter_length=hp.audio.filter_length,
                             hop_length=hp.audio.hop_length,
                             win_length=hp.audio.win_length,
@@ -85,11 +82,6 @@ def train(rank, args, chkpt_path, hp, hp_str):
         if rank == 0:
             if hp_str != checkpoint['hp_str']:
                 logger.warning("New hparams is different from checkpoint. Will use new.")
-
-            if githash != checkpoint['githash']:
-                logger.warning("Code might be different: git hash is different.")
-                logger.warning("%s -> %s" % (checkpoint['githash'], githash))
-
     else:
         if rank == 0:
             logger.info("Starting new training run.")
@@ -102,7 +94,7 @@ def train(rank, args, chkpt_path, hp, hp_str):
     # if not consistent, it'll horribly slow down.
     torch.backends.cudnn.benchmark = True
 
-    trainloader = create_dataloader(hp, args, True, device='cpu')
+    trainloader = create_dataloader(hp, True)
 
     model_g.train()
     model_d.train()
@@ -112,25 +104,26 @@ def train(rank, args, chkpt_path, hp, hp_str):
 
     for epoch in itertools.count(init_epoch+1):
         
-        if rank == 0 and epoch % hp.log.validation_interval == 0:
-            with torch.no_grad():
-                validate(hp, args, model_g, model_d, valloader, stft, writer, step, device)
+        # if rank == 0 and epoch % hp.log.validation_interval == 0:
+        #    with torch.no_grad():
+        #        validate(hp, args, model_g, model_d, valloader, stft, writer, step, device)
 
-        trainloader.dataset.shuffle_mapping()
         if rank == 0:
             loader = tqdm.tqdm(trainloader, desc='Loading train data')
         else:
             loader = trainloader
 
-        for mel, audio in loader:
+        for ppg, pit, audio in loader:
 
-            mel = mel.to(device)
+            print("=========")
+            print(ppg.shape)
+            ppg = ppg.to(device)
             audio = audio.to(device)
-            noise = torch.randn(hp.train.batch_size, hp.gen.noise_dim, mel.size(2)).to(device)
+            noise = torch.randn(hp.train.batch_size, hp.gen.noise_dim, ppg.size(2)).to(device)
 
             # generator
             optim_g.zero_grad()
-            fake_audio = model_g(mel, noise)
+            fake_audio = model_g(ppg, noise)
 
             # Multi-Resolution STFT Loss
             sc_loss, mag_loss = stft_criterion(fake_audio.squeeze(1), audio.squeeze(1))
@@ -186,6 +179,5 @@ def train(rank, args, chkpt_path, hp, hp_str):
                 'step': step,
                 'epoch': epoch,
                 'hp_str': hp_str,
-                'githash': githash,
             }, save_path)
             logger.info("Saved checkpoint to: %s" % save_path)

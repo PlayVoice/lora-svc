@@ -25,8 +25,8 @@ if __name__ == '__main__':
     with open(args.config, 'r') as f:
         hp_str = ''.join(f.readlines())
 
-    assert hp.audio.hop_length == 256, \
-        'hp.audio.hop_length must be equal to 256, got %d' % hp.audio.hop_length
+    assert hp.audio.hop_length == 160, \
+        'hp.audio.hop_length must be equal to 160, got %d' % hp.audio.hop_length
 
     args.num_gpus = 0
     torch.manual_seed(hp.train.seed)
