@@ -45,10 +45,3 @@ Aishell-3 	http://www.aishelltech.com/aishell_3
 
 VCTK 		    https://datashare.ed.ac.uk/handle/10283/2651
 
-
-# framework
-
-python3 svc_trainer.py -c config/default_c32.yaml -n uni_svc
-
-python3 svc_trainer.py -c config/default_c23.yaml -n uni_svc -p resume_check_point.pt
-
