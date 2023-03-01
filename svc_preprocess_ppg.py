@@ -24,7 +24,7 @@ def pred_ppg(whisper: Whisper, wavPath, ppgPath):
     mel = log_mel_spectrogram(audio).to(whisper.device)
     with torch.no_grad():
         ppg = whisper.encoder(mel.unsqueeze(0)).squeeze().data.cpu().float().numpy()
-        ppg = ppg[:ppgln,]
+        ppg = ppg[:ppgln,] # [length, dim=1024]
         print(ppg.shape)
         np.save(ppgPath, ppg, allow_pickle=False)
 
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     wavPath = args.wav
     ppgPath = args.ppg
 
-    whisper = load_model("base.pth") # "base": "https://openaipublic.azureedge.net/main/whisper/models/ed3a0b6b1c0edf879ad9b11b1af5a0e6ab5db9205f891f668f8b0e6c6326e34e/base.pt"
+    whisper = load_model("medium.pt") # https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt
 
     for spks in os.listdir(wavPath):
         if os.path.isdir(f"./{wavPath}/{spks}"):
