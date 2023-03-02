@@ -1,4 +1,4 @@
-# Rewrite this project for UNI-SVC
+# Rewrite this project for UNI-SVC 【代码之美】
 
 VI-SVC was dropped to https://github.com/PlayVoice/VI-SVC/tree/vi_svc
 
