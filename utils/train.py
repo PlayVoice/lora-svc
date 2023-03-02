@@ -119,7 +119,8 @@ def train(rank, args, chkpt_path, hp, hp_str):
             print(ppg.shape)
             ppg = ppg.to(device)
             audio = audio.to(device)
-            noise = torch.randn(hp.train.batch_size, hp.gen.noise_dim, ppg.size(2)).to(device)
+            len_ppg = ppg.size(1)       # [b, length, dim]
+            noise = torch.randn(hp.train.batch_size, hp.gen.noise_dim, len_ppg).to(device)
 
             # generator
             optim_g.zero_grad()

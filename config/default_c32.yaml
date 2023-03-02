@@ -15,20 +15,20 @@ train:
 #############################
 audio:
   n_mel_channels: 100
-  segment_length: 10240 # Should be multiple of 256
+  segment_length: 10240 # Should be multiple of 160
   pad_short: 2000
-  filter_length: 1024
+  filter_length: 512
   hop_length: 160 # WARNING: this can't be changed.
-  win_length: 1024
+  win_length: 512
   sampling_rate: 16000
   mel_fmin: 0.0
-  mel_fmax: 12000.0
+  mel_fmax: 8000.0
 #############################
 gen:
   noise_dim: 64
   channel_size: 32
   dilations: [1, 3, 9, 27]
-  strides: [8, 8, 4]
+  strides: [10, 4, 4]
   lReLU_slope: 0.2
   kpnet_conv_size: 3
 #############################

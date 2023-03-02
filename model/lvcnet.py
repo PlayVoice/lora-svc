@@ -105,7 +105,7 @@ class LVCBlock(torch.nn.Module):
             dilations=[1, 3, 9, 27],
             lReLU_slope=0.2,
             conv_kernel_size=3,
-            cond_hop_length=256,
+            cond_hop_length=160,
             kpnet_hidden_channels=64,
             kpnet_conv_size=3,
             kpnet_dropout=0.0,
@@ -168,7 +168,7 @@ class LVCBlock(torch.nn.Module):
         
         return x
     
-    def location_variable_convolution(self, x, kernel, bias, dilation=1, hop_size=256):
+    def location_variable_convolution(self, x, kernel, bias, dilation=1, hop_size=160):
         ''' perform location-variable convolution operation on the input sequence (x) using the local convolution kernl. 
         Time: 414 μs ± 309 ns per loop (mean ± std. dev. of 7 runs, 1000 loops each), test on NVIDIA V100. 
         Args:

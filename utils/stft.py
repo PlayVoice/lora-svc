@@ -32,8 +32,8 @@ from librosa.filters import mel as librosa_mel_fn
 
 
 class TacotronSTFT(torch.nn.Module):
-    def __init__(self, filter_length=1024, hop_length=256, win_length=1024,
-                 n_mel_channels=80, sampling_rate=22050, mel_fmin=0.0,
+    def __init__(self, filter_length=512, hop_length=160, win_length=512,
+                 n_mel_channels=80, sampling_rate=16000, mel_fmin=0.0,
                  mel_fmax=None, center=False, device='cpu'):
         super(TacotronSTFT, self).__init__()
         self.n_mel_channels = n_mel_channels

@@ -31,7 +31,10 @@ class Generator(nn.Module):
                     kpnet_conv_size=kpnet_conv_size
                 )
             )
-        
+
+        # 1024 should change by your whisper out
+        self.cond_pre = nn.Linear(1024, self.mel_channel)
+    
         self.conv_pre = \
             nn.utils.weight_norm(nn.Conv1d(hp.gen.noise_dim, channel_size, 7, padding=3, padding_mode='reflect'))
 
@@ -48,13 +51,15 @@ class Generator(nn.Module):
             z (Tensor): the noise sequence (batch, noise_dim, in_length)
         
         '''
+        c = self.cond_pre(c)                # [B, L, D]
+        c = torch.transpose(c, 1, -1)       # [B, D, L]
         z = self.conv_pre(z)                # (B, c_g, L)
 
         for res_block in self.res_stack:
             res_block.to(z.device)
             z = res_block(z, c)             # (B, c_g, L * s_0 * ... * s_i)
 
-        z = self.conv_post(z)               # (B, 1, L * 256)
+        z = self.conv_post(z)               # (B, 1, L * 160)
 
         return z
 
@@ -98,13 +103,13 @@ if __name__ == '__main__':
     hp = OmegaConf.load('../config/default.yaml')
     model = Generator(hp)
 
-    c = torch.randn(3, 100, 10)
+    c = torch.randn(3, 10, 1024)
     z = torch.randn(3, 64, 10)
     print(c.shape)
 
     y = model(c, z)
     print(y.shape)
-    assert y.shape == torch.Size([3, 1, 2560])
+    assert y.shape == torch.Size([3, 1, 1600])
 
     pytorch_total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(pytorch_total_params)

@@ -50,10 +50,12 @@ if __name__ == "__main__":
             print(f">>>>>>>>>>{spks}<<<<<<<<<<")
             for file in os.listdir(f"./{wavPath}/{spks}"):
                 if file.endswith(".wav"):
-                    print(file)
-                    pred_ppg(whisper, f"{wavPath}/{spks}/{file}", f"{ppgPath}/{spks}/{file}.ppg")
+                    # print(file)
+                    file = file[:-4]
+                    pred_ppg(whisper, f"{wavPath}/{spks}/{file}.wav", f"{ppgPath}/{spks}/{file}.ppg")
         else:
             file = spks
             if file.endswith(".wav"):
-                print(file)
-                pred_ppg(whisper, f"{wavPath}/{file}", f"{ppgPath}/{file}.ppg")
+                # print(file)
+                file = file[:-4]
+                pred_ppg(whisper, f"{wavPath}/{file}.wav", f"{ppgPath}/{file}.ppg")
