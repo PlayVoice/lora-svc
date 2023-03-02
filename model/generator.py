@@ -1,8 +1,11 @@
 import torch
 import torch.nn as nn
+import numpy as np
 from omegaconf import OmegaConf
+from torch.nn import Conv1d
 
 from .lvcnet import LVCBlock
+from .nsf import SourceModuleHnNSF
 
 MAX_WAV_VALUE = 32768.0
 
@@ -16,9 +19,13 @@ class Generator(nn.Module):
         channel_size = hp.gen.channel_size
         kpnet_conv_size = hp.gen.kpnet_conv_size
 
+        self.f0_upsamp = torch.nn.Upsample(scale_factor=np.prod(hp.gen.strides))
+        self.m_source = SourceModuleHnNSF()
+        self.noise_convs = nn.ModuleList()
+
         self.res_stack = nn.ModuleList()
         hop_length = 1
-        for stride in hp.gen.strides:
+        for i, stride in enumerate(hp.gen.strides):
             hop_length = stride * hop_length
             self.res_stack.append(
                 LVCBlock(
@@ -31,6 +38,20 @@ class Generator(nn.Module):
                     kpnet_conv_size=kpnet_conv_size
                 )
             )
+            # nsf
+            if i + 1 < len(hp.gen.strides):
+                stride_f0 = np.prod(hp.gen.strides[i + 1:])
+                self.noise_convs.append(
+                    Conv1d(
+                        1,
+                        channel_size,
+                        kernel_size=stride_f0 * 2,
+                        stride=stride_f0,
+                        padding=stride_f0 // 2,
+                    )
+                )
+            else:
+                self.noise_convs.append(Conv1d(1, channel_size, kernel_size=1))
 
         # 1024 should change by your whisper out
         self.cond_pre = nn.Linear(1024, self.mel_channel)
@@ -44,21 +65,29 @@ class Generator(nn.Module):
             nn.Tanh(),
         )
 
-    def forward(self, c, z):
+    def forward(self, c, f0, z):
         '''
         Args: 
             c (Tensor): the conditioning sequence of mel-spectrogram (batch, mel_channels, in_length) 
             z (Tensor): the noise sequence (batch, noise_dim, in_length)
         
         '''
+        # nsf
+        f0 = f0[:, None]
+        f0 = self.f0_upsamp(f0).transpose(1, 2)
+        har_source, noi_source, uv = self.m_source(f0)
+        har_source = har_source.transpose(1, 2)
+
         c = self.cond_pre(c)                # [B, L, D]
         c = torch.transpose(c, 1, -1)       # [B, D, L]
         z = self.conv_pre(z)                # (B, c_g, L)
 
-        for res_block in self.res_stack:
+        for i, res_block in enumerate(self.res_stack):
             res_block.to(z.device)
+            x_source = self.noise_convs[i](har_source)
             z = res_block(z, c)             # (B, c_g, L * s_0 * ... * s_i)
-
+            z = z + x_source
+   
         z = self.conv_post(z)               # (B, 1, L * 160)
 
         return z
@@ -81,22 +110,19 @@ class Generator(nn.Module):
         for res_block in self.res_stack:
             res_block.remove_weight_norm()
 
-    def inference(self, c, z=None):
+    def inference(self, ppg, f0, z=None):
         # pad input mel with zeros to cut artifact
         # see https://github.com/seungwonpark/melgan/issues/8
-        zero = torch.full((1, self.mel_channel, 10), -11.5129).to(c.device)
-        mel = torch.cat((c, zero), dim=2)
-        
+        # zero = torch.full((1, self.mel_channel, 10), -11.5129).to(c.device)
+        # mel = torch.cat((c, zero), dim=2)
         if z is None:
-            z = torch.randn(1, self.noise_dim, mel.size(2)).to(mel.device)
-
-        audio = self.forward(mel, z)
+            z = torch.randn(1, self.noise_dim, ppg.size(1)).to(ppg.device)
+        audio = self.forward(ppg, f0, z)
         audio = audio.squeeze() # collapse all dimension except time axis
         audio = audio[:-(self.hop_length*10)]
         audio = MAX_WAV_VALUE * audio
         audio = audio.clamp(min=-MAX_WAV_VALUE, max=MAX_WAV_VALUE-1)
         audio = audio.short()
-
         return audio
 
 if __name__ == '__main__':

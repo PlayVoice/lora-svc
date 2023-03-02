@@ -63,7 +63,7 @@ class TacotronSTFT(torch.nn.Module):
                                     mode='reflect')
         y = y.squeeze(1)
         spec = torch.stft(y, self.n_fft, hop_length=self.hop_size, win_length=self.win_size, window=self.hann_window,
-                          center=self.center, pad_mode='reflect', normalized=False, onesided=True)
+                          center=self.center, pad_mode='reflect', normalized=False, onesided=True, return_complex=False)
         spec = torch.norm(spec, p=2, dim=-1)
 
         return spec
@@ -87,7 +87,7 @@ class TacotronSTFT(torch.nn.Module):
         y = y.squeeze(1)
 
         spec = torch.stft(y, self.n_fft, hop_length=self.hop_size, win_length=self.win_size, window=self.hann_window,
-                          center=self.center, pad_mode='reflect', normalized=False, onesided=True)
+                          center=self.center, pad_mode='reflect', normalized=False, onesided=True, return_complex=False)
 
         spec = torch.sqrt(spec.pow(2).sum(-1) + (1e-9))
 

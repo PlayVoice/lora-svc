@@ -104,9 +104,9 @@ def train(rank, args, chkpt_path, hp, hp_str):
 
     for epoch in itertools.count(init_epoch+1):
         
-        # if rank == 0 and epoch % hp.log.validation_interval == 0:
-        #    with torch.no_grad():
-        #        validate(hp, args, model_g, model_d, valloader, stft, writer, step, device)
+        if rank == 0 and epoch % hp.log.validation_interval == 0:
+            with torch.no_grad():
+                validate(hp, args, model_g, model_d, valloader, stft, writer, step, device)
 
         if rank == 0:
             loader = tqdm.tqdm(trainloader, desc='Loading train data')
@@ -114,17 +114,16 @@ def train(rank, args, chkpt_path, hp, hp_str):
             loader = trainloader
 
         for ppg, pit, audio in loader:
-
-            print("=========")
-            print(ppg.shape)
             ppg = ppg.to(device)
+            pit = pit.to(device)
             audio = audio.to(device)
             len_ppg = ppg.size(1)       # [b, length, dim]
+
             noise = torch.randn(hp.train.batch_size, hp.gen.noise_dim, len_ppg).to(device)
 
             # generator
             optim_g.zero_grad()
-            fake_audio = model_g(ppg, noise)
+            fake_audio = model_g(ppg, pit, noise)
 
             # Multi-Resolution STFT Loss
             sc_loss, mag_loss = stft_criterion(fake_audio.squeeze(1), audio.squeeze(1))

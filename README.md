@@ -13,6 +13,17 @@ https://user-images.githubusercontent.com/16432329/219535886-8f80346a-143d-47fc-
 
 DID image to video :https://studio.d-id.com/
 
+### Train
+download opencpop data: https://wenet.org.cn/opencpop/download/
+
+change sample rate of waves, and put waves to ./data_opencpop/waves
+
+> python svc_preprocess_ppg.py -w ./data_opencpop/waves -p ./data_opencpop/whisper
+
+> python svc_preprocess_f0.py
+
+> python svc_trainer.py -c config/default_c32.yaml -n uni_svc
+
 # data-sets
 KiSing      http://shijt.site/index.php/2021/05/16/kising-the-first-open-source-mandarin-singing-voice-synthesis-corpus/
 

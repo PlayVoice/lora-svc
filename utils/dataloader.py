@@ -30,8 +30,13 @@ def load_items(filename, split="|"):
 
 def create_dataloader(hp, train):
     dataset = FeatureFromDisk(hp, train)
-    return DataLoader(dataset=dataset, batch_size=hp.train.batch_size, shuffle=False,
-                      num_workers=hp.train.num_workers, pin_memory=True, drop_last=True)
+    if train:
+        return DataLoader(dataset=dataset, batch_size=hp.train.batch_size, shuffle=False,
+                          num_workers=hp.train.num_workers, pin_memory=True, drop_last=True)
+    else:
+        return DataLoader(dataset=dataset, batch_size=1, shuffle=False,
+                          num_workers=hp.train.num_workers, pin_memory=True, drop_last=False)
+
 
 
 class FeatureFromDisk(Dataset):
