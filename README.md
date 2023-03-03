@@ -5,6 +5,8 @@ VI-SVC was dropped to https://github.com/PlayVoice/VI-SVC/tree/vi_svc
 ### Reference
 [UnivNet: A Neural Vocoder with Multi-Resolution Spectrogram Discriminators for High-Fidelity Waveform Generation](https://arxiv.org/abs/2106.07889)
 
+https://github.com/nii-yamagishilab/project-NN-Pytorch-scripts/tree/master/project/01-nsf
+
 https://github.com/mindslab-ai/univnet
 
 UNI-SVC will be for [@yoyo鹿鸣_Lumi](https://space.bilibili.com/488836173)
