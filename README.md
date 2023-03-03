@@ -18,6 +18,8 @@ https://user-images.githubusercontent.com/16432329/219535886-8f80346a-143d-47fc-
 DID image to video :https://studio.d-id.com/
 
 ### Train
+download whisper model: "https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt"
+
 download opencpop data: https://wenet.org.cn/opencpop/download/
 
 change sample rate of waves, and put waves to ./data_opencpop/waves
