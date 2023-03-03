@@ -23,7 +23,8 @@ change sample rate of waves, and put waves to ./data_opencpop/waves
 > python svc_preprocess_f0.py
 
 > python svc_trainer.py -c config/default_c32.yaml -n uni_svc
-
+<img width="820" alt="train1" src="https://user-images.githubusercontent.com/16432329/222594390-bc4df450-5aac-4bca-9ac7-ecb5ca9dd53b.png">
+<img width="844" alt="train2" src="https://user-images.githubusercontent.com/16432329/222594408-b0cad412-721a-4fc4-a725-01c2c0ade444.png">
 # data-sets
 KiSing      http://shijt.site/index.php/2021/05/16/kising-the-first-open-source-mandarin-singing-voice-synthesis-corpus/
 
