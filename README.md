@@ -7,7 +7,7 @@ VI-SVC was dropped to https://github.com/PlayVoice/VI-SVC/tree/vi_svc
 
 https://github.com/mindslab-ai/univnet
 
-UNI-SVC will be for yoyo鹿鸣_Lumi
+UNI-SVC will be for [@yoyo鹿鸣_Lumi](https://space.bilibili.com/488836173)
 
 https://user-images.githubusercontent.com/16432329/219535886-8f80346a-143d-47fc-8c84-29e6f5be5143.mp4
 
@@ -23,8 +23,13 @@ change sample rate of waves, and put waves to ./data_opencpop/waves
 > python svc_preprocess_f0.py
 
 > python svc_trainer.py -c config/default_c32.yaml -n uni_svc
+
 <img width="820" alt="train1" src="https://user-images.githubusercontent.com/16432329/222594390-bc4df450-5aac-4bca-9ac7-ecb5ca9dd53b.png">
+
 <img width="844" alt="train2" src="https://user-images.githubusercontent.com/16432329/222594408-b0cad412-721a-4fc4-a725-01c2c0ade444.png">
+
+https://user-images.githubusercontent.com/16432329/222599560-b36cfe6d-186e-49db-bb96-5325991406c9.mp4
+
 # data-sets
 KiSing      http://shijt.site/index.php/2021/05/16/kising-the-first-open-source-mandarin-singing-voice-synthesis-corpus/
 
