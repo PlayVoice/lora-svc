@@ -15,6 +15,7 @@ UNI-SVC will be for [@yoyo鹿鸣_Lumi](https://space.bilibili.com/488836173)
 
 https://user-images.githubusercontent.com/16432329/219535886-8f80346a-143d-47fc-8c84-29e6f5be5143.mp4
 
+
 DID image to video :https://studio.d-id.com/
 
 ### Train
@@ -38,6 +39,17 @@ export clean model
 download preview form release page
 
 > python svc_inference.py --config config/default_c32.yaml --model uni_svc.pth --wave uni_svc_test.wav
+
+### Preview
+
+video from [@一直在吃的周梓琦](https://space.bilibili.com/20473341)
+
+https://www.bilibili.com/video/BV1Kg4y1E77u
+
+change to opencpop
+
+https://user-images.githubusercontent.com/16432329/222905707-b2ec3ee4-ce49-4e07-9fb9-3b38de44dace.mp4
+
 
 ### Data-sets
 KiSing      http://shijt.site/index.php/2021/05/16/kising-the-first-open-source-mandarin-singing-voice-synthesis-corpus/
