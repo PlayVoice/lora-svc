@@ -30,12 +30,16 @@ change sample rate of waves, and put waves to ./data_opencpop/waves
 
 > python svc_trainer.py -c config/default_c32.yaml -n uni_svc
 
-3k wavs of opencpop training~~~~~~
+### Infer
+export clean model
 
-https://user-images.githubusercontent.com/16432329/222747832-ee6aaa27-6257-49c8-b373-5d13d0c09496.mp4
+> python svc_export.py --config config/default_c32.yaml --checkpoint_path chkpt/uni_svc/uni_svc_0740.pt
 
+download preview form release page
 
-# data-sets
+> python svc_inference.py --config config/default_c32.yaml --model uni_svc.pth --wave uni_svc_test.wav
+
+### Data-sets
 KiSing      http://shijt.site/index.php/2021/05/16/kising-the-first-open-source-mandarin-singing-voice-synthesis-corpus/
 
 PopCS 		  https://github.com/MoonInTheRiver/DiffSinger/blob/master/resources/apply_form.md
@@ -67,3 +71,7 @@ Aishell-3 	http://www.aishelltech.com/aishell_3
 
 VCTK 		    https://datashare.ed.ac.uk/handle/10283/2651
 
+# Notice
+如果您参考了本项目，请您在您项目中列出本项目。【武德】
+
+If you refer to this project, please list it in your project.
