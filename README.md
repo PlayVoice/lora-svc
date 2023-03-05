@@ -52,6 +52,10 @@ change to opencpop
 
 https://user-images.githubusercontent.com/16432329/222905707-b2ec3ee4-ce49-4e07-9fb9-3b38de44dace.mp4
 
+Add audio effect
+
+https://user-images.githubusercontent.com/16432329/222939881-ce73e7de-0899-4b96-a459-cf375b6288c0.mp4
+
 
 ### Data-sets
 KiSing      http://shijt.site/index.php/2021/05/16/kising-the-first-open-source-mandarin-singing-voice-synthesis-corpus/
