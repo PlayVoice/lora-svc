@@ -1,4 +1,6 @@
-# Rewrite this project for UNI-SVC 【代码之美】
+# Rewrite this project for UNI-SVC
+
+You will feel the beauty of the code from this project.
 
 VI-SVC was dropped to https://github.com/PlayVoice/VI-SVC/tree/vi_svc
 
@@ -40,7 +42,7 @@ download preview form release page
 
 > python svc_inference.py --config config/default_c32.yaml --model uni_svc.pth --wave uni_svc_test.wav
 
-### Preview
+### Preview， It takes longer to train to get good quality.
 
 video from [@一直在吃的周梓琦](https://space.bilibili.com/20473341)
 
@@ -84,6 +86,8 @@ Aishell-3 	http://www.aishelltech.com/aishell_3
 VCTK 		    https://datashare.ed.ac.uk/handle/10283/2651
 
 # Notice
-如果您参考了本项目，请您在您项目中列出本项目。【武德】
+If you adopt the code or idea of this project, please list it in your project, which is the basic criterion for the continuation of the open source spirit.
 
-If you refer to this project, please list it in your project.
+如果你采用了本项目的代码或创意，请在你的项目中列出，这是开源精神得以延续的基本准则。
+
+このプロジェクトのコードやアイデアを採用した場合は、オープンソースの精神が続く基本的なガイドラインであるプロジェクトにリストしてください。
