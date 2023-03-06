@@ -81,7 +81,7 @@ def main(args):
     ppg = np.repeat(ppg, 2, 0)  # 320 PPG -> 160 * 2
     ppg = torch.FloatTensor(ppg)
 
-    pit = compute_f0_nn(args.wave)
+    pit = compute_f0_nn(args.wave, device)
     pit = torch.FloatTensor(pit)
 
     len_pit = pit.size()[0]
