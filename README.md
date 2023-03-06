@@ -55,11 +55,7 @@ video from [@一直在吃的周梓琦](https://space.bilibili.com/20473341)
 
 https://www.bilibili.com/video/BV1Kg4y1E77u
 
-change to opencpop
-
-https://user-images.githubusercontent.com/16432329/222905707-b2ec3ee4-ce49-4e07-9fb9-3b38de44dace.mp4
-
-Add audio effect
+change to opencpop, add audio effect
 
 https://user-images.githubusercontent.com/16432329/222939881-ce73e7de-0899-4b96-a459-cf375b6288c0.mp4
 
