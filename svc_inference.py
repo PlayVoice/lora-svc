@@ -32,7 +32,7 @@ def compute_f0(path):
     return f0
 
 
-def compute_f0_nn(self, filename, device):
+def compute_f0_nn(filename, device):
     import torchcrepe
     # Load audio
     audio, sr = torchcrepe.load.audio(filename)
