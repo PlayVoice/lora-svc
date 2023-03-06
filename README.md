@@ -33,6 +33,10 @@ change sample rate of waves, and put waves to ./data_opencpop/waves
 
 > python svc_trainer.py -c config/default_c32.yaml -n uni_svc
 
+google cloud: [log.zip](https://drive.google.com/file/d/1DKFWs3QBr8Pi4_XcdtENH4m1l2ZoLU2o/view?usp=share_link)
+
+> tensorboard --logdir logs/uni_svc/
+
 <img width="798" alt="loss1000" src="https://user-images.githubusercontent.com/16432329/222940116-777b980f-f2b2-453b-91db-d79cd5441d1a.png">
 
 
