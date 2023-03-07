@@ -70,6 +70,10 @@ Male to female
 
 https://user-images.githubusercontent.com/16432329/223142419-bdaf7842-2a28-401c-b7c4-5126cee0d931.mp4
 
+### Release state
+
+https://user-images.githubusercontent.com/16432329/223479839-32963e4c-874f-4e2b-b1fb-28161648480e.mp4
+
 
 ### Data-sets
 KiSing      http://shijt.site/index.php/2021/05/16/kising-the-first-open-source-mandarin-singing-voice-synthesis-corpus/
