@@ -1,8 +1,7 @@
-# Rewrite this project for UNI-SVC
+# UNI-SVC, singing voice conversion based on whisper and UnivNet and NSF
 
 You will feel the beauty of the code from this project.
 
-VI-SVC was dropped to https://github.com/PlayVoice/VI-SVC/tree/vi_svc
 
 ### Reference
 [UnivNet: A Neural Vocoder with Multi-Resolution Spectrogram Discriminators for High-Fidelity Waveform Generation](https://arxiv.org/abs/2106.07889)
@@ -63,11 +62,6 @@ video from [@真栗](https://space.bilibili.com/210752)
 
 https:///www.bilibili.com/video/BV1UT411J7Vf
 
-1000 epoch
-
-https://user-images.githubusercontent.com/16432329/222996353-b7c1b14d-b030-4eb9-80dc-2538b3a3506e.mp4
-
-1600 epoch
 
 https://user-images.githubusercontent.com/16432329/223148035-7ddc2278-1887-437c-bc27-03a523de1869.mp4
 
@@ -115,3 +109,6 @@ If you adopt the code or idea of this project, please list it in your project, w
 如果你采用了本项目的代码或创意，请在你的项目中列出，这是开源精神得以延续的基本准则。
 
 このプロジェクトのコードやアイデアを採用した場合は、オープンソースの精神が続く基本的なガイドラインであるプロジェクトにリストしてください。
+
+# VI-SVC
+VI-SVC was dropped to https://github.com/PlayVoice/VI-SVC/tree/vi_svc
