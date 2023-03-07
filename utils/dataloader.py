@@ -59,7 +59,7 @@ class FeatureFromDisk(Dataset):
             assert sr == self.hp.audio.sampling_rate
             if len(audio) > self.hp.audio.segment_length * 2:
                 items_new.append([wavpath, pitch, ppg])
-        self.itmes = items_new
+        self.items = items_new
 
     def __len__(self):
         return len(self.items)
@@ -68,7 +68,7 @@ class FeatureFromDisk(Dataset):
         return self.my_getitem(idx)
 
     def my_getitem(self, idx):
-        item = self.itmes[idx]
+        item = self.items[idx]
         wav = item[0]
         pit = item[1]
         ppg = item[2]
