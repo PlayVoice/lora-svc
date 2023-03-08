@@ -70,12 +70,12 @@ ppg_path = "uni_svc_tmp.ppg.npy"
 
 
 def main(args):
+    os.system(f"python svc_inference_ppg.py -w {args.wave} -p {ppg_path}")
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     hp = OmegaConf.load(args.config)
     model = Generator(hp)
     load_svc_model(args.model, model)
-
-    os.system(f"python svc_inference_ppg.py -w {args.wave} -p {ppg_path}")
 
     ppg = np.load(ppg_path)
     ppg = np.repeat(ppg, 2, 0)  # 320 PPG -> 160 * 2
