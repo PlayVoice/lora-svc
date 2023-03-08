@@ -2,6 +2,13 @@
 
 You will feel the beauty of the code from this project.
 
+### Awesome opensource singing voice conversion
+
+https://github.com/innnky/so-vits-svc
+
+https://github.com/prophesier/diff-svc
+
+https://github.com/yxlllc/DDSP-SVC
 
 ### Reference
 [UnivNet: A Neural Vocoder with Multi-Resolution Spectrogram Discriminators for High-Fidelity Waveform Generation](https://arxiv.org/abs/2106.07889)
@@ -44,7 +51,7 @@ export clean model
 
 > python svc_export.py --config config/default_c32.yaml --checkpoint_path chkpt/uni_svc/uni_svc_0740.pt
 
-download preview form release page
+download preview from release page
 
 > python svc_inference.py --config config/default_c32.yaml --model uni_svc.pth --wave uni_svc_test.wav
 
