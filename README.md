@@ -10,6 +10,8 @@ https://github.com/prophesier/diff-svc
 
 https://github.com/yxlllc/DDSP-SVC
 
+https://github.com/lesterphillip/SVCC23_FastSVC
+
 ### Reference
 [UnivNet: A Neural Vocoder with Multi-Resolution Spectrogram Discriminators for High-Fidelity Waveform Generation](https://arxiv.org/abs/2106.07889)
 
