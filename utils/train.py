@@ -113,8 +113,9 @@ def train(rank, args, chkpt_path, hp, hp_str):
         else:
             loader = trainloader
 
-        for ppg, pit, audio in loader:
+        for ppg, pos, pit, audio in loader:
             ppg = ppg.to(device)
+            pos = pos.to(device)
             pit = pit.to(device)
             audio = audio.to(device)
             len_ppg = ppg.size(1)       # [b, length, dim]
@@ -123,7 +124,7 @@ def train(rank, args, chkpt_path, hp, hp_str):
 
             # generator
             optim_g.zero_grad()
-            fake_audio = model_g(ppg, pit, noise)
+            fake_audio = model_g(ppg, pos, pit, noise)
 
             # Multi-Resolution STFT Loss
             sc_loss, mag_loss = stft_criterion(fake_audio.squeeze(1), audio.squeeze(1))

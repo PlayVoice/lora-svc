@@ -55,6 +55,7 @@ class Generator(nn.Module):
 
         # 1024 should change by your whisper out
         self.cond_pre = nn.Linear(1024, self.mel_channel)
+        self.cond_pos = nn.Embedding(3, self.mel_channel)
     
         self.conv_pre = \
             nn.utils.weight_norm(nn.Conv1d(hp.gen.noise_dim, channel_size, 7, padding=3, padding_mode='reflect'))
@@ -65,7 +66,7 @@ class Generator(nn.Module):
             nn.Tanh(),
         )
 
-    def forward(self, c, f0, z):
+    def forward(self, c, pos, f0, z):
         '''
         Args: 
             c (Tensor): the conditioning sequence of mel-spectrogram (batch, mel_channels, in_length) 
@@ -79,6 +80,8 @@ class Generator(nn.Module):
         har_source = har_source.transpose(1, 2)
 
         c = self.cond_pre(c)                # [B, L, D]
+        p = self.cond_pos(pos)
+        c = c + p
         c = torch.transpose(c, 1, -1)       # [B, D, L]
         z = self.conv_pre(z)                # (B, c_g, L)
 
@@ -110,14 +113,14 @@ class Generator(nn.Module):
         for res_block in self.res_stack:
             res_block.remove_weight_norm()
 
-    def inference(self, ppg, f0, z=None):
+    def inference(self, ppg, pos, f0, z=None):
         # pad input mel with zeros to cut artifact
         # see https://github.com/seungwonpark/melgan/issues/8
         # zero = torch.full((1, self.mel_channel, 10), -11.5129).to(c.device)
         # mel = torch.cat((c, zero), dim=2)
         if z is None:
             z = torch.randn(1, self.noise_dim, ppg.size(1)).to(ppg.device)
-        audio = self.forward(ppg, f0, z)
+        audio = self.forward(ppg, pos, f0, z)
         audio = audio.squeeze() # collapse all dimension except time axis
         audio = audio[:-(self.hop_length*10)]
         audio = MAX_WAV_VALUE * audio

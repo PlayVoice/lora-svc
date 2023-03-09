@@ -77,10 +77,13 @@ class FeatureFromDisk(Dataset):
         wav = torch.from_numpy(wav).unsqueeze(0)
         pit = np.load(pit)
         ppg = np.load(ppg)
+        pos = [1, 2]
+        pos = np.tile(pos, ppg.shape[0])
         ppg = np.repeat(ppg, 2, 0) # 320 PPG -> 160 * 2
 
         pit = torch.FloatTensor(pit)
         ppg = torch.FloatTensor(ppg)
+        pos = torch.LongTensor(pos)
 
         len_pit = pit.size()[0]
         len_ppg = ppg.size()[0]
@@ -89,15 +92,17 @@ class FeatureFromDisk(Dataset):
 
         pit = pit[:len_min]
         ppg = ppg[:len_min, :]
+        pos = pos[:len_min]
         wav = wav[:, :len_wav]
         if self.train:
             max_frame_start = ppg.size(0) - self.frame_segment_length - 1
             frame_start = random.randint(0, max_frame_start)
             frame_end = frame_start + self.frame_segment_length
             ppg = ppg[frame_start:frame_end,:]
+            pos = pos[frame_start:frame_end]
             pit = pit[frame_start:frame_end]
 
             wav_start = frame_start * self.hp.audio.hop_length
             wav_len = self.hp.audio.segment_length
             wav = wav[:, wav_start:wav_start + wav_len]
-        return ppg, pit, wav
+        return ppg, pos, pit, wav

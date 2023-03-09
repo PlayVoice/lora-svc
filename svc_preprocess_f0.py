@@ -25,8 +25,8 @@ if __name__ == "__main__":
 
     files = open("./filelists/train.txt", "w", encoding="utf-8")
 
-    rootPath = "./data_opencpop/waves/"
-    outPath = "./data_opencpop/pitch/"
+    rootPath = "./data_svc/waves/"
+    outPath = "./data_svc/pitch/"
     os.makedirs(outPath, exist_ok=True)
 
     for file in os.listdir(f"./{rootPath}"):
@@ -41,9 +41,9 @@ if __name__ == "__main__":
                 allow_pickle=False,
             )
 
-            path_wave = f"./data_opencpop/waves/{file}.wav"
-            path_pitch = f"./data_opencpop/pitch/{file}.nsf.npy"
-            path_whisper = f"./data_opencpop/whisper/{file}.ppg.npy"
+            path_wave = f"./data_svc/waves/{file}.wav"
+            path_pitch = f"./data_svc/pitch/{file}.nsf.npy"
+            path_whisper = f"./data_svc/whisper/{file}.ppg.npy"
             print(
                 f"{path_wave}|{path_pitch}|{path_whisper}",
                 file=files,

@@ -2,6 +2,10 @@
 
 You will feel the beauty of the code from this project.
 
+Uni-SVC for baker : branch main, experiment on pure speech
+
+Uni-SVC for Opencpop (release state): branch https://github.com/PlayVoice/Uni-SVC/tree/uni-svc-opencpop
+
 ### Awesome opensource singing voice conversion
 
 https://github.com/innnky/so-vits-svc
@@ -21,31 +25,18 @@ https://github.com/mindslab-ai/univnet
 
 https://github.com/openai/whisper/
 
-UNI-SVC will be for [@yoyo鹿鸣_Lumi](https://space.bilibili.com/488836173)
-
-https://user-images.githubusercontent.com/16432329/219535886-8f80346a-143d-47fc-8c84-29e6f5be5143.mp4
-
-
-DID image to video :https://studio.d-id.com/
-
 ### Train
 download whisper model: "https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt"
 
-download opencpop data: https://wenet.org.cn/opencpop/download/
+download baker data: https://www.data-baker.com/data/index/TNtts/
 
-change sample rate of waves, and put waves to ./data_opencpop/waves
+change sample rate of waves, and put waves to ./data_svc/waves
 
-> python svc_preprocess_ppg.py -w ./data_opencpop/waves -p ./data_opencpop/whisper
+> python svc_preprocess_ppg.py -w ./data_svc/waves -p ./data_svc/whisper
 
 > python svc_preprocess_f0.py
 
 > python svc_trainer.py -c config/default_c32.yaml -n uni_svc
-
-google cloud: [log.zip](https://drive.google.com/file/d/1DKFWs3QBr8Pi4_XcdtENH4m1l2ZoLU2o/view?usp=share_link)
-
-> tensorboard --logdir logs/uni_svc/
-
-<img width="798" alt="loss1000" src="https://user-images.githubusercontent.com/16432329/222940116-777b980f-f2b2-453b-91db-d79cd5441d1a.png">
 
 
 ### Infer
@@ -53,17 +44,13 @@ export clean model
 
 > python svc_export.py --config config/default_c32.yaml --checkpoint_path chkpt/uni_svc/uni_svc_0740.pt
 
-download preview from release page
-
 > python svc_inference.py --config config/default_c32.yaml --model uni_svc.pth --wave uni_svc_test.wav
 
-### Preview， It takes longer to train to get good quality.
+### Demos for opencpop dataset, get model from release page
 
 video from [@一直在吃的周梓琦](https://space.bilibili.com/20473341)
 
 https://www.bilibili.com/video/BV1Kg4y1E77u
-
-change to opencpop, add audio effect
 
 https://user-images.githubusercontent.com/16432329/222939881-ce73e7de-0899-4b96-a459-cf375b6288c0.mp4
 
@@ -71,9 +58,7 @@ video from [@真栗](https://space.bilibili.com/210752)
 
 https:///www.bilibili.com/video/BV1UT411J7Vf
 
-
 https://user-images.githubusercontent.com/16432329/223148035-7ddc2278-1887-437c-bc27-03a523de1869.mp4
-
 
 Male to female
 

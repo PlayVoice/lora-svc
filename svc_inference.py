@@ -78,24 +78,29 @@ def main(args):
     load_svc_model(args.model, model)
 
     ppg = np.load(ppg_path)
+    pos = [1, 2]
+    pos = np.tile(pos, ppg.shape[0])
     ppg = np.repeat(ppg, 2, 0)  # 320 PPG -> 160 * 2
     ppg = torch.FloatTensor(ppg)
 
     pit = compute_f0_nn(args.wave, device)
     pit = torch.FloatTensor(pit)
+    pos = torch.LongTensor(pos)
 
     len_pit = pit.size()[0]
     len_ppg = ppg.size()[0]
     len_min = min(len_pit, len_ppg)
     pit = pit[:len_min]
     ppg = ppg[:len_min, :]
+    pos = pos[:len_min]
 
     model.eval(inference=True)
     model.to(device)
     with torch.no_grad():
         ppg = ppg.unsqueeze(0).to(device)
+        pos = pos.unsqueeze(0).to(device)
         pit = pit.unsqueeze(0).to(device)
-        audio = model.inference(ppg, pit)
+        audio = model.inference(ppg, pos, pit)
         audio = audio.cpu().detach().numpy()
 
     write("uni_svc_out.wav", hp.audio.sampling_rate, audio)
