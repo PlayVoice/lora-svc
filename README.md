@@ -46,6 +46,10 @@ export clean model
 
 > python svc_inference.py --config config/default_c32.yaml --model uni_svc.pth --wave uni_svc_test.wav
 
+### experiment on baker dataset with pure speech, trained 120 epoch
+
+https://user-images.githubusercontent.com/16432329/224047124-ee302ab7-d9df-4ebb-93f7-c8e9df302d14.mp4
+
 ### Demos for opencpop dataset, get model from release page
 
 video from [@一直在吃的周梓琦](https://space.bilibili.com/20473341)
