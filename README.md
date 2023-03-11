@@ -2,9 +2,11 @@
 
 You will feel the beauty of the code from this project.
 
-Uni-SVC for baker : branch main, experiment on pure speech
+Uni-SVC main branck is for singing voice clone based on whisper with speaker encoder and speaker adaper.
 
-Uni-SVC for Opencpop (release state): branch https://github.com/PlayVoice/Uni-SVC/tree/uni-svc-opencpop
+Uni-SVC for baker (release state v0.3): branch https://github.com/PlayVoice/Uni-SVC/tree/uni-svc-baker, experiment on pure speech
+
+Uni-SVC for Opencpop (release state v0.2): branch https://github.com/PlayVoice/Uni-SVC/tree/uni-svc-opencpop
 
 ### Awesome opensource singing voice conversion
 
@@ -38,19 +40,22 @@ change sample rate of waves, and put waves to ./data_svc/waves
 
 > python svc_trainer.py -c config/default_c32.yaml -n uni_svc
 
+<img width="794" alt="uni-svc-baker-loss" src="https://user-images.githubusercontent.com/16432329/224460166-5943b35e-afda-48e4-90fd-db6db02a09cb.png">
 
 ### Infer
 export clean model
 
-> python svc_export.py --config config/default_c32.yaml --checkpoint_path chkpt/uni_svc/uni_svc_0740.pt
+> python svc_export.py --config config/default_c32.yaml --checkpoint_path chkpt/uni_svc/uni_svc_0340.pt
+
+you can download model for release page of v0.3
 
 > python svc_inference.py --config config/default_c32.yaml --model uni_svc.pth --wave uni_svc_test.wav
 
-### experiment on baker dataset with pure speech, trained 120 epoch
+### uni-svc on baker with pure speech, trained 340 epoch of 10k steps
 
-https://user-images.githubusercontent.com/16432329/224047124-ee302ab7-d9df-4ebb-93f7-c8e9df302d14.mp4
+https://user-images.githubusercontent.com/16432329/224460286-2c9ad916-ec2d-40a5-944e-2d3d830d2c63.mp4
 
-### Demos for opencpop dataset, get model from release page
+### Demos for opencpop dataset, get model from release page of v0.2
 
 video from [@一直在吃的周梓琦](https://space.bilibili.com/20473341)
 
