@@ -2,7 +2,7 @@
 
 You will feel the beauty of the code from this project.
 
-Uni-SVC main branck is for singing voice clone based on whisper with speaker encoder and speaker adaper.
+Uni-SVC main branck is for singing voice clone based on whisper with speaker encoder and speaker adapter.
 
 Uni-SVC for baker (release state v0.3): branch https://github.com/PlayVoice/Uni-SVC/tree/uni-svc-baker, experiment on pure speech
 
