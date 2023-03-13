@@ -87,6 +87,9 @@ def main(args):
     pit = torch.FloatTensor(pit)
     pos = torch.LongTensor(pos)
 
+    spk = np.load(args.spk)
+    spk = torch.FloatTensor(spk)
+
     len_pit = pit.size()[0]
     len_ppg = ppg.size()[0]
     len_min = min(len_pit, len_ppg)
@@ -97,10 +100,11 @@ def main(args):
     model.eval(inference=True)
     model.to(device)
     with torch.no_grad():
+        spk = spk.unsqueeze(0).to(device)
         ppg = ppg.unsqueeze(0).to(device)
         pos = pos.unsqueeze(0).to(device)
         pit = pit.unsqueeze(0).to(device)
-        audio = model.inference(ppg, pos, pit)
+        audio = model.inference(spk, ppg, pos, pit)
         audio = audio.cpu().detach().numpy()
 
     write("uni_svc_out.wav", hp.audio.sampling_rate, audio)
@@ -112,8 +116,10 @@ if __name__ == '__main__':
                         help="yaml file for config.")
     parser.add_argument('-m', '--model', type=str, required=True,
                         help="path of model for evaluation")
-    parser.add_argument('-i', '--wave', type=str, required=True,
+    parser.add_argument('-w', '--wave', type=str, required=True,
                         help="Path of raw audio.")
+    parser.add_argument('-s', '--spk', type=str, required=True,
+                        help="Path of speaker.")
     args = parser.parse_args()
 
     main(args)

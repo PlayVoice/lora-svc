@@ -29,24 +29,29 @@ if __name__ == "__main__":
     outPath = "./data_svc/pitch/"
     os.makedirs(outPath, exist_ok=True)
 
-    for file in os.listdir(f"./{rootPath}"):
-        if file.endswith(".wav"):
-            file = file[:-4]
-            wav_path = f"./{rootPath}/{file}.wav"
-            featur_pit = compute_f0(wav_path)
+    for spks in os.listdir(f"./{rootPath}"):
+        if os.path.isdir(f"./{rootPath}/{spks}"):
+            os.makedirs(f"./{outPath}/{spks}")
+            print(f">>>>>>>>>>{spks}<<<<<<<<<<")
+            for file in os.listdir(f"./{rootPath}/{spks}"):
+                if file.endswith(".wav"):
+                    file = file[:-4]
+                    wav_path = f"./{rootPath}/{spks}/{file}.wav"
+                    featur_pit = compute_f0(wav_path)
 
-            np.save(
-                f"{outPath}/{file}.nsf",
-                featur_pit,
-                allow_pickle=False,
-            )
+                    np.save(
+                        f"{outPath}/{spks}/{file}.nsf",
+                        featur_pit,
+                        allow_pickle=False,
+                    )
 
-            path_wave = f"./data_svc/waves/{file}.wav"
-            path_pitch = f"./data_svc/pitch/{file}.nsf.npy"
-            path_whisper = f"./data_svc/whisper/{file}.ppg.npy"
-            print(
-                f"{path_wave}|{path_pitch}|{path_whisper}",
-                file=files,
-            )
+                    path_spk = f"./data_svc/ids/{spks}.npy"
+                    path_wave = f"./data_svc/waves/{spks}/{file}.wav"
+                    path_pitch = f"./data_svc/pitch/{spks}/{file}.nsf.npy"
+                    path_whisper = f"./data_svc/whisper/{spks}/{file}.ppg.npy"
+                    print(
+                        f"{path_wave}|{path_pitch}|{path_whisper}|{path_spk}",
+                        file=files,
+                    )
 
     files.close()

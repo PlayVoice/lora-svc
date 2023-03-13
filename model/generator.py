@@ -9,6 +9,38 @@ from .nsf import SourceModuleHnNSF
 
 MAX_WAV_VALUE = 32768.0
 
+class SpeakerAdapter(nn.Module):
+
+    def __init__(self,
+                speaker_dim,
+                adapter_dim,
+                epsilon=1e-5
+                ):
+        super(SpeakerAdapter, self).__init__()
+        self.speaker_dim = speaker_dim
+        self.adapter_dim = adapter_dim
+        self.epsilon = epsilon
+        self.W_scale = nn.Linear(self.speaker_dim, self.adapter_dim)
+        self.W_bias = nn.Linear(self.speaker_dim, self.adapter_dim)
+        self.reset_parameters()
+
+    def reset_parameters(self):
+        torch.nn.init.constant_(self.W_scale.weight, 0.0)
+        torch.nn.init.constant_(self.W_scale.bias, 1.0)
+        torch.nn.init.constant_(self.W_bias.weight, 0.0)
+        torch.nn.init.constant_(self.W_bias.bias, 0.0)
+    
+    def forward(self, x, speaker_embedding):
+        mean = x.mean(dim=-1, keepdim=True)
+        var = ((x - mean) ** 2).mean(dim=-1, keepdim=True)
+        std = (var + self.epsilon).sqrt()
+        y = (x - mean) / std
+        scale = self.W_scale(speaker_embedding)
+        bias = self.W_bias(speaker_embedding)
+        y *= scale.unsqueeze(1)
+        y += bias.unsqueeze(1)
+        return y
+
 class Generator(nn.Module):
     """UnivNet Generator"""
     def __init__(self, hp):
@@ -66,7 +98,10 @@ class Generator(nn.Module):
             nn.Tanh(),
         )
 
-    def forward(self, c, pos, f0, z):
+        # speaker adaper, 256 should change by what speaker encoder you use
+        self.adapter = SpeakerAdapter(256, self.mel_channel)
+
+    def forward(self, spk, c, pos, f0, z):
         '''
         Args: 
             c (Tensor): the conditioning sequence of mel-spectrogram (batch, mel_channels, in_length) 
@@ -89,6 +124,7 @@ class Generator(nn.Module):
             res_block.to(z.device)
             x_source = self.noise_convs[i](har_source)
             z = res_block(z, c)             # (B, c_g, L * s_0 * ... * s_i)
+            z = self.adapter(z, spk)        # adapter
             z = z + x_source
    
         z = self.conv_post(z)               # (B, 1, L * 160)
@@ -113,14 +149,14 @@ class Generator(nn.Module):
         for res_block in self.res_stack:
             res_block.remove_weight_norm()
 
-    def inference(self, ppg, pos, f0, z=None):
+    def inference(self, spk, ppg, pos, f0, z=None):
         # pad input mel with zeros to cut artifact
         # see https://github.com/seungwonpark/melgan/issues/8
         # zero = torch.full((1, self.mel_channel, 10), -11.5129).to(c.device)
         # mel = torch.cat((c, zero), dim=2)
         if z is None:
             z = torch.randn(1, self.noise_dim, ppg.size(1)).to(ppg.device)
-        audio = self.forward(ppg, pos, f0, z)
+        audio = self.forward(spk, ppg, pos, f0, z)
         audio = audio.squeeze() # collapse all dimension except time axis
         audio = audio[:-(self.hop_length*10)]
         audio = MAX_WAV_VALUE * audio

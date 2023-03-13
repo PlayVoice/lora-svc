@@ -45,7 +45,7 @@ change sample rate of waves, and put waves to ./data_svc/waves
 ### Infer
 export clean model
 
-> python svc_export.py --config config/default_c32.yaml --checkpoint_path chkpt/uni_svc/uni_svc_0340.pt
+> python svc_inference_export.py --config config/default_c32.yaml --checkpoint_path chkpt/uni_svc/uni_svc_0340.pt
 
 you can download model for release page of v0.3
 

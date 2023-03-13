@@ -54,11 +54,11 @@ class FeatureFromDisk(Dataset):
 
     def _filter(self):
         items_new = []
-        for wavpath, pitch, ppg in self.items:
+        for wavpath, pitch, ppg, spk in self.items:
             sr, audio = read_wav_np(wavpath)
             assert sr == self.hp.audio.sampling_rate
             if len(audio) > self.hp.audio.segment_length * 2:
-                items_new.append([wavpath, pitch, ppg])
+                items_new.append([wavpath, pitch, ppg, spk])
         self.items = items_new
 
     def __len__(self):
@@ -72,6 +72,7 @@ class FeatureFromDisk(Dataset):
         wav = item[0]
         pit = item[1]
         ppg = item[2]
+        spk = item[3]
 
         sr, wav = read_wav_np(wav)
         wav = torch.from_numpy(wav).unsqueeze(0)
@@ -80,7 +81,9 @@ class FeatureFromDisk(Dataset):
         pos = [1, 2]
         pos = np.tile(pos, ppg.shape[0])
         ppg = np.repeat(ppg, 2, 0) # 320 PPG -> 160 * 2
+        spk = np.load(spk)
 
+        spk = torch.FloatTensor(spk)
         pit = torch.FloatTensor(pit)
         ppg = torch.FloatTensor(ppg)
         pos = torch.LongTensor(pos)
@@ -105,4 +108,4 @@ class FeatureFromDisk(Dataset):
             wav_start = frame_start * self.hp.audio.hop_length
             wav_len = self.hp.audio.segment_length
             wav = wav[:, wav_start:wav_start + wav_len]
-        return ppg, pos, pit, wav
+        return spk, ppg, pos, pit, wav
