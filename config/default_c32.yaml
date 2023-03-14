@@ -1,6 +1,6 @@
 data:
   train_file: 'filelists/train.txt'
-  val_file: 'filelists/train.txt'
+  val_file: 'filelists/eval.txt'
 #############################
 train:
   num_workers: 8

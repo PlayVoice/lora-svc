@@ -1,3 +1,4 @@
+import os
 import torch
 import random
 import numpy as np
@@ -31,7 +32,7 @@ def load_items(filename, split="|"):
 def create_dataloader(hp, train):
     dataset = FeatureFromDisk(hp, train)
     if train:
-        return DataLoader(dataset=dataset, batch_size=hp.train.batch_size, shuffle=False,
+        return DataLoader(dataset=dataset, batch_size=hp.train.batch_size, shuffle=True,
                           num_workers=hp.train.num_workers, pin_memory=True, drop_last=True)
     else:
         return DataLoader(dataset=dataset, batch_size=1, shuffle=False,
@@ -55,6 +56,14 @@ class FeatureFromDisk(Dataset):
     def _filter(self):
         items_new = []
         for wavpath, pitch, ppg, spk in self.items:
+            if not os.path.isfile(wavpath):
+                continue
+            if not os.path.isfile(pitch):
+                continue
+            if not os.path.isfile(ppg):
+                continue
+            if not os.path.isfile(spk):
+                continue
             sr, audio = read_wav_np(wavpath)
             assert sr == self.hp.audio.sampling_rate
             if len(audio) > self.hp.audio.segment_length * 2:

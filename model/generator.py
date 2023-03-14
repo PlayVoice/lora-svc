@@ -31,6 +31,7 @@ class SpeakerAdapter(nn.Module):
         torch.nn.init.constant_(self.W_bias.bias, 0.0)
     
     def forward(self, x, speaker_embedding):
+        x = x.transpose(1, -1)
         mean = x.mean(dim=-1, keepdim=True)
         var = ((x - mean) ** 2).mean(dim=-1, keepdim=True)
         std = (var + self.epsilon).sqrt()
@@ -39,6 +40,7 @@ class SpeakerAdapter(nn.Module):
         bias = self.W_bias(speaker_embedding)
         y *= scale.unsqueeze(1)
         y += bias.unsqueeze(1)
+        y = y.transpose(1, -1)
         return y
 
 class Generator(nn.Module):
@@ -117,6 +119,7 @@ class Generator(nn.Module):
         har_source, noi_source, uv = self.m_source(f0)
         har_source = har_source.transpose(1, 2)
 
+        c = c + torch.randn_like(c)
         c = self.cond_pre(c)                # [B, L, D]
         p = self.cond_pos(pos)
         c = c + p
@@ -129,7 +132,7 @@ class Generator(nn.Module):
             z = res_block(z, c)             # (B, c_g, L * s_0 * ... * s_i)
             z = self.adapter[i](z, spk)     # adapter
             z = z + x_source
-   
+
         z = self.conv_post(z)               # (B, 1, L * 160)
 
         return z
