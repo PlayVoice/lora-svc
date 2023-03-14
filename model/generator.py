@@ -51,6 +51,9 @@ class Generator(nn.Module):
         channel_size = hp.gen.channel_size
         kpnet_conv_size = hp.gen.kpnet_conv_size
 
+        # speaker adaper, 256 should change by what speaker encoder you use
+        self.adapter = nn.ModuleList()
+
         self.f0_upsamp = torch.nn.Upsample(scale_factor=np.prod(hp.gen.strides))
         self.m_source = SourceModuleHnNSF()
         self.noise_convs = nn.ModuleList()
@@ -58,6 +61,9 @@ class Generator(nn.Module):
         self.res_stack = nn.ModuleList()
         hop_length = 1
         for i, stride in enumerate(hp.gen.strides):
+            # spk
+            self.adapter.append(SpeakerAdapter(256, channel_size))
+            # net
             hop_length = stride * hop_length
             self.res_stack.append(
                 LVCBlock(
@@ -98,9 +104,6 @@ class Generator(nn.Module):
             nn.Tanh(),
         )
 
-        # speaker adaper, 256 should change by what speaker encoder you use
-        self.adapter = SpeakerAdapter(256, self.mel_channel)
-
     def forward(self, spk, c, pos, f0, z):
         '''
         Args: 
@@ -124,7 +127,7 @@ class Generator(nn.Module):
             res_block.to(z.device)
             x_source = self.noise_convs[i](har_source)
             z = res_block(z, c)             # (B, c_g, L * s_0 * ... * s_i)
-            z = self.adapter(z, spk)        # adapter
+            z = self.adapter[i](z, spk)     # adapter
             z = z + x_source
    
         z = self.conv_post(z)               # (B, 1, L * 160)
