@@ -1,8 +1,8 @@
-# UNI-SVC, singing voice conversion based on whisper and UnivNet and NSF
+# singing voice conversion based on whisper, UnivNet and NSF
 
 You will feel the beauty of the code from this project. 
 
-Uni-SVC main branck is for singing voice clone based on whisper with speaker encoder and speaker adapter.
+Uni-SVC main branch is for singing voice clone based on whisper with speaker encoder and speaker adapter.
 
 Uni-SVC main target is to develop [Lora](https://github.com/PlayVoice/Uni-SVC/blob/main/model/generator.py#L12-L44) for SVC.
 
