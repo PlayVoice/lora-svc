@@ -1,16 +1,18 @@
 # UNI-SVC, singing voice conversion based on whisper and UnivNet and NSF
 
-You will feel the beauty of the code from this project.
+You will feel the beauty of the code from this project. 
+
+Target to develop **Lora** for SVC.
 
 Uni-SVC main branck is for singing voice clone based on whisper with speaker encoder and speaker adapter.
 
-Model which contains 66 singers is training~~~~
+Model **which contains 66 singers of 50 hours singing data** is training~~~~
 
-Uni-SVC for baker (release state v0.3): branch https://github.com/PlayVoice/Uni-SVC/tree/uni-svc-baker, experiment on pure speech
+Uni-SVC for **baker** (release state v0.3): branch https://github.com/PlayVoice/Uni-SVC/tree/uni-svc-baker, experiment on pure speech
 
-Uni-SVC for Opencpop (release state v0.2): branch https://github.com/PlayVoice/Uni-SVC/tree/uni-svc-opencpop
+Uni-SVC for **Opencpop** (release state v0.2): branch https://github.com/PlayVoice/Uni-SVC/tree/uni-svc-opencpop
 
-### Awesome opensource singing voice conversion
+## Awesome opensource singing voice conversion
 
 https://github.com/innnky/so-vits-svc
 
@@ -20,7 +22,7 @@ https://github.com/yxlllc/DDSP-SVC
 
 https://github.com/lesterphillip/SVCC23_FastSVC
 
-### Reference
+## Reference
 [UnivNet: A Neural Vocoder with Multi-Resolution Spectrogram Discriminators for High-Fidelity Waveform Generation](https://arxiv.org/abs/2106.07889)
 
 https://github.com/nii-yamagishilab/project-NN-Pytorch-scripts/tree/master/project/01-nsf
@@ -29,7 +31,7 @@ https://github.com/mindslab-ai/univnet
 
 https://github.com/openai/whisper/
 
-### Train
+## Train
 download whisper model: https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt
 
 download speaker encoder: https://github.com/mozilla/TTS/wiki/Released-Models
@@ -50,8 +52,45 @@ change sample rate of waves, and put waves to ./data_svc/waves
 
 > python svc_trainer.py -c config/default_c32.yaml -n uni_svc
 
+data tree like this
 
-### Infer
+    data_svc/
+    |
+    |
+    └── ids
+    |     └──spk1_encoding.npy
+    |     └──spk2_encoding.npy
+    |     └──spk3_encoding.npy
+    |
+    └── pitch
+    │     ├── spk1
+    │     │   ├── 000001_pit.npy
+    │     │   ├── 000002_pit.npy
+    │     │   └── 000003_pit.npy
+    │     └── spk2
+    │         ├── 000001_pit.npy
+    │         ├── 000002_pit.npy
+    │         └── 000003_pit.npy
+    └── waves
+    │     ├── spk1
+    │     │   ├── 000001.wav
+    │     │   ├── 000002.wav
+    │     │   └── 000003.wav
+    │     └── spk2
+    │         ├── 000001.wav
+    │         ├── 000002.wav
+    │         └── 000003.wav
+    └── whisper
+          ├── spk1
+          │   ├── 000001.ppg.npy
+          │   ├── 000002.ppg.npy
+          │   └── 000003.ppg.npy
+          └── spk2
+              ├── 000001.ppg.npy
+              ├── 000002.ppg.npy
+              └── 000003.ppg.npy
+
+## Infer
 export clean model
 
 > python svc_inference_export.py --config config/default_c32.yaml --checkpoint_path chkpt/uni_svc/uni_svc_0340.pt
@@ -60,11 +99,12 @@ you can download model for release page, after model release
 
 > python svc_inference.py --config config/default_c32.yaml --model uni_svc.pth --spk speaker_encoding.npy --wave uni_svc_test.wav
 
-### uni-svc on baker with pure speech, trained 340 epoch of 10k steps
+## demos
+#### uni-svc on baker with pure speech, trained 340 epoch of 10k steps
 
 https://user-images.githubusercontent.com/16432329/224460286-2c9ad916-ec2d-40a5-944e-2d3d830d2c63.mp4
 
-### Demos for opencpop dataset, get model from release page of v0.2
+#### Demos for opencpop dataset, get model from release page of v0.2
 
 video from [@一直在吃的周梓琦](https://space.bilibili.com/20473341)
 
@@ -82,12 +122,12 @@ Male to female
 
 https://user-images.githubusercontent.com/16432329/223142419-bdaf7842-2a28-401c-b7c4-5126cee0d931.mp4
 
-### Release state
+#### Release state
 
 https://user-images.githubusercontent.com/16432329/223479839-32963e4c-874f-4e2b-b1fb-28161648480e.mp4
 
 
-### Data-sets
+## Data-sets
 KiSing      http://shijt.site/index.php/2021/05/16/kising-the-first-open-source-mandarin-singing-voice-synthesis-corpus/
 
 PopCS 		  https://github.com/MoonInTheRiver/DiffSinger/blob/master/resources/apply_form.md
@@ -97,7 +137,6 @@ opencpop 	  https://wenet.org.cn/opencpop/download/
 OpenSinger 	https://github.com/Multi-Singer/Multi-Singer.github.io
 
 M4Singer	  https://github.com/M4Singer/M4Singer/blob/master/apply_form.md
-
 
 CSD 		    https://zenodo.org/record/4785016#.YxqrTbaOMU4
 
