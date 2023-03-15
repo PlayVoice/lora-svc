@@ -51,8 +51,8 @@ dist_config:
 #############################
 log:
   summary_interval: 1
-  validation_interval: 1
-  save_interval: 1
-  num_audio: 5
+  validation_interval: 5
+  save_interval: 5
+  num_audio: 6
   chkpt_dir: 'chkpt'
   log_dir: 'logs'

@@ -4,6 +4,8 @@ You will feel the beauty of the code from this project.
 
 Uni-SVC main branck is for singing voice clone based on whisper with speaker encoder and speaker adapter.
 
+Model which contains 66 singers is training~~~~
+
 Uni-SVC for baker (release state v0.3): branch https://github.com/PlayVoice/Uni-SVC/tree/uni-svc-baker, experiment on pure speech
 
 Uni-SVC for Opencpop (release state v0.2): branch https://github.com/PlayVoice/Uni-SVC/tree/uni-svc-opencpop
@@ -28,28 +30,35 @@ https://github.com/mindslab-ai/univnet
 https://github.com/openai/whisper/
 
 ### Train
-download whisper model: "https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt"
+download whisper model: https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt
 
-download baker data: https://www.data-baker.com/data/index/TNtts/
+download speaker encoder: https://github.com/mozilla/TTS/wiki/Released-Models
+
+Speaker-Encoder by @mueller91	LibriTTS + VCTK + VoxCeleb + CommonVoice
+
+https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3
+
+download XXX data: TODO~
 
 change sample rate of waves, and put waves to ./data_svc/waves
 
 > python svc_preprocess_ppg.py -w ./data_svc/waves -p ./data_svc/whisper
 
+> python svc_preprocess_ids.py -w ./data_svc/waves -p ./data_svc/ids
+
 > python svc_preprocess_f0.py
 
 > python svc_trainer.py -c config/default_c32.yaml -n uni_svc
 
-<img width="794" alt="uni-svc-baker-loss" src="https://user-images.githubusercontent.com/16432329/224460166-5943b35e-afda-48e4-90fd-db6db02a09cb.png">
 
 ### Infer
 export clean model
 
 > python svc_inference_export.py --config config/default_c32.yaml --checkpoint_path chkpt/uni_svc/uni_svc_0340.pt
 
-you can download model for release page of v0.3
+you can download model for release page, after model release
 
-> python svc_inference.py --config config/default_c32.yaml --model uni_svc.pth --wave uni_svc_test.wav
+> python svc_inference.py --config config/default_c32.yaml --model uni_svc.pth --spk speaker_encoding.npy --wave uni_svc_test.wav
 
 ### uni-svc on baker with pure speech, trained 340 epoch of 10k steps
 
