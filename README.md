@@ -2,9 +2,9 @@
 
 You will feel the beauty of the code from this project. 
 
-Target to develop [Lora](https://github.com/PlayVoice/Uni-SVC/blob/main/model/generator.py#L12-L44) for SVC.
-
 Uni-SVC main branck is for singing voice clone based on whisper with speaker encoder and speaker adapter.
+
+Uni-SVC main target is to develop [Lora](https://github.com/PlayVoice/Uni-SVC/blob/main/model/generator.py#L12-L44) for SVC.
 
 Model **which contains 66 singers of 50 hours singing data** is training~~~~
 
