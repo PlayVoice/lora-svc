@@ -6,6 +6,8 @@ Uni-SVC main branch is for singing voice clone based on whisper with speaker enc
 
 Uni-SVC main target is to develop [Lora](https://github.com/PlayVoice/Uni-SVC/blob/main/model/generator.py#L12-L44) for SVC.
 
+![lora](https://user-images.githubusercontent.com/16432329/225337790-392b958a-67ec-4643-b26a-018ee8e4cf56.jpg)
+
 Model **which contains 66 singers of 50 hours singing data** is training~~~~
 
 Uni-SVC for **baker** (release state v0.3): branch https://github.com/PlayVoice/Uni-SVC/tree/uni-svc-baker, experiment on pure speech
