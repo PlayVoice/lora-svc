@@ -4,7 +4,9 @@ You will feel the beauty of the code from this project.
 
 Uni-SVC main branch is for singing voice clone based on whisper with speaker encoder and speaker adapter.
 
-Uni-SVC main target is to develop [Lora](https://github.com/PlayVoice/Uni-SVC/blob/main/model/generator.py#L12-L44) for SVC.
+Uni-SVC main target is to develop [lora](https://github.com/PlayVoice/Uni-SVC/blob/main/model/generator.py#L12-L44) for SVC.
+
+With lora, maybe clone a singer just need 10 stence after 10 minutes train. Each singer is a plug-in of the base model.
 
 ![lora](https://user-images.githubusercontent.com/16432329/225337790-392b958a-67ec-4643-b26a-018ee8e4cf56.jpg)
 
@@ -25,13 +27,13 @@ https://github.com/yxlllc/DDSP-SVC
 https://github.com/lesterphillip/SVCC23_FastSVC
 
 ## Reference
-[UnivNet: A Neural Vocoder with Multi-Resolution Spectrogram Discriminators for High-Fidelity Waveform Generation](https://arxiv.org/abs/2106.07889)
+[AdaSpeech: Adaptive Text to Speech for Custom Voice](https://arxiv.org/pdf/2103.00993.pdf)
 
 https://github.com/nii-yamagishilab/project-NN-Pytorch-scripts/tree/master/project/01-nsf
 
-https://github.com/mindslab-ai/univnet
+https://github.com/mindslab-ai/univnet [[paper]](https://arxiv.org/abs/2106.07889)
 
-https://github.com/openai/whisper/
+https://github.com/openai/whisper/ [[paper]](https://arxiv.org/abs/2212.04356)
 
 ## Train
 download whisper model: https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt
