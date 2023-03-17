@@ -132,6 +132,8 @@ https://user-images.githubusercontent.com/16432329/223479839-32963e4c-874f-4e2b-
 
 
 ## Data-sets
+Lyra_CS(腾讯音乐)     https://lyracobar.y.qq.com/index.html
+
 KiSing      http://shijt.site/index.php/2021/05/16/kising-the-first-open-source-mandarin-singing-voice-synthesis-corpus/
 
 PopCS 		  https://github.com/MoonInTheRiver/DiffSinger/blob/master/resources/apply_form.md
