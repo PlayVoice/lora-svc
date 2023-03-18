@@ -12,6 +12,8 @@ With lora, maybe clone a singer just need 10 stence after 10 minutes train. Each
 
 Model **which contains 66 singers of 50 hours singing data** is training~~~~
 
+https://user-images.githubusercontent.com/16432329/226079413-9fe7a154-4cc9-409c-b15a-124e8aef5934.mp4
+
 Uni-SVC for **baker** (release state v0.3): branch https://github.com/PlayVoice/Uni-SVC/tree/uni-svc-baker, experiment on pure speech
 
 Uni-SVC for **Opencpop** (release state v0.2): branch https://github.com/PlayVoice/Uni-SVC/tree/uni-svc-opencpop
