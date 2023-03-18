@@ -10,7 +10,7 @@ With lora, maybe clone a singer just need 10 stence after 10 minutes train. Each
 
 ![lora](https://user-images.githubusercontent.com/16432329/225337790-392b958a-67ec-4643-b26a-018ee8e4cf56.jpg)
 
-Model **which contains 66 singers of 50 hours singing data** is training~~~~
+Model **which contains [56 singers](https://github.com/PlayVoice/lora-svc/tree/main/config/singers) of 50 hours singing data** is training~~~~
 
 https://user-images.githubusercontent.com/16432329/226079413-9fe7a154-4cc9-409c-b15a-124e8aef5934.mp4
 
