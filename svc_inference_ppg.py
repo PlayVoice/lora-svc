@@ -19,14 +19,28 @@ def load_model(path) -> Whisper:
 def pred_ppg(whisper: Whisper, wavPath, ppgPath):
     audio = load_audio(wavPath)
     audln = audio.shape[0]
-    ppgln = audln // 320
-    audio = pad_or_trim(audio)
-    mel = log_mel_spectrogram(audio).to(whisper.device)
-    with torch.no_grad():
-        ppg = whisper.encoder(mel.unsqueeze(0)).squeeze().data.cpu().float().numpy()
-        ppg = ppg[:ppgln,] # [length, dim=1024]
-        print(ppg.shape)
-        np.save(ppgPath, ppg, allow_pickle=False)
+    ppg_a = []
+    idx_s = 0
+    while (idx_s + 25 * 16000 < audln):
+        short = audio[idx_s:idx_s + 25 * 16000]
+        idx_s = idx_s + 25 * 16000
+        ppgln = 25 * 16000 // 320
+        short = pad_or_trim(short)
+        mel = log_mel_spectrogram(short).to(whisper.device)
+        with torch.no_grad():
+            ppg = whisper.encoder(mel.unsqueeze(0)).squeeze().data.cpu().float().numpy()
+            ppg = ppg[:ppgln,]  # [length, dim=1024]
+            ppg_a.extend(ppg)
+    if (idx_s < audln):
+        short = audio[idx_s:audln]
+        ppgln = (audln - idx_s) // 320
+        short = pad_or_trim(short)
+        mel = log_mel_spectrogram(short).to(whisper.device)
+        with torch.no_grad():
+            ppg = whisper.encoder(mel.unsqueeze(0)).squeeze().data.cpu().float().numpy()
+            ppg = ppg[:ppgln,]  # [length, dim=1024]
+            ppg_a.extend(ppg)
+    np.save(ppgPath, ppg_a, allow_pickle=False)
 
 
 if __name__ == "__main__":
