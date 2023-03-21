@@ -71,7 +71,7 @@ def train(rank, args, chkpt_path, hp, hp_str):
     if chkpt_path is not None:
         if rank == 0:
             logger.info("Resuming from checkpoint: %s" % chkpt_path)
-        checkpoint = torch.load(chkpt_path)
+        checkpoint = torch.load(chkpt_path, map_location='cpu')
         model_g.load_state_dict(checkpoint['model_g'])
         model_d.load_state_dict(checkpoint['model_d'])
         optim_g.load_state_dict(checkpoint['optim_g'])
