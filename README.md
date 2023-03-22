@@ -37,6 +37,8 @@ https://github.com/mindslab-ai/univnet [[paper]](https://arxiv.org/abs/2106.0788
 
 https://github.com/openai/whisper/ [[paper]](https://arxiv.org/abs/2212.04356)
 
+https://github.com/chenwj1989/pafx
+
 ## Train
 download whisper model: https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt
 
