@@ -8,21 +8,8 @@ import numpy as np
 from scipy.io.wavfile import write
 from omegaconf import OmegaConf
 from model.generator import Generator
-from effects.equalizer import Equalizer
-
-
-def after_eq(x):
-    y = np.zeros(len(x))
-    eq_gains = [-30, -10, 10, 10, 5, 0, -5, -10, -10, -10]
-    eq = Equalizer(eq_gains, sample_rate=16000)
-    eq.dump()
-    # Start Processing
-    x = x / 32768.0
-    for i in range(len(x)):
-        y[i] = eq.process(x[i])
-    y = y / max(np.abs(y))
-    y = y * 32768.0
-    return y.astype(np.int16)
+from effects.pafx import (
+    svc_eq, svc_reverb, svc_echo, svc_chorus, svc_flanger)
 
 
 def load_svc_model(checkpoint_path, model):
@@ -122,7 +109,7 @@ def main(args):
         audio = model.inference(spk, ppg, pos, pit)
         audio = audio.cpu().detach().numpy()
 
-    audio = after_eq(audio)
+    audio = svc_reverb(audio)
     write("uni_svc_out.wav", hp.audio.sampling_rate, audio)
 
 
