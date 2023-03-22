@@ -28,6 +28,7 @@ def svc_eq(x):
     y = y * 32768.0
     return y.astype(np.int16)
 
+
 def svc_reverb(x):
     config = ReverbConfig()
     config.room_scale = 20
