@@ -12,6 +12,8 @@ With lora, maybe clone a singer just need 10 stence after 10 minutes train. Each
 
 Model **which contains [56 singers](https://github.com/PlayVoice/lora-svc/tree/main/config/singers) of 50 hours singing data** is training~~~~
 
+You can down preview model **uni_svc_opensinger_0275.pth** at release page.
+
 https://user-images.githubusercontent.com/16432329/226079413-9fe7a154-4cc9-409c-b15a-124e8aef5934.mp4
 
 Uni-SVC for **baker** (release state v0.3): branch https://github.com/PlayVoice/Uni-SVC/tree/uni-svc-baker, experiment on pure speech
@@ -48,7 +50,7 @@ Speaker-Encoder by @mueller91	LibriTTS + VCTK + VoxCeleb + CommonVoice
 
 https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3
 
-download XXX data: TODO~
+download [OpenSinger](https://github.com/Multi-Singer/Multi-Singer.github.io) data:
 
 change sample rate of waves, and put waves to ./data_svc/waves
 
@@ -105,7 +107,7 @@ export clean model
 
 you can download model for release page, after model release
 
-> python svc_inference.py --config config/default_c32.yaml --model uni_svc.pth --spk speaker_encoding.npy --wave uni_svc_test.wav
+> python svc_inference.py --config config/default_c32.yaml --model uni_svc_opensinger_0275.pth --spk ./config/singers/singer0001.npy --wave uni_svc_test.wav
 
 ## demos
 #### uni-svc on baker with pure speech, trained 340 epoch of 10k steps
@@ -136,7 +138,6 @@ https://user-images.githubusercontent.com/16432329/223479839-32963e4c-874f-4e2b-
 
 
 ## Data-sets
-Lyra_CS(腾讯音乐)     https://lyracobar.y.qq.com/index.html
 
 KiSing      http://shijt.site/index.php/2021/05/16/kising-the-first-open-source-mandarin-singing-voice-synthesis-corpus/
 
