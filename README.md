@@ -56,7 +56,7 @@ change sample rate of waves, and put waves to ./data_svc/waves
 
 > python svc_preprocess_ppg.py -w ./data_svc/waves -p ./data_svc/whisper
 
-> python svc_preprocess_ids.py -w ./data_svc/waves -p ./data_svc/ids
+> **TODO** python svc_preprocess_ids.py -w ./data_svc/waves -p ./data_svc/ids
 
 > python svc_preprocess_f0.py
 
