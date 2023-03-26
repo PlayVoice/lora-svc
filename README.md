@@ -107,7 +107,7 @@ export clean model
 
 you can download model for release page, after model release
 
-> python svc_inference.py --config config/default_c32.yaml --model uni_svc_opensinger_0275.pth --spk ./config/singers/singer0001.npy --wave uni_svc_test.wav
+> python svc_inference.py --config config/default_c32.yaml --model uni_svc_opensinger_0415.pth --spk ./config/singers/singer0001.npy --wave uni_svc_test.wav
 
 ## demos
 #### uni-svc on baker with pure speech, trained 340 epoch of 10k steps
@@ -175,6 +175,3 @@ If you adopt the code or idea of this project, please list it in your project, w
 如果你采用了本项目的代码或创意，请在你的项目中列出，这是开源精神得以延续的基本准则。
 
 このプロジェクトのコードやアイデアを採用した場合は、オープンソースの精神が続く基本的なガイドラインであるプロジェクトにリストしてください。
-
-# VI-SVC
-VI-SVC was dropped to https://github.com/PlayVoice/VI-SVC/tree/vi_svc
