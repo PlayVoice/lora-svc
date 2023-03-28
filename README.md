@@ -48,11 +48,11 @@ https://github.com/chenwj1989/pafx
 - 1. download [Multi-Singer](https://github.com/Multi-Singer/Multi-Singer.github.io) data, and change sample rate of waves to 16000Hz, and put waves to **./data_svc/waves**
     > you can do
 
-- 2. download speaker encoder: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3), and put best_model.pth and condif.json into **speaker_pretrain/**
+- 2. download speaker encoder: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3), and put **best_model.pth** and **condif.json** into **speaker_pretrain/**
 
     > python svc_preprocess_speaker.py ./data_svc/waves ./data_svc/speaker
 
-- 3. download whisper [multiple language medium model](https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt), and put medium.pt into **whisper_pretrain/**
+- 3. download whisper [multiple language medium model](https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt), and put **medium.pt** into **whisper_pretrain/**
 
     > python svc_preprocess_ppg.py -w ./data_svc/waves -p ./data_svc/whisper
 
