@@ -1,24 +1,24 @@
-# singing voice conversion based on whisper, UnivNet and NSF
+# singing voice conversion based on whisper & maxgan, and target to LoRA
 
-**Notice** UnivNet and NSF will be changed to **MaxGAN** vocoder.
+```diff
+- maxgan vocoder == bigvgan + nsf
+```
 
-Uni-SVC main branch is for singing voice clone based on whisper with speaker encoder and speaker adapter.
+**2023.03.31** will release model with very good result, based on whisper & maxgan & LoRA 
 
-Uni-SVC main target is to develop [lora](https://github.com/PlayVoice/Uni-SVC/blob/main/model/generator.py#L12-L44) for SVC.
+LoRA-SVC main branch is for singing voice clone based on whisper with speaker encoder and speaker adapter, with maxgan vocoder.
+
+LoRA-SVC main target is to develop [lora](https://github.com/PlayVoice/Uni-SVC/blob/main/model/generator.py#L12-L44) for SVC.
 
 With lora, maybe clone a singer just need 10 stence after 10 minutes train. Each singer is a plug-in of the base model.
 
 ![lora](https://user-images.githubusercontent.com/16432329/225337790-392b958a-67ec-4643-b26a-018ee8e4cf56.jpg)
 
-Model **which contains [56 singers](https://github.com/PlayVoice/lora-svc/tree/main/config/singers) of 50 hours singing data** is training~~~~
+Uni-SVC for **multi-singer** (release state v0.4): branch https://github.com/PlayVoice/lora-svc/tree/uni-svc-multi-singer, experiment on 56 singers
 
-You can down preview model **uni_svc_opensinger_0415.pth** at release page.
+Uni-SVC for **baker** (release state v0.3): branch https://github.com/PlayVoice/lora-svc/tree/uni-svc-baker, experiment on pure speech
 
-https://user-images.githubusercontent.com/16432329/227782805-8a45e99a-8905-4ec8-ac20-b75a45cfbc97.mp4
-
-Uni-SVC for **baker** (release state v0.3): branch https://github.com/PlayVoice/Uni-SVC/tree/uni-svc-baker, experiment on pure speech
-
-Uni-SVC for **Opencpop** (release state v0.2): branch https://github.com/PlayVoice/Uni-SVC/tree/uni-svc-opencpop
+Uni-SVC for **Opencpop** (release state v0.2): branch https://github.com/PlayVoice/lora-svc/tree/uni-svc-opencpop
 
 ## Awesome opensource singing voice conversion
 
@@ -39,21 +39,24 @@ https://github.com/mindslab-ai/univnet [[paper]](https://arxiv.org/abs/2106.0788
 
 https://github.com/openai/whisper/ [[paper]](https://arxiv.org/abs/2212.04356)
 
+https://github.com/NVIDIA/BigVGAN [[paper]](https://arxiv.org/abs/2206.04658)
+
 https://github.com/chenwj1989/pafx
 
 ## Train
 
-- 1. download [Multi-Singer](https://github.com/Multi-Singer/Multi-Singer.github.io) data, and change sample rate of waves to 16000Hz, and put waves to ./data_svc/waves
+- 1. download [Multi-Singer](https://github.com/Multi-Singer/Multi-Singer.github.io) data, and change sample rate of waves to 16000Hz, and put waves to **./data_svc/waves**
+    > you can do
 
-- 2. download speaker encoder: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3), and put best_model.pth and condif.json into speaker_pretrain/
+- 2. download speaker encoder: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3), and put best_model.pth and condif.json into **speaker_pretrain/**
 
     > python svc_preprocess_speaker.py ./data_svc/waves ./data_svc/speaker
 
-- 3. download whisper [multiple language medium model](https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt), and put medium.pt into whisper_pretrain/
+- 3. download whisper [multiple language medium model](https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt), and put medium.pt into **whisper_pretrain/**
 
     > python svc_preprocess_ppg.py -w ./data_svc/waves -p ./data_svc/whisper
 
-- 4. extract pitch and generate filelist/train.txt & filelist/eval.txt
+- 4. extract pitch and generate **filelist/train.txt** & filelist/eval.txt
 
     > python svc_preprocess_f0.py
 
@@ -65,21 +68,28 @@ data tree like this
 
     data_svc/
     |
-    |
     └── ids
     |     └──spk1_encoding.npy
     |     └──spk2_encoding.npy
     |     └──spk3_encoding.npy
-    |
     └── pitch
     │     ├── spk1
-    │     │   ├── 000001_pit.npy
-    │     │   ├── 000002_pit.npy
-    │     │   └── 000003_pit.npy
+    │     │   ├── 000001.pit.npy
+    │     │   ├── 000002.pit.npy
+    │     │   └── 000003.pit.npy
     │     └── spk2
     │         ├── 000001_pit.npy
     │         ├── 000002_pit.npy
     │         └── 000003_pit.npy
+    └── speakers
+    │     ├── spk1
+    │     │   ├── 000001.spk.npy
+    │     │   ├── 000002.spk.npy
+    │     │   └── 000003.spk.npy
+    │     └── spk2
+    │         ├── 000001.spk.npy
+    │         ├── 000002.spk.npy
+    │         └── 000003.spk.npy 
     └── waves
     │     ├── spk1
     │     │   ├── 000001.wav
@@ -144,7 +154,7 @@ PopCS 		  https://github.com/MoonInTheRiver/DiffSinger/blob/master/resources/app
 
 opencpop 	  https://wenet.org.cn/opencpop/download/
 
-OpenSinger 	https://github.com/Multi-Singer/Multi-Singer.github.io
+Multi-Singer 	https://github.com/Multi-Singer/Multi-Singer.github.io
 
 M4Singer	  https://github.com/M4Singer/M4Singer/blob/master/apply_form.md
 
