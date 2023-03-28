@@ -1,6 +1,6 @@
 # singing voice conversion based on whisper, UnivNet and NSF
 
-You will feel the beauty of the code from this project. 
+**Notice** UnivNet and NSF will be changed to **MaxGAN** vocoder.
 
 Uni-SVC main branch is for singing voice clone based on whisper with speaker encoder and speaker adapter.
 
