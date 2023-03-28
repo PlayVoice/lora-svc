@@ -1,9 +1,8 @@
 from dataclasses import asdict, dataclass, field
 from typing import Dict, List
 
-from coqpit import MISSING
-
-from config.shared_configs import BaseAudioConfig, BaseDatasetConfig, BaseTrainingConfig
+from .utils.coqpit import MISSING
+from .utils.shared_configs import BaseAudioConfig, BaseDatasetConfig, BaseTrainingConfig
 
 
 @dataclass

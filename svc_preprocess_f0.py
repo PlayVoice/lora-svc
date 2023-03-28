@@ -22,7 +22,7 @@ def compute_f0(path):
 
 
 if __name__ == "__main__":
-
+    os.makedirs("filelists", exist_ok=True)
     files = open("./filelists/train.txt", "w", encoding="utf-8")
 
     rootPath = "./data_svc/waves/"
@@ -45,7 +45,7 @@ if __name__ == "__main__":
                         allow_pickle=False,
                     )
 
-                    path_spk = f"./data_svc/ids/{spks}.npy"
+                    path_spk = f"./data_svc/speaker/{spks}/{file}.spk.npy"
                     path_wave = f"./data_svc/waves/{spks}/{file}.wav"
                     path_pitch = f"./data_svc/pitch/{spks}/{file}.nsf.npy"
                     path_whisper = f"./data_svc/whisper/{spks}/{file}.ppg.npy"

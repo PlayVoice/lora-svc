@@ -2,7 +2,7 @@ import numpy as np
 import torch
 from torch import nn
 
-from utils.io import load_fsspec
+from ..utils.io import load_fsspec
 
 
 class LSTMWithProjection(nn.Module):

@@ -42,7 +42,7 @@ if __name__ == "__main__":
     wavPath = args.wav
     ppgPath = args.ppg
 
-    whisper = load_model("medium.pt") # https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt
+    whisper = load_model(os.path.join("whisper_pretrain", "medium.pt"))
 
     for spks in os.listdir(wavPath):
         if os.path.isdir(f"./{wavPath}/{spks}"):

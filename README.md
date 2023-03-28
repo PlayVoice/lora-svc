@@ -42,25 +42,24 @@ https://github.com/openai/whisper/ [[paper]](https://arxiv.org/abs/2212.04356)
 https://github.com/chenwj1989/pafx
 
 ## Train
-download whisper model: https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt
 
-download speaker encoder: https://github.com/mozilla/TTS/wiki/Released-Models
+- 1. download [Multi-Singer](https://github.com/Multi-Singer/Multi-Singer.github.io) data, and change sample rate of waves to 16000Hz, and put waves to ./data_svc/waves
 
-Speaker-Encoder by @mueller91	LibriTTS + VCTK + VoxCeleb + CommonVoice
+- 2. download speaker encoder: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3), and put best_model.pth and condif.json into speaker_pretrain/
 
-https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3
+    > python svc_preprocess_speaker.py ./data_svc/waves ./data_svc/speaker
 
-download [OpenSinger](https://github.com/Multi-Singer/Multi-Singer.github.io) data:
+- 3. download whisper [multiple language medium model](https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt), and put medium.pt into whisper_pretrain/
 
-change sample rate of waves, and put waves to ./data_svc/waves
+    > python svc_preprocess_ppg.py -w ./data_svc/waves -p ./data_svc/whisper
 
-> python svc_preprocess_ppg.py -w ./data_svc/waves -p ./data_svc/whisper
+- 4. extract pitch and generate filelist/train.txt & filelist/eval.txt
 
-> **TODO** python svc_preprocess_ids.py -w ./data_svc/waves -p ./data_svc/ids
+    > python svc_preprocess_f0.py
 
-> python svc_preprocess_f0.py
+- 5. start train
 
-> python svc_trainer.py -c config/default_c32.yaml -n uni_svc
+    > python svc_trainer.py -c config/default_c32.yaml -n uni_svc
 
 data tree like this
 
