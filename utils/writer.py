@@ -10,12 +10,13 @@ class MyWriter(SummaryWriter):
         self.sample_rate = hp.audio.sampling_rate
         self.is_first = True
 
-    def log_training(self, g_loss, d_loss, stft_loss, score_loss, step):
+    def log_training(self, g_loss, d_loss, mel_loss, stft_loss, score_loss, step):
         self.add_scalar('train/g_loss', g_loss, step)
         self.add_scalar('train/d_loss', d_loss, step)
         
         self.add_scalar('train/score_loss', score_loss, step)
         self.add_scalar('train/stft_loss', stft_loss, step)
+        self.add_scalar('train/mel_loss', mel_loss, step)
 
     def log_validation(self, mel_loss, generator, discriminator, step):
         self.add_scalar('validation/mel_loss', mel_loss, step)

@@ -40,6 +40,15 @@ def train(rank, args, chkpt_path, hp, hp_str):
     init_epoch = -1
     step = 0
 
+    stft = TacotronSTFT(filter_length=hp.audio.filter_length,
+                        hop_length=hp.audio.hop_length,
+                        win_length=hp.audio.win_length,
+                        n_mel_channels=hp.audio.n_mel_channels,
+                        sampling_rate=hp.audio.sampling_rate,
+                        mel_fmin=hp.audio.mel_fmin,
+                        mel_fmax=hp.audio.mel_fmax,
+                        center=False,
+                        device=device)
     # define logger, writer, valloader, stft at rank_zero
     if rank == 0:
         pt_dir = os.path.join(hp.log.chkpt_dir, args.name)
@@ -58,15 +67,6 @@ def train(rank, args, chkpt_path, hp, hp_str):
         logger = logging.getLogger()
         writer = MyWriter(hp, log_dir)
         valloader = create_dataloader(hp, False)
-        stft = TacotronSTFT(filter_length=hp.audio.filter_length,
-                            hop_length=hp.audio.hop_length,
-                            win_length=hp.audio.win_length,
-                            n_mel_channels=hp.audio.n_mel_channels,
-                            sampling_rate=hp.audio.sampling_rate,
-                            mel_fmin=hp.audio.mel_fmin,
-                            mel_fmax=hp.audio.mel_fmax,
-                            center=False,
-                            device=device)
 
     if chkpt_path is not None:
         if rank == 0:
@@ -119,13 +119,15 @@ def train(rank, args, chkpt_path, hp, hp_str):
             pos = pos.to(device)
             pit = pit.to(device)
             audio = audio.to(device)
-            len_ppg = ppg.size(1)       # [b, length, dim]
-
-            noise = torch.randn(hp.train.batch_size, hp.gen.noise_dim, len_ppg).to(device)
 
             # generator
             optim_g.zero_grad()
-            fake_audio = model_g(spk, ppg, pos, pit, noise)
+            fake_audio = model_g(spk, ppg, pos, pit)
+
+            # Mel Loss
+            mel_fake = stft.mel_spectrogram(fake_audio.squeeze(1))
+            mel_real = stft.mel_spectrogram(audio.squeeze(1))
+            mel_loss = F.l1_loss(mel_fake, mel_real) * hp.train.mel_lamb
 
             # Multi-Resolution STFT Loss
             sc_loss, mag_loss = stft_criterion(fake_audio.squeeze(1), audio.squeeze(1))
@@ -140,7 +142,7 @@ def train(rank, args, chkpt_path, hp, hp_str):
 
             score_loss = score_loss / len(res_fake + period_fake)
 
-            loss_g = score_loss + stft_loss
+            loss_g = score_loss + stft_loss + mel_loss
 
             loss_g.backward()
             optim_g.step()
@@ -165,10 +167,13 @@ def train(rank, args, chkpt_path, hp, hp_str):
             # logging
             loss_g = loss_g.item()
             loss_d = loss_d.item()
+            loss_s = stft_loss.item()
+            loss_m = mel_loss.item()
 
             if rank == 0 and step % hp.log.summary_interval == 0:
-                writer.log_training(loss_g, loss_d, stft_loss.item(), score_loss.item(), step)
-                loader.set_description("g %.04f d %.04f | step %d" % (loss_g, loss_d, step))
+                writer.log_training(loss_g, loss_d, loss_m, loss_s, score_loss.item(), step)
+                # loader.set_description("g %.04f m %.04f s %.04f d %.04f | step %d" % (loss_g, loss_m, loss_s, loss_d, step))
+                logger.info("g %.04f m %.04f s %.04f d %.04f | step %d" % (loss_g, loss_m, loss_s, loss_d, step))
 
         if rank == 0 and epoch % hp.log.save_interval == 0:
             save_path = os.path.join(pt_dir, '%s_%04d.pt'

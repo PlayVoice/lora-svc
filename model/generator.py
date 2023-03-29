@@ -1,21 +1,23 @@
 import torch
 import torch.nn as nn
 import numpy as np
-from omegaconf import OmegaConf
+
 from torch.nn import Conv1d
+from torch.nn import ConvTranspose1d
+from torch.nn.utils import weight_norm
+from torch.nn.utils import remove_weight_norm
 
-from .lvcnet import LVCBlock
 from .nsf import SourceModuleHnNSF
+from .bigv import init_weights, AMPBlock
 
-MAX_WAV_VALUE = 32768.0
 
 class SpeakerAdapter(nn.Module):
 
     def __init__(self,
-                speaker_dim,
-                adapter_dim,
-                epsilon=1e-5
-                ):
+                 speaker_dim,
+                 adapter_dim,
+                 epsilon=1e-5
+                 ):
         super(SpeakerAdapter, self).__init__()
         self.speaker_dim = speaker_dim
         self.adapter_dim = adapter_dim
@@ -29,7 +31,7 @@ class SpeakerAdapter(nn.Module):
         torch.nn.init.constant_(self.W_scale.bias, 1.0)
         torch.nn.init.constant_(self.W_bias.weight, 0.0)
         torch.nn.init.constant_(self.W_bias.bias, 0.0)
-    
+
     def forward(self, x, speaker_embedding):
         x = x.transpose(1, -1)
         mean = x.mean(dim=-1, keepdim=True)
@@ -43,99 +45,119 @@ class SpeakerAdapter(nn.Module):
         y = y.transpose(1, -1)
         return y
 
-class Generator(nn.Module):
-    """UnivNet Generator"""
+
+class Generator(torch.nn.Module):
+    # this is our main BigVGAN model. Applies anti-aliased periodic activation for resblocks.
     def __init__(self, hp):
         super(Generator, self).__init__()
-        self.mel_channel = hp.audio.n_mel_channels
-        self.noise_dim = hp.gen.noise_dim
-        self.hop_length = hp.audio.hop_length
-        channel_size = hp.gen.channel_size
-        kpnet_conv_size = hp.gen.kpnet_conv_size
-
+        self.hp = hp
+        self.num_kernels = len(hp.gen.resblock_kernel_sizes)
+        self.num_upsamples = len(hp.gen.upsample_rates)
         # speaker adaper, 256 should change by what speaker encoder you use
         self.adapter = nn.ModuleList()
-
-        self.f0_upsamp = torch.nn.Upsample(scale_factor=np.prod(hp.gen.strides))
+        # 1024 should change by your whisper out
+        self.cond_pre = nn.Linear(1024, hp.audio.n_mel_channels)
+        self.cond_pos = nn.Embedding(3, hp.audio.n_mel_channels)
+        # pre conv
+        self.conv_pre = nn.utils.weight_norm(
+            Conv1d(hp.audio.n_mel_channels, hp.gen.upsample_initial_channel, 7, 1, padding=3))
+        # nsf
+        self.f0_upsamp = torch.nn.Upsample(
+            scale_factor=np.prod(hp.gen.upsample_rates))
         self.m_source = SourceModuleHnNSF()
         self.noise_convs = nn.ModuleList()
-
-        self.res_stack = nn.ModuleList()
-        hop_length = 1
-        for i, stride in enumerate(hp.gen.strides):
+        # transposed conv-based upsamplers. does not apply anti-aliasing
+        self.ups = nn.ModuleList()
+        for i, (u, k) in enumerate(zip(hp.gen.upsample_rates, hp.gen.upsample_kernel_sizes)):
             # spk
-            self.adapter.append(SpeakerAdapter(256, channel_size))
-            # net
-            hop_length = stride * hop_length
-            self.res_stack.append(
-                LVCBlock(
-                    channel_size,
-                    hp.audio.n_mel_channels,
-                    stride=stride,
-                    dilations=hp.gen.dilations,
-                    lReLU_slope=hp.gen.lReLU_slope,
-                    cond_hop_length=hop_length,
-                    kpnet_conv_size=kpnet_conv_size
-                )
-            )
+            self.adapter.append(SpeakerAdapter(
+                256, hp.gen.upsample_initial_channel // (2 ** (i + 1))))
+            # base
+            self.ups.append(nn.ModuleList([
+                weight_norm(ConvTranspose1d(hp.gen.upsample_initial_channel // (2 ** i),
+                                            hp.gen.upsample_initial_channel // (
+                                                2 ** (i + 1)),
+                                            k, u, padding=(k - u) // 2))
+            ]))
             # nsf
-            if i + 1 < len(hp.gen.strides):
-                stride_f0 = np.prod(hp.gen.strides[i + 1:])
+            if i + 1 < len(hp.gen.upsample_rates):
+                stride_f0 = np.prod(hp.gen.upsample_rates[i + 1:])
+                stride_f0 = int(stride_f0)
                 self.noise_convs.append(
                     Conv1d(
                         1,
-                        channel_size,
+                        hp.gen.upsample_initial_channel // (2 ** (i + 1)),
                         kernel_size=stride_f0 * 2,
                         stride=stride_f0,
                         padding=stride_f0 // 2,
                     )
                 )
             else:
-                self.noise_convs.append(Conv1d(1, channel_size, kernel_size=1))
+                self.noise_convs.append(
+                    Conv1d(1, hp.gen.upsample_initial_channel //
+                           (2 ** (i + 1)), kernel_size=1)
+                )
 
-        # 1024 should change by your whisper out
-        self.cond_pre = nn.Linear(1024, self.mel_channel)
-        self.cond_pos = nn.Embedding(3, self.mel_channel)
-    
-        self.conv_pre = \
-            nn.utils.weight_norm(nn.Conv1d(hp.gen.noise_dim, channel_size, 7, padding=3, padding_mode='reflect'))
+        # residual blocks using anti-aliased multi-periodicity composition modules (AMP)
+        self.resblocks = nn.ModuleList()
+        for i in range(len(self.ups)):
+            ch = hp.gen.upsample_initial_channel // (2 ** (i + 1))
+            for k, d in zip(hp.gen.resblock_kernel_sizes, hp.gen.resblock_dilation_sizes):
+                self.resblocks.append(AMPBlock(hp, ch, k, d))
 
-        self.conv_post = nn.Sequential(
-            nn.LeakyReLU(hp.gen.lReLU_slope),
-            nn.utils.weight_norm(nn.Conv1d(channel_size, 1, 7, padding=3, padding_mode='reflect')),
-            nn.Tanh(),
-        )
+        # post conv
+        self.conv_post = weight_norm(Conv1d(ch, 1, 7, 1, padding=3))
 
-    def forward(self, spk, c, pos, f0, z):
-        '''
-        Args: 
-            c (Tensor): the conditioning sequence of mel-spectrogram (batch, mel_channels, in_length) 
-            z (Tensor): the noise sequence (batch, noise_dim, in_length)
-        
-        '''
+        # weight initialization
+        for i in range(len(self.ups)):
+            self.ups[i].apply(init_weights)
+        self.conv_post.apply(init_weights)
+
+    def forward(self, spk, x, pos, f0):
         # nsf
         f0 = f0[:, None]
         f0 = self.f0_upsamp(f0).transpose(1, 2)
         har_source, noi_source, uv = self.m_source(f0)
         har_source = har_source.transpose(1, 2)
-
-        c = c + torch.randn_like(c)
-        c = self.cond_pre(c)                # [B, L, D]
+        # pre conv
+        x = self.cond_pre(x)                # [B, L, D]
         p = self.cond_pos(pos)
-        c = c + p
-        c = torch.transpose(c, 1, -1)       # [B, D, L]
-        z = self.conv_pre(z)                # (B, c_g, L)
+        x = x + p
+        x = torch.transpose(x, 1, -1)       # [B, D, L]
+        x = self.conv_pre(x)
 
-        for i, res_block in enumerate(self.res_stack):
-            res_block.to(z.device)
+        for i in range(self.num_upsamples):
+            # upsampling
+            for i_up in range(len(self.ups[i])):
+                x = self.ups[i][i_up](x)
+            # adapter
+            x = self.adapter[i](x, spk)
+            # nsf
             x_source = self.noise_convs[i](har_source)
-            z = res_block(z, c)             # (B, c_g, L * s_0 * ... * s_i)
-            z = self.adapter[i](z, spk)     # adapter
-            z = z + x_source
+            x = x + x_source
+            # AMP blocks
+            xs = None
+            for j in range(self.num_kernels):
+                if xs is None:
+                    xs = self.resblocks[i * self.num_kernels + j](x)
+                else:
+                    xs += self.resblocks[i * self.num_kernels + j](x)
+            x = xs / self.num_kernels
 
-        z = self.conv_post(z)               # (B, 1, L * 160)
+        # post conv
+        x = nn.functional.leaky_relu(x)
+        x = self.conv_post(x)
+        x = torch.tanh(x)
+        return x
 
-        return z
+    def remove_weight_norm(self):
+        for l in self.ups:
+            for l_i in l:
+                remove_weight_norm(l_i)
+        for l in self.resblocks:
+            l.remove_weight_norm()
+        remove_weight_norm(self.conv_pre)
+        remove_weight_norm(self.conv_post)
 
     def eval(self, inference=False):
         super(Generator, self).eval()
@@ -143,44 +165,11 @@ class Generator(nn.Module):
         if inference:
             self.remove_weight_norm()
 
-    def remove_weight_norm(self):
-        print('Removing weight norm...')
-
-        nn.utils.remove_weight_norm(self.conv_pre)
-
-        for layer in self.conv_post:
-            if len(layer.state_dict()) != 0:
-                nn.utils.remove_weight_norm(layer)
-
-        for res_block in self.res_stack:
-            res_block.remove_weight_norm()
-
-    def inference(self, spk, ppg, pos, f0, z=None):
-        # pad input mel with zeros to cut artifact
-        # see https://github.com/seungwonpark/melgan/issues/8
-        # zero = torch.full((1, self.mel_channel, 10), -11.5129).to(c.device)
-        # mel = torch.cat((c, zero), dim=2)
-        if z is None:
-            z = torch.randn(1, self.noise_dim, ppg.size(1)).to(ppg.device)
-        audio = self.forward(spk, ppg, pos, f0, z)
-        audio = audio.squeeze() # collapse all dimension except time axis
-        audio = audio[:-(self.hop_length*10)]
+    def inference(self, spk, ppg, pos, f0):
+        MAX_WAV_VALUE = 32768.0
+        audio = self.forward(spk, ppg, pos, f0)
+        audio = audio.squeeze()  # collapse all dimension except time axis
         audio = MAX_WAV_VALUE * audio
         audio = audio.clamp(min=-MAX_WAV_VALUE, max=MAX_WAV_VALUE-1)
         audio = audio.short()
         return audio
-
-if __name__ == '__main__':
-    hp = OmegaConf.load('../config/default.yaml')
-    model = Generator(hp)
-
-    c = torch.randn(3, 10, 1024)
-    z = torch.randn(3, 64, 10)
-    print(c.shape)
-
-    y = model(c, z)
-    print(y.shape)
-    assert y.shape == torch.Size([3, 1, 1600])
-
-    pytorch_total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    print(pytorch_total_params)

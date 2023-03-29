@@ -3,19 +3,20 @@ data:
   val_file: 'filelists/eval.txt'
 #############################
 train:
-  num_workers: 8
-  batch_size: 32
+  num_workers: 4
+  batch_size: 8
   optimizer: 'adam'
   seed: 1234
   adam:
-    lr: 0.0001
-    beta1: 0.5
-    beta2: 0.9
+    lr: 0.0002
+    beta1: 0.8
+    beta2: 0.99
+  mel_lamb: 5
   stft_lamb: 2.5
 #############################
 audio:
   n_mel_channels: 100
-  segment_length: 10240 # Should be multiple of 160
+  segment_length: 8000 # Should be multiple of 160
   pad_short: 2000
   filter_length: 512
   hop_length: 160 # WARNING: this can't be changed.
@@ -25,12 +26,11 @@ audio:
   mel_fmax: 8000.0
 #############################
 gen:
-  noise_dim: 64
-  channel_size: 32
-  dilations: [1, 3, 9, 27]
-  strides: [10, 4, 4]
-  lReLU_slope: 0.2
-  kpnet_conv_size: 3
+  upsample_rates: [10,4,2,2]
+  upsample_kernel_sizes: [16,16,4,4]
+  upsample_initial_channel: 384
+  resblock_kernel_sizes: [3,7,11]
+  resblock_dilation_sizes: [[1,3,5], [1,3,5], [1,3,5]]
 #############################
 mpd:
   periods: [2,3,5,7,11]
@@ -50,7 +50,7 @@ dist_config:
   world_size: 1
 #############################
 log:
-  summary_interval: 1
+  summary_interval: 100
   validation_interval: 5
   save_interval: 5
   num_audio: 6
