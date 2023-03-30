@@ -1,18 +1,10 @@
 # singing voice conversion based on whisper & maxgan, and target to LoRA
 
 ```diff
-- maxgan vocoder == bigvgan + nsf
+- maxgan v1 == bigvgan + nsf        PlayVoice/lora-svc
+- maxgan v2 == bigvgan + latent f0  PlayVoice/maxgan-svc
 ```
 
-**2023.03.31** will release model with very good result, based on whisper & maxgan & LoRA 
-
-LoRA-SVC main branch is for singing voice clone based on whisper with speaker encoder and speaker adapter, with maxgan vocoder.
-
-LoRA-SVC main target is to develop [lora](https://github.com/PlayVoice/Uni-SVC/blob/main/model/generator.py#L12-L44) for SVC.
-
-With lora, maybe clone a singer just need 10 stence after 10 minutes train. Each singer is a plug-in of the base model.
-
-![lora](https://user-images.githubusercontent.com/16432329/225337790-392b958a-67ec-4643-b26a-018ee8e4cf56.jpg)
 
 Uni-SVC for **multi-singer** (release state v0.4): branch https://github.com/PlayVoice/lora-svc/tree/uni-svc-multi-singer, experiment on 56 singers
 
@@ -20,47 +12,25 @@ Uni-SVC for **baker** (release state v0.3): branch https://github.com/PlayVoice/
 
 Uni-SVC for **Opencpop** (release state v0.2): branch https://github.com/PlayVoice/lora-svc/tree/uni-svc-opencpop
 
-## Awesome opensource singing voice conversion
-
-https://github.com/innnky/so-vits-svc
-
-https://github.com/prophesier/diff-svc
-
-https://github.com/yxlllc/DDSP-SVC
-
-https://github.com/lesterphillip/SVCC23_FastSVC
-
-## Reference
-[AdaSpeech: Adaptive Text to Speech for Custom Voice](https://arxiv.org/pdf/2103.00993.pdf)
-
-https://github.com/nii-yamagishilab/project-NN-Pytorch-scripts/tree/master/project/01-nsf
-
-https://github.com/mindslab-ai/univnet [[paper]](https://arxiv.org/abs/2106.07889)
-
-https://github.com/openai/whisper/ [[paper]](https://arxiv.org/abs/2212.04356)
-
-https://github.com/NVIDIA/BigVGAN [[paper]](https://arxiv.org/abs/2206.04658)
-
-https://github.com/chenwj1989/pafx
 
 ## Train
 
-- 1. download [Multi-Singer](https://github.com/Multi-Singer/Multi-Singer.github.io) data, and change sample rate of waves to 16000Hz, and put waves to **./data_svc/waves**
+- 1 download [Multi-Singer](https://github.com/Multi-Singer/Multi-Singer.github.io) data, and change sample rate of waves to 16000Hz, and put waves to **./data_svc/waves**
     > you can do
 
-- 2. download speaker encoder: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3), and put **best_model.pth** and **condif.json** into **speaker_pretrain/**
+- 2 download speaker encoder: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3), and put **best_model.pth** and **condif.json** into **speaker_pretrain/**
 
     > python svc_preprocess_speaker.py ./data_svc/waves ./data_svc/speaker
 
-- 3. download whisper [multiple language medium model](https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt), and put **medium.pt** into **whisper_pretrain/**
+- 3 download whisper [multiple language medium model](https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt), and put **medium.pt** into **whisper_pretrain/**
 
     > python svc_preprocess_ppg.py -w ./data_svc/waves -p ./data_svc/whisper
 
-- 4. extract pitch and generate **filelist/train.txt** & filelist/eval.txt
+- 4 extract pitch and generate **filelist/train.txt** & filelist/eval.txt
 
     > python svc_preprocess_f0.py
 
-- 5. start train
+- 5 start train
 
     > python svc_trainer.py -c config/default_c32.yaml -n uni_svc
 
@@ -118,33 +88,18 @@ you can download model for release page, after model release
 
 > python svc_inference.py --config config/default_c32.yaml --model uni_svc_opensinger_0415.pth --spk ./config/singers/singer0001.npy --wave uni_svc_test.wav
 
-## demos
-#### uni-svc on baker with pure speech, trained 340 epoch of 10k steps
+## Reference
+[AdaSpeech: Adaptive Text to Speech for Custom Voice](https://arxiv.org/pdf/2103.00993.pdf)
 
-https://user-images.githubusercontent.com/16432329/224460286-2c9ad916-ec2d-40a5-944e-2d3d830d2c63.mp4
+https://github.com/nii-yamagishilab/project-NN-Pytorch-scripts/tree/master/project/01-nsf
 
-#### Demos for opencpop dataset, get model from release page of v0.2
+https://github.com/mindslab-ai/univnet [[paper]](https://arxiv.org/abs/2106.07889)
 
-video from [@一直在吃的周梓琦](https://space.bilibili.com/20473341)
+https://github.com/openai/whisper/ [[paper]](https://arxiv.org/abs/2212.04356)
 
-https://www.bilibili.com/video/BV1Kg4y1E77u
+https://github.com/NVIDIA/BigVGAN [[paper]](https://arxiv.org/abs/2206.04658)
 
-https://user-images.githubusercontent.com/16432329/222939881-ce73e7de-0899-4b96-a459-cf375b6288c0.mp4
-
-video from [@真栗](https://space.bilibili.com/210752)
-
-https:///www.bilibili.com/video/BV1UT411J7Vf
-
-https://user-images.githubusercontent.com/16432329/223148035-7ddc2278-1887-437c-bc27-03a523de1869.mp4
-
-Male to female
-
-https://user-images.githubusercontent.com/16432329/223142419-bdaf7842-2a28-401c-b7c4-5126cee0d931.mp4
-
-#### Release state
-
-https://user-images.githubusercontent.com/16432329/223479839-32963e4c-874f-4e2b-b1fb-28161648480e.mp4
-
+https://github.com/chenwj1989/pafx
 
 ## Data-sets
 
@@ -177,6 +132,16 @@ DSD100 		  https://sigsep.github.io/datasets/dsd100.html
 Aishell-3 	http://www.aishelltech.com/aishell_3
 
 VCTK 		    https://datashare.ed.ac.uk/handle/10283/2651
+
+## Awesome opensource singing voice conversion
+
+https://github.com/innnky/so-vits-svc
+
+https://github.com/prophesier/diff-svc
+
+https://github.com/yxlllc/DDSP-SVC
+
+https://github.com/lesterphillip/SVCC23_FastSVC
 
 # Notice
 If you adopt the code or idea of this project, please list it in your project, which is the basic criterion for the continuation of the open source spirit.
