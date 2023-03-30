@@ -72,7 +72,7 @@ maxgan v2 == bigvgan + latent f0  PlayVoice/maxgan-svc
           └── 000003.ppg.npy
 
 ## 训练实例，使用50句猫雷的效果如下
-
+https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-af37-74096d41c018.mp4
 ## 推理
 导出生成器，判别器只会在训练中用到
 
