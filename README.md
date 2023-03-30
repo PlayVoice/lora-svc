@@ -32,16 +32,12 @@ Uni-SVC for **Opencpop** (release state v0.2): branch https://github.com/PlayVoi
 
 - 5 start train
 
-    > python svc_trainer.py -c config/default_c32.yaml -n uni_svc
+    > python svc_trainer.py -c config/maxgan.yaml -n svc
 
 data tree like this
 
     data_svc/
     |
-    └── ids
-    |     └──spk1_encoding.npy
-    |     └──spk2_encoding.npy
-    |     └──spk3_encoding.npy
     └── pitch
     │     ├── spk1
     │     │   ├── 000001.pit.npy
@@ -82,11 +78,11 @@ data tree like this
 ## Infer
 export clean model
 
-> python svc_inference_export.py --config config/default_c32.yaml --checkpoint_path chkpt/uni_svc/uni_svc_0340.pt
+> python svc_inference_export.py --config config/maxgan.yaml --checkpoint_path maxgan_pretrain.pth
 
 you can download model for release page, after model release
 
-> python svc_inference.py --config config/default_c32.yaml --model uni_svc_opensinger_0415.pth --spk ./config/singers/singer0001.npy --wave uni_svc_test.wav
+> python svc_inference.py --config config/maxgan.yaml --model maxgan_g.pth --spk ./config/singers/singer0001.npy --wave test.wav
 
 ## Reference
 [AdaSpeech: Adaptive Text to Speech for Custom Voice](https://arxiv.org/pdf/2103.00993.pdf)

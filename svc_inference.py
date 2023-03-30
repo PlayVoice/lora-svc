@@ -68,7 +68,7 @@ def compute_f0_nn(filename, device):
     return pitch
 
 
-ppg_path = "uni_svc_tmp.ppg.npy"
+ppg_path = "svc_tmp.ppg.npy"
 
 
 def main(args):
@@ -110,7 +110,7 @@ def main(args):
         audio = audio.cpu().detach().numpy()
 
     audio = svc_reverb(audio)
-    write("uni_svc_out.wav", hp.audio.sampling_rate, audio)
+    write("svc_out.wav", hp.audio.sampling_rate, audio)
 
 
 if __name__ == '__main__':

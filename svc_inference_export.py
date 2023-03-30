@@ -39,7 +39,7 @@ def main(args):
     hp = OmegaConf.load(args.config)
     model = Generator(hp)
     load_model(args.checkpoint_path, model)
-    save_model(model, "uni_svc.pth")
+    save_model(model, "maxgan_g.pth")
 
 
 if __name__ == '__main__':
