@@ -5,87 +5,88 @@ maxgan v1 == bigvgan + nsf        PlayVoice/lora-svc
 
 maxgan v2 == bigvgan + latent f0  PlayVoice/maxgan-svc
 ```
+```
+基于人工智能三大巨头的黑科技：
+
+来至OpenAI的whispe，68万小时多语言
+
+来至Nvidia的bigvgan，语音生成抗锯齿
+
+来至Microsoft的adapter，高效率微调
+```
+
+使用自己的数据从头训练，使用分支：https://github.com/PlayVoice/lora-svc/tree/maxgan_v1_pretrain
+
+主分支用于，说明如何基于预训练模型微调定制专有音色；各分支代码有差异，根据您的需要选择合理的代码分支。
 
 
-Uni-SVC for **multi-singer** (release state v0.4): branch https://github.com/PlayVoice/lora-svc/tree/uni-svc-multi-singer, experiment on 56 singers
+## 训练
 
-Uni-SVC for **baker** (release state v0.3): branch https://github.com/PlayVoice/lora-svc/tree/uni-svc-baker, experiment on pure speech
+- 1 数据准备，将音频切分小于30S（推荐10S左右/可以不依照句子结尾）， 转换采样率为16000Hz, 将音频数据放到 **./data_svc/waves**
+    > 这个我想你会~~~
 
-Uni-SVC for **Opencpop** (release state v0.2): branch https://github.com/PlayVoice/lora-svc/tree/uni-svc-opencpop
+- 2 下载音色编码器: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3), 解压文件，把 **best_model.pth** 和 **condif.json** 放到目录 **speaker_pretrain/**
 
-
-## Train
-
-- 1 download [Multi-Singer](https://github.com/Multi-Singer/Multi-Singer.github.io) data, and change sample rate of waves to 16000Hz, and put waves to **./data_svc/waves**
-    > you can do
-
-- 2 download speaker encoder: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3), and put **best_model.pth** and **condif.json** into **speaker_pretrain/**
-
+    提取每个音频文件的音色
+    
     > python svc_preprocess_speaker.py ./data_svc/waves ./data_svc/speaker
+    
+    取所有音频文件的音色的平均作为目标发音人的音色
+    
+    > python svc_preprocess_speaker_lora.py ./data_svc/
 
-- 3 download whisper [multiple language medium model](https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt), and put **medium.pt** into **whisper_pretrain/**
+- 3 下载whisper模型 [multiple language medium model](https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt), 确定下载的是**medium.pt**，把它放到文件夹**whisper_pretrain/**中，提取每个音频的内容编码
 
     > python svc_preprocess_ppg.py -w ./data_svc/waves -p ./data_svc/whisper
 
-- 4 extract pitch and generate **filelist/train.txt** & filelist/eval.txt
+- 4 提取基音，同时生成训练文件 **filelist/train.txt**，剪切train的前5条用于制作**filelist/eval.txt**
 
     > python svc_preprocess_f0.py
 
-- 5 start train
+- 5 从release页面下载预训练模型maxgan_pretrain，放到model_pretrain文件夹中，预训练模型中包含了生成器和判别器
 
-    > python svc_trainer.py -c config/maxgan.yaml -n svc
+    > python svc_trainer.py -c config/maxgan.yaml -n lora -p model_pretrain/maxgan_pretrain.pth
 
-data tree like this
+
+你的文件目录应该长这个样子~~~
 
     data_svc/
     |
+    └── lora_speaker.npy
+    |
     └── pitch
-    │     ├── spk1
-    │     │   ├── 000001.pit.npy
-    │     │   ├── 000002.pit.npy
-    │     │   └── 000003.pit.npy
-    │     └── spk2
-    │         ├── 000001_pit.npy
-    │         ├── 000002_pit.npy
-    │         └── 000003_pit.npy
+    │     ├── 000001.pit.npy
+    │     ├── 000002.pit.npy
+    │     └── 000003.pit.npy
     └── speakers
-    │     ├── spk1
-    │     │   ├── 000001.spk.npy
-    │     │   ├── 000002.spk.npy
-    │     │   └── 000003.spk.npy
-    │     └── spk2
-    │         ├── 000001.spk.npy
-    │         ├── 000002.spk.npy
-    │         └── 000003.spk.npy 
+    │     ├── 000001.spk.npy
+    │     ├── 000002.spk.npy
+    │     └── 000003.spk.npy
     └── waves
-    │     ├── spk1
-    │     │   ├── 000001.wav
-    │     │   ├── 000002.wav
-    │     │   └── 000003.wav
-    │     └── spk2
-    │         ├── 000001.wav
-    │         ├── 000002.wav
-    │         └── 000003.wav
+    │     ├── 000001.wav
+    │     ├── 000002.wav
+    │     └── 000003.wav
     └── whisper
-          ├── spk1
-          │   ├── 000001.ppg.npy
-          │   ├── 000002.ppg.npy
-          │   └── 000003.ppg.npy
-          └── spk2
-              ├── 000001.ppg.npy
-              ├── 000002.ppg.npy
-              └── 000003.ppg.npy
+          ├── 000001.ppg.npy
+          ├── 000002.ppg.npy
+          └── 000003.ppg.npy
 
-## Infer
-export clean model
+## 训练实例，使用50句猫雷的效果如下
 
-> python svc_inference_export.py --config config/maxgan.yaml --checkpoint_path maxgan_pretrain.pth
+## 推理
+导出生成器，判别器只会在训练中用到
 
-you can download model for release page, after model release
+> python svc_inference_export.py --config config/maxgan.yaml --checkpoint_path chkpt/lora/lora_0090.pt
 
-> python svc_inference.py --config config/maxgan.yaml --model maxgan_g.pth --spk ./config/singers/singer0001.npy --wave test.wav
+到出的模型在当前文件夹maxgan_g.pth，文件大小为31.6M
 
-## Reference
+> python svc_inference.py --config config/maxgan.yaml --model maxgan_g.pth --spk ./data_svc/**lora_speaker.npy** --wave test.wav
+
+生成文件在当前目录svc_out.wav
+
+**PS.** 本项目集成了音效算法，你可以使用混响等常见音效
+
+## 代码来源和参考文献
 [AdaSpeech: Adaptive Text to Speech for Custom Voice](https://arxiv.org/pdf/2103.00993.pdf)
 
 https://github.com/nii-yamagishilab/project-NN-Pytorch-scripts/tree/master/project/01-nsf
@@ -98,49 +99,7 @@ https://github.com/NVIDIA/BigVGAN [[paper]](https://arxiv.org/abs/2206.04658)
 
 https://github.com/chenwj1989/pafx
 
-## Data-sets
-
-KiSing      http://shijt.site/index.php/2021/05/16/kising-the-first-open-source-mandarin-singing-voice-synthesis-corpus/
-
-PopCS 		  https://github.com/MoonInTheRiver/DiffSinger/blob/master/resources/apply_form.md
-
-opencpop 	  https://wenet.org.cn/opencpop/download/
-
-Multi-Singer 	https://github.com/Multi-Singer/Multi-Singer.github.io
-
-M4Singer	  https://github.com/M4Singer/M4Singer/blob/master/apply_form.md
-
-CSD 		    https://zenodo.org/record/4785016#.YxqrTbaOMU4
-
-KSS		      https://www.kaggle.com/datasets/bryanpark/korean-single-speaker-speech-dataset
-
-JVS MuSic	  https://sites.google.com/site/shinnosuketakamichi/research-topics/jvs_music
-
-PJS		      https://sites.google.com/site/shinnosuketakamichi/research-topics/pjs_corpus
-
-JUST Song	  https://sites.google.com/site/shinnosuketakamichi/publication/jsut-song
-
-
-MUSDB18		  https://sigsep.github.io/datasets/musdb.html#musdb18-compressed-stems
-
-DSD100 		  https://sigsep.github.io/datasets/dsd100.html
-
-
-Aishell-3 	http://www.aishelltech.com/aishell_3
-
-VCTK 		    https://datashare.ed.ac.uk/handle/10283/2651
-
-## Awesome opensource singing voice conversion
-
-https://github.com/innnky/so-vits-svc
-
-https://github.com/prophesier/diff-svc
-
-https://github.com/yxlllc/DDSP-SVC
-
-https://github.com/lesterphillip/SVCC23_FastSVC
-
-# Notice
+# 注意事项
 If you adopt the code or idea of this project, please list it in your project, which is the basic criterion for the continuation of the open source spirit.
 
 如果你采用了本项目的代码或创意，请在你的项目中列出，这是开源精神得以延续的基本准则。
