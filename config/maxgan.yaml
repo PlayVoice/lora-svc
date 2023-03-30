@@ -3,8 +3,8 @@ data:
   val_file: 'filelists/eval.txt'
 #############################
 train:
-  num_workers: 4
-  batch_size: 8
+  num_workers: 0
+  batch_size: 4
   optimizer: 'adam'
   seed: 1234
   adam:
@@ -50,9 +50,9 @@ dist_config:
   world_size: 1
 #############################
 log:
-  summary_interval: 100
-  validation_interval: 5
-  save_interval: 5
-  num_audio: 6
+  summary_interval: 10
+  validation_interval: 10
+  save_interval: 10
+  num_audio: 5
   chkpt_dir: 'chkpt'
   log_dir: 'logs'

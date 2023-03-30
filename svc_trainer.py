@@ -15,7 +15,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--config', type=str, required=True,
                         help="yaml file for configuration")
-    parser.add_argument('-p', '--checkpoint_path', type=str, default=None,
+    parser.add_argument('-p', '--checkpoint_path', type=str, required=True,
                         help="path of checkpoint pt file to resume training")
     parser.add_argument('-n', '--name', type=str, required=True,
                         help="name of the model for logging, saving checkpoint")

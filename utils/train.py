@@ -74,14 +74,14 @@ def train(rank, args, chkpt_path, hp, hp_str):
         checkpoint = torch.load(chkpt_path, map_location='cpu')
         model_g.load_state_dict(checkpoint['model_g'])
         model_d.load_state_dict(checkpoint['model_d'])
-        optim_g.load_state_dict(checkpoint['optim_g'])
-        optim_d.load_state_dict(checkpoint['optim_d'])
-        step = checkpoint['step']
-        init_epoch = checkpoint['epoch']
+        # optim_g.load_state_dict(checkpoint['optim_g'])
+        # optim_d.load_state_dict(checkpoint['optim_d'])
+        # step = checkpoint['step']
+        # init_epoch = checkpoint['epoch']
 
-        if rank == 0:
-            if hp_str != checkpoint['hp_str']:
-                logger.warning("New hparams is different from checkpoint. Will use new.")
+        # if rank == 0:
+        #     if hp_str != checkpoint['hp_str']:
+        #         logger.warning("New hparams is different from checkpoint. Will use new.")
     else:
         if rank == 0:
             logger.info("Starting new training run.")
