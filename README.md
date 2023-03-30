@@ -1,8 +1,9 @@
 # singing voice conversion based on whisper & maxgan, and target to LoRA
 
-```diff
-- maxgan v1 == bigvgan + nsf        PlayVoice/lora-svc
-- maxgan v2 == bigvgan + latent f0  PlayVoice/maxgan-svc
+```per
+maxgan v1 == bigvgan + nsf        PlayVoice/lora-svc
+
+maxgan v2 == bigvgan + latent f0  PlayVoice/maxgan-svc
 ```
 
 
