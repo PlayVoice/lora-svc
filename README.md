@@ -8,7 +8,7 @@ maxgan v2 == bigvgan + latent f0  PlayVoice/maxgan-svc
 ```
 基于人工智能三大巨头的黑科技：
 
-来至OpenAI的whispe，68万小时多语言
+来至OpenAI的whisper，68万小时多种语言
 
 来至Nvidia的bigvgan，语音生成抗锯齿
 
@@ -17,7 +17,9 @@ maxgan v2 == bigvgan + latent f0  PlayVoice/maxgan-svc
 
 使用自己的数据从头训练，使用分支：https://github.com/PlayVoice/lora-svc/tree/maxgan_v1_pretrain
 
-主分支用于，说明如何基于预训练模型微调定制专有音色；各分支代码有差异，根据您的需要选择合理的代码分支。
+主分支，用于说明基于预训练模型微调定制专有音色；
+
+分支代码有差异，根据您的需要选择合理的代码分支。
 
 
 ## 训练
@@ -31,11 +33,11 @@ maxgan v2 == bigvgan + latent f0  PlayVoice/maxgan-svc
     
     > python svc_preprocess_speaker.py ./data_svc/waves ./data_svc/speaker
     
-    取所有音频文件的音色的平均作为目标发音人的音色
+    取所有音频音色的平均作为目标发音人的音色
     
     > python svc_preprocess_speaker_lora.py ./data_svc/
 
-- 3 下载whisper模型 [multiple language medium model](https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt), 确定下载的是**medium.pt**，把它放到文件夹**whisper_pretrain/**中，提取每个音频的内容编码
+- 3 下载whisper模型 [multiple language medium model](https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt), 确定下载的是**medium.pt**，把它放到文件夹 **whisper_pretrain/** 中，提取每个音频的内容编码
 
     > python svc_preprocess_ppg.py -w ./data_svc/waves -p ./data_svc/whisper
 
@@ -51,9 +53,11 @@ maxgan v2 == bigvgan + latent f0  PlayVoice/maxgan-svc
 你的文件目录应该长这个样子~~~
 
     data_svc/
-    |
+    │
     └── lora_speaker.npy
-    |
+    │
+    └── lora_pitch_statics.npy
+    │
     └── pitch
     │     ├── 000001.pit.npy
     │     ├── 000002.pit.npy
@@ -71,7 +75,7 @@ maxgan v2 == bigvgan + latent f0  PlayVoice/maxgan-svc
           ├── 000002.ppg.npy
           └── 000003.ppg.npy
 
-## 训练实例，使用50句猫雷的效果如下
+## egs: 使用50句猫雷、训练十分钟的日志如下
 https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-af37-74096d41c018.mp4
 
 ## 推理
@@ -79,13 +83,20 @@ https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-
 
 > python svc_inference_export.py --config config/maxgan.yaml --checkpoint_path chkpt/lora/lora_0090.pt
 
-到出的模型在当前文件夹maxgan_g.pth，文件大小为31.6M
+导出的模型在当前文件夹maxgan_g.pth，文件大小为31.6M
 
 > python svc_inference.py --config config/maxgan.yaml --model maxgan_g.pth --spk ./data_svc/**lora_speaker.npy** --wave test.wav
 
 生成文件在当前目录svc_out.wav
 
 **PS.** 本项目集成了音效算法，你可以使用混响等常见音效
+
+啥？生成的音色不太像！
+```
+待补充~~~
+1，发音人音域统计
+2，推理音区偏移
+```
 
 ## 最初的梦想，发音人插件化
 ![maxgan_svc](https://user-images.githubusercontent.com/16432329/229016002-963f1d70-a5f6-474d-98fa-051bc8c21f26.png)
