@@ -88,7 +88,7 @@ https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-
 **PS.** 本项目集成了音效算法，你可以使用混响等常见音效
 
 ## 最初的梦想，发音人插件化
-![maxgan_svc](https://user-images.githubusercontent.com/16432329/229015303-b96be1fb-aaf2-4f95-abdf-7dc0eb08bc17.png)
+![maxgan_svc](https://user-images.githubusercontent.com/16432329/229016002-963f1d70-a5f6-474d-98fa-051bc8c21f26.png)
 
 ## 代码来源和参考文献
 [Adapter-Based Extension of Multi-Speaker Text-to-Speech Model for New Speakers](https://arxiv.org/abs/2211.00585)
