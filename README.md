@@ -73,6 +73,7 @@ maxgan v2 == bigvgan + latent f0  PlayVoice/maxgan-svc
 
 ## 训练实例，使用50句猫雷的效果如下
 https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-af37-74096d41c018.mp4
+
 ## 推理
 导出生成器，判别器只会在训练中用到
 
@@ -86,7 +87,12 @@ https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-
 
 **PS.** 本项目集成了音效算法，你可以使用混响等常见音效
 
+## 最初的梦想，发音人插件化
+![maxgan_svc](https://user-images.githubusercontent.com/16432329/229015303-b96be1fb-aaf2-4f95-abdf-7dc0eb08bc17.png)
+
 ## 代码来源和参考文献
+[Adapter-Based Extension of Multi-Speaker Text-to-Speech Model for New Speakers](https://arxiv.org/abs/2211.00585)
+
 [AdaSpeech: Adaptive Text to Speech for Custom Voice](https://arxiv.org/pdf/2103.00993.pdf)
 
 https://github.com/nii-yamagishilab/project-NN-Pytorch-scripts/tree/master/project/01-nsf
