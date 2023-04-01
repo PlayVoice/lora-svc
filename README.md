@@ -15,12 +15,7 @@ maxgan v2 == bigvgan + latent f0  PlayVoice/maxgan-svc
 来至Microsoft的adapter，高效率微调
 ```
 
-使用自己的数据从头训练，使用分支：https://github.com/PlayVoice/lora-svc/tree/maxgan_v1_pretrain
-
-主分支，用于说明基于预训练模型微调定制专有音色；
-
-分支代码有差异，根据您的需要选择合理的代码分支。
-
+下面是基于预训练模型定制专有音色
 
 ## 训练
 
@@ -97,6 +92,24 @@ https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-
 1，发音人音域统计
 2，推理音区偏移
 ```
+
+## 更好的音质
+为了训练更高的音质，需要使用分支maxgan_v1_pretrain，需要使用大量语料，重新训练预训练模型
+
+**更高的音质=更深的网络层+更多的通道数+更高的采样率**
+
+下面是一组 16K 采样率、160 hop的更大模型的一组参数示例：
+
+```
+gen:
+  upsample_rates: [5,4,2,2,2]
+  upsample_kernel_sizes: [20,16,4,4,4]
+  upsample_initial_channel: 512
+  resblock_kernel_sizes: [3,7,11]
+  resblock_dilation_sizes: [[1,3,5], [1,3,5], [1,3,5]]
+```
+
+分支代码有差异，根据实际需要选择合理的代码分支。
 
 ## 最初的梦想，发音人插件化
 ![maxgan_svc](https://user-images.githubusercontent.com/16432329/229016002-963f1d70-a5f6-474d-98fa-051bc8c21f26.png)
