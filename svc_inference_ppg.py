@@ -25,7 +25,7 @@ def pred_ppg(whisper: Whisper, wavPath, ppgPath):
         short = audio[idx_s:idx_s + 25 * 16000]
         idx_s = idx_s + 25 * 16000
         ppgln = 25 * 16000 // 320
-        short = pad_or_trim(short)
+        # short = pad_or_trim(short)
         mel = log_mel_spectrogram(short).to(whisper.device)
         with torch.no_grad():
             ppg = whisper.encoder(mel.unsqueeze(0)).squeeze().data.cpu().float().numpy()
@@ -34,7 +34,7 @@ def pred_ppg(whisper: Whisper, wavPath, ppgPath):
     if (idx_s < audln):
         short = audio[idx_s:audln]
         ppgln = (audln - idx_s) // 320
-        short = pad_or_trim(short)
+        # short = pad_or_trim(short)
         mel = log_mel_spectrogram(short).to(whisper.device)
         with torch.no_grad():
             ppg = whisper.encoder(mel.unsqueeze(0)).squeeze().data.cpu().float().numpy()

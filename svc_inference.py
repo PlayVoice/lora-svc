@@ -47,7 +47,7 @@ def compute_f0_nn(filename, device):
     # Select a model capacity--one of "tiny" or "full"
     model = "tiny"
     # Pick a batch size that doesn't cause memory errors on your gpu
-    batch_size = 2048
+    batch_size = 512
     # Compute pitch using first gpu
     pitch, periodicity = torchcrepe.predict(
         audio,
