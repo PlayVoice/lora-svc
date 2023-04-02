@@ -313,7 +313,7 @@ class SineGen(torch.nn.Module):
             # first: set the unvoiced part to 0 by uv
             # then: additive noise
             sine_waves = sine_waves * uv + noise
-        return sine_waves, uv, noise
+        return sine_waves
 
 
 class SourceModuleCycNoise_v1(torch.nn.Module):
@@ -404,14 +404,6 @@ class SourceModuleHnNSF(torch.nn.Module):
         noise_source (batchsize, length 1)
         """
         # source for harmonic branch
-        sine_wavs, uv, _ = self.l_sin_gen(x)
+        sine_wavs = self.l_sin_gen(x)
         sine_merge = self.l_tanh(self.l_linear(sine_wavs))
-
-        # source for noise branch, in the same shape as uv
-        noise = torch.randn_like(uv) * self.sine_amp / 3
-        return sine_merge, noise, uv
-
-
-if __name__ == "__main__":
-    source = SourceModuleCycNoise_v1(24000)
-    x = torch.randn(16, 25600, 1)
+        return sine_merge

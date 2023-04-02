@@ -117,7 +117,7 @@ class Generator(torch.nn.Module):
         # nsf
         f0 = f0[:, None]
         f0 = self.f0_upsamp(f0).transpose(1, 2)
-        har_source, noi_source, uv = self.m_source(f0)
+        har_source = self.m_source(f0)
         har_source = har_source.transpose(1, 2)
         # pre conv
         x = self.cond_pre(x)                # [B, L, D]

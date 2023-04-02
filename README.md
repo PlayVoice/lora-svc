@@ -27,10 +27,6 @@ maxgan v2 == bigvgan + latent f0  PlayVoice/maxgan-svc
     提取每个音频文件的音色
     
     > python svc_preprocess_speaker.py ./data_svc/waves ./data_svc/speaker
-    
-    取所有音频音色的平均作为目标发音人的音色
-    
-    > python svc_preprocess_speaker_lora.py ./data_svc/
 
 - 3 下载whisper模型 [multiple language medium model](https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt), 确定下载的是**medium.pt**，把它放到文件夹 **whisper_pretrain/** 中，提取每个音频的内容编码
 
@@ -40,7 +36,13 @@ maxgan v2 == bigvgan + latent f0  PlayVoice/maxgan-svc
 
     > python svc_preprocess_f0.py
 
-- 5 从release页面下载预训练模型maxgan_pretrain，放到model_pretrain文件夹中，预训练模型中包含了生成器和判别器
+- 5 取所有音频音色的平均作为目标发音人的音色，并完成声域分析
+    
+    > python svc_preprocess_speaker_lora.py ./data_svc/
+
+    生成 lora_speaker.npy 和 lora_pitch_statics.npy 两个文件
+
+- 6 从release页面下载预训练模型maxgan_pretrain，放到model_pretrain文件夹中，预训练模型中包含了生成器和判别器
 
     > python svc_trainer.py -c config/maxgan.yaml -n lora -p model_pretrain/maxgan_pretrain.pth
 
