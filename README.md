@@ -115,7 +115,7 @@ gen:
 天生具备~~~，demo稍等~~~
 
 ## 流式推理
-whisper改造中~~~
+whisper改造完成，但是nsf会产生断点~~~继续研究
 
 ## 最初的梦想，发音人插件化
 ![maxgan_svc](https://user-images.githubusercontent.com/16432329/229016002-963f1d70-a5f6-474d-98fa-051bc8c21f26.png)
