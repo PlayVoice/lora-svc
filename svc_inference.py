@@ -86,6 +86,27 @@ def main(args):
     ppg = torch.FloatTensor(ppg)
 
     pit = compute_f0_nn(args.wave, device)
+    if (args.statics == None):
+        print("don't use pitch shift")
+    else:
+        source = pit[pit > 0]
+        source_ave = source.mean()
+        source_min = source.min()
+        source_max = source.max()
+        print(f"source pitch statics: mean={source_ave:0.1f}, \
+                min={source_min:0.1f}, max={source_max:0.1f}")
+        singer_ave, singer_min, singer_max = np.load(args.statics)
+        print(f"singer pitch statics: mean={singer_ave:0.1f}, \
+                min={singer_min:0.1f}, max={singer_max:0.1f}")
+
+        shift = np.log2(singer_ave/source_ave) * 12
+        if (singer_ave >= source_ave):
+            shift = np.floor(shift)
+        else:
+            shift = np.ceil(shift)
+        shift = 2 ** (shift / 12)
+        pit = pit * shift
+
     pit = torch.FloatTensor(pit)
     pos = torch.LongTensor(pos)
 
@@ -123,6 +144,8 @@ if __name__ == '__main__':
                         help="Path of raw audio.")
     parser.add_argument('-s', '--spk', type=str, required=True,
                         help="Path of speaker.")
+    parser.add_argument('-t', '--statics', type=str,
+                        help="Path of pitch statics.")
     args = parser.parse_args()
 
     main(args)

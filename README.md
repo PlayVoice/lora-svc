@@ -89,10 +89,11 @@ https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-
 **PS.** 本项目集成了音效算法，你可以使用混响等常见音效
 
 啥？生成的音色不太像！
-```
-待补充~~~
+```python
 1，发音人音域统计
+训练第5步生成：lora_pitch_statics.npy
 2，推理音区偏移
+指定pitch参数：python svc_inference.py --config config/maxgan.yaml --model maxgan_g.pth --spk ./data_svc/lora_speaker.npy --statics ./data_svc/lora_pitch_statics.npy --wave test.wav
 ```
 
 ## 更好的音质
