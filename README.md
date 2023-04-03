@@ -119,6 +119,9 @@ gen:
 ## 流式推理
 whisper改造完成，但是nsf会产生断点~~~继续研究
 
+## 降噪能力
+具备自动降噪、一定语音修复能力的高维模型~~~全速训练中
+
 ## 最初的梦想，歌声转换可调校
 ![pitch_draw](https://user-images.githubusercontent.com/16432329/229392989-0631234c-8f19-427b-b327-e0fba8bcb917.png)
 
