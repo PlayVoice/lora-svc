@@ -30,6 +30,8 @@ maxgan v2 == bigvgan + latent f0  PlayVoice/maxgan-svc
 
 - 3 下载whisper模型 [multiple language medium model](https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt), 确定下载的是**medium.pt**，把它放到文件夹 **whisper_pretrain/** 中，提取每个音频的内容编码
 
+    > sudo apt update && sudo apt install ffmpeg
+
     > python svc_preprocess_ppg.py -w ./data_svc/waves -p ./data_svc/whisper
 
 - 4 提取基音，同时生成训练文件 **filelist/train.txt**，剪切train的前5条用于制作**filelist/eval.txt**
