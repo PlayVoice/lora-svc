@@ -105,7 +105,7 @@ https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-
 ```
 gen:
   upsample_rates: [5,4,2,2,2]
-  upsample_kernel_sizes: [20,16,4,4,4]
+  upsample_kernel_sizes: [15,12,4,4,4]
   upsample_initial_channel: 512
   resblock_kernel_sizes: [3,7,11]
   resblock_dilation_sizes: [[1,3,5], [1,3,5], [1,3,5]]
