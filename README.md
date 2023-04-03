@@ -119,6 +119,9 @@ gen:
 ## 流式推理
 whisper改造完成，但是nsf会产生断点~~~继续研究
 
+## 最初的梦想，歌声转换可调校
+![pitch_draw](https://user-images.githubusercontent.com/16432329/229392989-0631234c-8f19-427b-b327-e0fba8bcb917.png)
+
 ## 最初的梦想，发音人插件化
 ![maxgan_svc](https://user-images.githubusercontent.com/16432329/229016002-963f1d70-a5f6-474d-98fa-051bc8c21f26.png)
 
