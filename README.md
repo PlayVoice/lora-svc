@@ -1,10 +1,5 @@
 # singing voice conversion based on whisper & maxgan, and target to LoRA
 
-```per
-maxgan v1 == bigvgan + nsf        PlayVoice/lora-svc
-
-maxgan v2 == bigvgan + latent f0  PlayVoice/maxgan-svc
-```
 ```
 基于人工智能三大巨头的黑科技：
 
@@ -120,7 +115,7 @@ gen:
 天生具备~~~，demo稍等~~~
 
 ## 流式推理
-whisper改造完成，但是nsf会产生断点~~~继续研究
+whisper不支持
 
 ## 降噪能力
 具备自动降噪、一定语音修复能力的高维模型~~~全速训练中
