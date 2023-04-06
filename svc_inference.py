@@ -130,7 +130,7 @@ def main(args):
         audio = model.inference(spk, ppg, pos, pit)
         audio = audio.cpu().detach().numpy()
 
-    audio = svc_reverb(audio)
+    #audio = svc_reverb(audio)
     write("svc_out.wav", hp.audio.sampling_rate, audio)
 
 
