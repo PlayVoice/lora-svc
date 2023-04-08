@@ -93,6 +93,11 @@ https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-
 指定pitch参数：python svc_inference.py --config config/maxgan.yaml --model maxgan_g.pth --spk ./data_svc/lora_speaker.npy --statics ./data_svc/lora_pitch_statics.npy --wave test.wav
 ```
 
+## 频率扩展：16K->48K
+
+> python svc_bandex.py -w svc_out.wav
+在当前目录生成svc_out_48k.wav
+
 ## 更好的音质
 为了训练更高的音质，需要使用分支maxgan_v1_pretrain，需要使用大量语料，重新训练预训练模型
 
@@ -138,6 +143,8 @@ https://github.com/mindslab-ai/univnet [[paper]](https://arxiv.org/abs/2106.0788
 https://github.com/openai/whisper/ [[paper]](https://arxiv.org/abs/2212.04356)
 
 https://github.com/NVIDIA/BigVGAN [[paper]](https://arxiv.org/abs/2206.04658)
+
+https://github.com/brentspell/hifi-gan-bwe
 
 https://github.com/chenwj1989/pafx
 
