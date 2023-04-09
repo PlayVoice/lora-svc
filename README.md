@@ -17,7 +17,7 @@
 - 1 数据准备，将音频切分小于30S（推荐10S左右/可以不依照句子结尾）， 转换采样率为16000Hz, 将音频数据放到 **./data_svc/waves**
     > 这个我想你会~~~
 
-- 2 下载音色编码器: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3), 解压文件，把 **best_model.pth** 和 **condif.json** 放到目录 **speaker_pretrain/**
+- 2 下载音色编码器: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3), 解压文件，把 **best_model.pth** 和 **config.json** 放到目录 **speaker_pretrain/**
 
     提取每个音频文件的音色
     
@@ -96,6 +96,7 @@ https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-
 ## 频率扩展：16K->48K
 
 > python svc_bandex.py -w svc_out.wav
+
 在当前目录生成svc_out_48k.wav
 
 ## 更好的音质
