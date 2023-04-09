@@ -100,7 +100,7 @@ https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-
 在当前目录生成svc_out_48k.wav
 
 ## 更好的音质
-为了训练更高的音质，需要使用分支maxgan_v1_pretrain，需要使用大量语料，重新训练预训练模型
+为了训练更高的音质，需要使用分支[maxgan_v1_pretrain](https://github.com/PlayVoice/lora-svc/tree/maxgan_v1_pretrain)，需要使用大量语料，重新训练预训练模型
 
 **更高的音质=更深的网络层+更多的通道数+更高的采样率**
 
