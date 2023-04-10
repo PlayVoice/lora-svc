@@ -142,7 +142,10 @@ def train(rank, args, chkpt_path, hp, hp_str):
 
             score_loss = score_loss / len(res_fake + period_fake)
 
+            # for fast train
             loss_g = score_loss + stft_loss + mel_loss
+            # for last train
+            # loss_g = score_loss + stft_loss
 
             loss_g.backward()
             optim_g.step()

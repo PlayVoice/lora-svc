@@ -8,7 +8,8 @@ from torch.nn.utils import weight_norm
 from torch.nn.utils import remove_weight_norm
 
 from .nsf import SourceModuleHnNSF
-from .bigv import init_weights, AMPBlock
+from .bigv import init_weights, SnakeBeta, AMPBlock
+from .alias import Activation1d
 
 
 class SpeakerAdapter(nn.Module):
@@ -72,6 +73,7 @@ class Generator(torch.nn.Module):
             # spk
             self.adapter.append(SpeakerAdapter(
                 256, hp.gen.upsample_initial_channel // (2 ** (i + 1))))
+            # print(f'ups: {i} {k}, {u}, {(k - u) // 2}')
             # base
             self.ups.append(nn.ModuleList([
                 weight_norm(ConvTranspose1d(hp.gen.upsample_initial_channel // (2 ** i),
@@ -106,6 +108,8 @@ class Generator(torch.nn.Module):
                 self.resblocks.append(AMPBlock(hp, ch, k, d))
 
         # post conv
+        activation_post = SnakeBeta(ch, alpha_logscale=True)
+        self.activation_post = Activation1d(activation=activation_post)
         self.conv_post = weight_norm(Conv1d(ch, 1, 7, 1, padding=3))
 
         # weight initialization
@@ -120,6 +124,7 @@ class Generator(torch.nn.Module):
         har_source = self.m_source(f0)
         har_source = har_source.transpose(1, 2)
         # pre conv
+        # x = x + torch.randn_like(x)       # for last train
         x = self.cond_pre(x)                # [B, L, D]
         p = self.cond_pos(pos)
         x = x + p
@@ -145,7 +150,7 @@ class Generator(torch.nn.Module):
             x = xs / self.num_kernels
 
         # post conv
-        x = nn.functional.leaky_relu(x)
+        x = self.activation_post(x)
         x = self.conv_post(x)
         x = torch.tanh(x)
         return x
