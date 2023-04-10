@@ -99,6 +99,17 @@ https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-
 
 在当前目录生成svc_out_48k.wav
 
+## 音质增强
+
+从 [DiffSinger 社区声码器项目](https://openvpi.github.io/vocoders) 下载基于预训练声码器的增强器，并解压至 `nsf_hifigan_pretrain/` 文件夹。
+注意：你应当下载名称中带有`nsf_hifigan`的压缩文件，而非`nsf_hifigan_finetune`。
+
+将频率扩张后生成的svc_out_48k.wav复制到path\to\input\wavs，运行
+
+>python svc_val_nsf_hifigan.py
+
+在path\to\output\wavs生成增强后的文件
+
 ## 更好的音质
 为了训练更高的音质，需要使用分支[maxgan_v1_pretrain](https://github.com/PlayVoice/lora-svc/tree/maxgan_v1_pretrain)，需要使用大量语料，重新训练预训练模型
 
@@ -146,6 +157,8 @@ https://github.com/openai/whisper/ [[paper]](https://arxiv.org/abs/2212.04356)
 https://github.com/NVIDIA/BigVGAN [[paper]](https://arxiv.org/abs/2206.04658)
 
 https://github.com/brentspell/hifi-gan-bwe
+
+https://github.com/openvpi/DiffSinger
 
 https://github.com/chenwj1989/pafx
 
