@@ -6,6 +6,7 @@ tensorboard
 matplotlib
 tensorboard
 torchcrepe
+praat-parselmouth==0.4.3
 transformers>=4.19.0
 ffmpeg-python==0.2.0
 hifi-gan-bwe
