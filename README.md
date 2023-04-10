@@ -1,5 +1,5 @@
 # singing voice conversion based on whisper & maxgan, and target to LoRA
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/17PK5Vd-oyoxpsZ8nENktFcPZEwZmPrTb?usp=sharing)
 ```
 基于人工智能三大巨头的黑科技：
 
@@ -19,7 +19,7 @@
 - 1 数据准备，将音频切分小于30S（推荐10S左右/可以不依照句子结尾）， 转换采样率为16000Hz, 将音频数据放到 **./data_svc/waves**
     > 这个我想你会~~~
 
-- 2 下载音色编码器: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3), 解压文件，把 **best_model.pth** 和 **config.json** 放到目录 **speaker_pretrain/**
+- 2 下载音色编码器: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3), 解压文件，把 **best_model.pth.tar**  放到目录 **speaker_pretrain/**
 
     提取每个音频文件的音色
     
