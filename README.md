@@ -12,6 +12,8 @@
 
 基于大量数据，从零开始训练模型，使用分支：[lora-svc-for-pretrain](https://github.com/PlayVoice/lora-svc/tree/lora-svc-for-pretrain)
 
+https://user-images.githubusercontent.com/16432329/231020566-5065f0a7-417c-4b1e-bac4-074997dc4196.mp4
+
 下面是基于预训练模型定制专有音色
 
 ## 训练
