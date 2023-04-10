@@ -10,6 +10,8 @@
 来至Microsoft的adapter，高效率微调
 ```
 
+基于大量数据，从零开始训练模型，使用分支：[lora-svc-for-pretrain](https://github.com/PlayVoice/lora-svc/tree/lora-svc-for-pretrain)
+
 下面是基于预训练模型定制专有音色
 
 ## 训练
@@ -39,9 +41,9 @@
 
     生成 lora_speaker.npy 和 lora_pitch_statics.npy 两个文件
 
-- 6 从release页面下载预训练模型maxgan_pretrain，放到model_pretrain文件夹中，预训练模型中包含了生成器和判别器
+- 6 从release页面下载预训练模型**maxgan_pretrain_5L.pth**，放到model_pretrain文件夹中，预训练模型中包含了生成器和判别器
 
-    > python svc_trainer.py -c config/maxgan.yaml -n lora -p model_pretrain/maxgan_pretrain.pth
+    > python svc_trainer.py -c config/maxgan.yaml -n lora -p model_pretrain/maxgan_pretrain_5L.pth
 
 
 你的文件目录应该长这个样子~~~
@@ -77,7 +79,7 @@ https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-
 
 > python svc_inference_export.py --config config/maxgan.yaml --checkpoint_path chkpt/lora/lora_0090.pt
 
-导出的模型在当前文件夹maxgan_g.pth，文件大小为31.6M
+导出的模型在当前文件夹maxgan_g.pth，文件大小为**54.3M**
 
 > python svc_inference.py --config config/maxgan.yaml --model maxgan_g.pth --spk ./data_svc/**lora_speaker.npy** --wave test.wav
 
@@ -109,39 +111,6 @@ https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-
 >python svc_val_nsf_hifigan.py
 
 在path\to\output\wavs生成增强后的文件
-
-## 更好的音质
-为了训练更高的音质，需要使用分支[maxgan_v1_pretrain](https://github.com/PlayVoice/lora-svc/tree/maxgan_v1_pretrain)，需要使用大量语料，重新训练预训练模型
-
-**更高的音质=更深的网络层+更多的通道数+更高的采样率**
-
-下面是一组 16K 采样率、160 hop的更大模型的一组参数示例：
-
-```
-gen:
-  upsample_rates: [5,4,2,2,2]
-  upsample_kernel_sizes: [15,12,4,4,4]
-  upsample_initial_channel: 512
-  resblock_kernel_sizes: [3,7,11]
-  resblock_dilation_sizes: [[1,3,5], [1,3,5], [1,3,5]]
-```
-
-分支代码有差异，根据实际需要选择合理的代码分支。
-
-## 音色融合
-天生具备~~~，demo稍等~~~
-
-## 流式推理
-whisper不支持
-
-## 降噪能力
-具备自动降噪、一定语音修复能力的高维模型~~~全速训练中
-
-## 最初的梦想，歌声转换可调校
-![pitch_draw](https://user-images.githubusercontent.com/16432329/229392989-0631234c-8f19-427b-b327-e0fba8bcb917.png)
-
-## 最初的梦想，发音人插件化
-![maxgan_svc](https://user-images.githubusercontent.com/16432329/229016002-963f1d70-a5f6-474d-98fa-051bc8c21f26.png)
 
 ## 代码来源和参考文献
 [Adapter-Based Extension of Multi-Speaker Text-to-Speech Model for New Speakers](https://arxiv.org/abs/2211.00585)
