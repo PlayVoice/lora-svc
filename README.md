@@ -162,7 +162,13 @@ https://github.com/openvpi/DiffSinger
 
 https://github.com/chenwj1989/pafx
 
-# 注意事项
+## 贡献者
+
+<a href="https://github.com/PlayVoice/lora-svc/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=PlayVoice/lora-svc" />
+</a>
+
+## 注意事项
 If you adopt the code or idea of this project, please list it in your project, which is the basic criterion for the continuation of the open source spirit.
 
 如果你采用了本项目的代码或创意，请在你的项目中列出，这是开源精神得以延续的基本准则。
