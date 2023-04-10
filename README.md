@@ -12,7 +12,7 @@
 
 基于大量数据，从零开始训练模型，使用分支：[lora-svc-for-pretrain](https://github.com/PlayVoice/lora-svc/tree/lora-svc-for-pretrain)
 
-https://user-images.githubusercontent.com/16432329/231020566-5065f0a7-417c-4b1e-bac4-074997dc4196.mp4
+https://user-images.githubusercontent.com/16432329/231021007-6e34cbb4-e256-491d-8ab6-5ce4e822da21.mp4
 
 下面是基于预训练模型定制专有音色
 
