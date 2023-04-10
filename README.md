@@ -1,5 +1,5 @@
 # singing voice conversion based on whisper & maxgan, and target to LoRA
-
+[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/17PK5Vd-oyoxpsZ8nENktFcPZEwZmPrTb?usp=sharing)
 ```
 基于人工智能三大巨头的黑科技：
 
