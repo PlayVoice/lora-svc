@@ -1,15 +1,13 @@
 import os
 import torch
 import librosa
-import pyworld
 import argparse
 import numpy as np
+import torchcrepe
 
 from scipy.io.wavfile import write
 from omegaconf import OmegaConf
 from model.generator import Generator
-from effects.pafx import (
-    svc_eq, svc_reverb, svc_echo, svc_chorus, svc_flanger)
 
 
 def load_svc_model(checkpoint_path, model):
@@ -19,27 +17,13 @@ def load_svc_model(checkpoint_path, model):
     return model
 
 
-def compute_f0(path):
-    x, sr = librosa.load(path, sr=16000)
-    assert sr == 16000
-    f0, t = pyworld.dio(
-        x.astype(np.double),
-        fs=sr,
-        f0_ceil=900,
-        frame_period=1000 * 160 / sr,
-    )
-    f0 = pyworld.stonemask(x.astype(np.double), f0, t, fs=16000)
-    for index, pitch in enumerate(f0):
-        f0[index] = round(pitch, 1)
-    return f0
-
-
 def compute_f0_nn(filename, device):
-    import torchcrepe
+    audio, sr = librosa.load(filename, sr=16000)
+    assert sr == 16000
     # Load audio
-    audio, sr = torchcrepe.load.audio(filename)
-    # Here we'll use a 10 millisecond hop length
-    hop_length = int(sr / 100.0)
+    audio = torch.tensor(np.copy(audio))[None]
+    # Here we'll use a 20 millisecond hop length
+    hop_length = 320
     # Provide a sensible frequency range for your domain (upper limit is 2006 Hz)
     # This would be a reasonable range for speech
     fmin = 50
@@ -60,6 +44,8 @@ def compute_f0_nn(filename, device):
         device=device,
         return_periodicity=True,
     )
+    pitch = np.repeat(pitch, 2, -1)  # 320 -> 160 * 2
+    periodicity = np.repeat(periodicity, 2, -1)  # 320 -> 160 * 2
     # CREPE was not trained on silent audio. some error on silent need filter.
     periodicity = torchcrepe.filter.median(periodicity, 9)
     pitch = torchcrepe.filter.mean(pitch, 9)
