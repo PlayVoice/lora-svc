@@ -35,11 +35,25 @@ def save_model(model, checkpoint_path):
     torch.save({'model_g': state_dict}, checkpoint_path)
 
 
+def save_lora(model, checkpoint_path):
+    if hasattr(model, 'module'):
+        state_dict_adapter = model.module.adapter.state_dict()
+        state_dict_post = model.module.conv_post.state_dict()
+    else:
+        state_dict_adapter = model.adapter.state_dict()
+        state_dict_post = model.conv_post.state_dict()
+    torch.save({
+        'lora_adapter': state_dict_adapter,
+        'lora_post': state_dict_post
+    }, checkpoint_path)
+
+
 def main(args):
     hp = OmegaConf.load(args.config)
     model = Generator(hp)
     load_model(args.checkpoint_path, model)
     save_model(model, "maxgan_g.pth")
+    save_lora(model, "maxgan_lora.pth")
 
 
 if __name__ == '__main__':
