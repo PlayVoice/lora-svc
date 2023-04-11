@@ -1,4 +1,4 @@
-# singing voice conversion based on whisper & maxgan, and target to LoRA
+# singing voice conversion based on whisper & maxgan
 [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/17PK5Vd-oyoxpsZ8nENktFcPZEwZmPrTb?usp=sharing)
 ```
 基于人工智能三大巨头的黑科技：
@@ -9,6 +9,9 @@
 
 来至Microsoft的adapter，高效率微调
 ```
+插件式开源歌声声库模型，依据LoRA原理：
+
+![lora](https://user-images.githubusercontent.com/16432329/225337790-392b958a-67ec-4643-b26a-018ee8e4cf56.jpg)
 
 基于大量数据，从零开始训练模型，使用分支：[lora-svc-for-pretrain](https://github.com/PlayVoice/lora-svc/tree/lora-svc-for-pretrain)
 
@@ -72,6 +75,22 @@ https://user-images.githubusercontent.com/16432329/231021007-6e34cbb4-e256-491d-
           ├── 000001.ppg.npy
           ├── 000002.ppg.npy
           └── 000003.ppg.npy
+## 训练LoRA
+
+设置开关
+
+https://github.com/PlayVoice/lora-svc/blob/d3a1df57e6019c12513bb34e1bd5c8162d5e5055/config/maxgan.yaml#L16
+
+
+https://github.com/PlayVoice/lora-svc/blob/d3a1df57e6019c12513bb34e1bd5c8162d5e5055/utils/train.py#L34-L35
+
+使用场景
+
+- 极低资源，防止过拟合
+
+- 插件式声库开发
+
+- 其他场景，建议关闭
 
 ## egs: 使用50句猫雷、训练十分钟的日志如下
 https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-af37-74096d41c018.mp4
@@ -81,13 +100,13 @@ https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-
 
 > python svc_inference_export.py --config config/maxgan.yaml --checkpoint_path chkpt/lora/lora_0090.pt
 
-导出的模型在当前文件夹maxgan_g.pth，文件大小为**54.3M**
+导出的模型在当前文件夹maxgan_g.pth，文件大小为**54.3M**；maxgan_lora.pth为微调模块，文件大小为**0.94M**。
 
 > python svc_inference.py --config config/maxgan.yaml --model maxgan_g.pth --spk ./data_svc/**lora_speaker.npy** --wave test.wav
 
 生成文件在当前目录svc_out.wav；同时生成svc_out_pitch.wav，用于直观显示基音提取结果。
 
-**啥？**生成的音色不太像！
+**啥**？生成的音色不太像！
 
 - 1 发音人音域统计
 
