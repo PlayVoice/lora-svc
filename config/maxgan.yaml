@@ -13,6 +13,7 @@ train:
     beta2: 0.99
   mel_lamb: 5
   stft_lamb: 2.5
+  lora: True
 #############################
 audio:
   n_mel_channels: 100

@@ -31,6 +31,8 @@ def train(rank, args, chkpt_path, hp, hp_str):
 
     model_g = Generator(hp).to(device)
     model_d = Discriminator(hp).to(device)
+    if (hp.train.lora):
+        model_g.train_lora()
 
     optim_g = torch.optim.AdamW(model_g.parameters(),
         lr=hp.train.adam.lr, betas=(hp.train.adam.beta1, hp.train.adam.beta2))
