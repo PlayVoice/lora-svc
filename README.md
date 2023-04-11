@@ -11,7 +11,9 @@
 ```
 插件式开源歌声声库模型，依据LoRA原理：
 
-![lora](https://user-images.githubusercontent.com/16432329/225337790-392b958a-67ec-4643-b26a-018ee8e4cf56.jpg)
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/16432329/225337790-392b958a-67ec-4643-b26a-018ee8e4cf56.jpg" />
+</p>
 
 基于大量数据，从零开始训练模型，使用分支：[lora-svc-for-pretrain](https://github.com/PlayVoice/lora-svc/tree/lora-svc-for-pretrain)
 
