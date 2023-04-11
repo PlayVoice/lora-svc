@@ -178,3 +178,16 @@ class Generator(torch.nn.Module):
         audio = audio.clamp(min=-MAX_WAV_VALUE, max=MAX_WAV_VALUE-1)
         audio = audio.short()
         return audio
+
+    def pitch2wav(self, f0):
+        MAX_WAV_VALUE = 32768.0
+        # nsf
+        f0 = f0[:, None]
+        f0 = self.f0_upsamp(f0).transpose(1, 2)
+        har_source = self.m_source(f0)
+        audio = har_source.transpose(1, 2)
+        audio = audio.squeeze()  # collapse all dimension except time axis
+        audio = MAX_WAV_VALUE * audio
+        audio = audio.clamp(min=-MAX_WAV_VALUE, max=MAX_WAV_VALUE-1)
+        audio = audio.short()
+        return audio

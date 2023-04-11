@@ -116,8 +116,12 @@ def main(args):
         audio = model.inference(spk, ppg, pos, pit)
         audio = audio.cpu().detach().numpy()
 
+        pitwav = model.pitch2wav(pit)
+        pitwav = pitwav.cpu().detach().numpy()
+
     # audio = svc_reverb(audio)
     write("svc_out.wav", hp.audio.sampling_rate, audio)
+    write("svc_out_pitch.wav", hp.audio.sampling_rate, pitwav)
 
 
 if __name__ == '__main__':
