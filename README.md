@@ -57,7 +57,13 @@ The following is the customization process base on pre-trained model.
 
 - 6 Download the pre-training model [maxgan_pretrain_5L.pth](https://github.com/PlayVoice/lora-svc/releases/tag/v0.5.5) from the release page and put it in the `model_pretrain` folder. The pre-training model contains the generator and the discriminator
 
-    > python svc_trainer.py -c config/maxgan.yaml -n lora -p model_pretrain/maxgan_pretrain_5L.pth
+    https://github.com/PlayVoice/lora-svc/blob/622fafca87d877a89717aeb09337afbadd885941/config/maxgan.yaml#L17
+
+    > python svc_trainer.py -c config/maxgan.yaml -n lora
+    
+    Resume training
+    
+    > python svc_trainer.py -c config/maxgan.yaml -n lora -p chkpt/lora/***.pth
 
 
 Your file directory should look like this~~~

@@ -57,7 +57,13 @@ https://user-images.githubusercontent.com/16432329/231021007-6e34cbb4-e256-491d-
 
 - 6 从release页面下载预训练模型**maxgan_pretrain_5L.pth**，放到model_pretrain文件夹中，预训练模型中包含了生成器和判别器
 
-    > python svc_trainer.py -c config/maxgan.yaml -n lora -p model_pretrain/maxgan_pretrain_5L.pth
+    https://github.com/PlayVoice/lora-svc/blob/622fafca87d877a89717aeb09337afbadd885941/config/maxgan.yaml#L17
+
+    > python svc_trainer.py -c config/maxgan.yaml -n lora
+    
+    恢复训练
+    
+    > python svc_trainer.py -c config/maxgan.yaml -n lora -p chkpt/lora/***.pth
 
 
 你的文件目录应该长这个样子~~~
