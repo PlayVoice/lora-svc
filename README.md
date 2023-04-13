@@ -135,7 +135,7 @@ The generated file is in the current directory svc_out.wav; at the same time, sv
 
 ## Frequency extension：16K->48K
 
-> python svc_bandex.py -w svc_out.wav
+> python svc_bandex_gpu.py -w svc_out.wav or python svc_bandex.py -w svc_out.wav
 
 Generate svc_out_48k.wav in the current directory
 
