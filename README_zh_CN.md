@@ -111,15 +111,23 @@ https://github.com/PlayVoice/lora-svc/blob/d3a1df57e6019c12513bb34e1bd5c8162d5e5
 https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-af37-74096d41c018.mp4
 
 ## 推理
-导出生成器，判别器只会在训练中用到
+- 1 导出生成器，判别器只会在训练中用到
 
-> python svc_inference_export.py --config config/maxgan.yaml --checkpoint_path chkpt/lora/lora_0090.pt
+    > python svc_inference_export.py --config config/maxgan.yaml --checkpoint_path chkpt/lora/lora_0090.pt
 
-导出的模型在当前文件夹maxgan_g.pth，文件大小为**54.3M**；maxgan_lora.pth为微调模块，文件大小为**0.94M**。
+    导出的模型在当前文件夹maxgan_g.pth，文件大小为**54.3M**；maxgan_lora.pth为微调模块，文件大小为**0.94M**。
 
-> python svc_inference.py --config config/maxgan.yaml --model maxgan_g.pth --spk ./data_svc/**lora_speaker.npy** --wave test.wav
+- 2 使用whisper提取内容编码，没有采用一键推理，为了降低显存占用
 
-生成文件在当前目录svc_out.wav；同时生成svc_out_pitch.wav，用于直观显示基音提取结果。
+    > python svc_inference_ppg.py -w test.wav -p test.ppg.npy
+
+    生成test.ppg.npy；如果下一步没有指定ppg文件，则调用程序自动生成
+
+- 3 指定参数，推理
+
+    > python svc_inference.py --config config/maxgan.yaml --model maxgan_g.pth --spk ./data_svc/**lora_speaker.npy** --wave test.wav --ppg test.ppg.npy
+
+    生成文件在当前目录svc_out.wav；同时生成svc_out_pitch.wav，用于直观显示基音提取结果。
 
 **啥**？生成的音色不太像！
 

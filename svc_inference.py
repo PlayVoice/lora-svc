@@ -54,18 +54,19 @@ def compute_f0_nn(filename, device):
     return pitch
 
 
-ppg_path = "svc_tmp.ppg.npy"
-
-
 def main(args):
-    os.system(f"python svc_inference_ppg.py -w {args.wave} -p {ppg_path}")
+    if (args.ppg == None):
+        args.ppg = "svc_tmp.ppg.npy"
+        print(
+            f"Auto run : python svc_inference_ppg.py -w {args.wave} -p {args.ppg}")
+    os.system(f"python svc_inference_ppg.py -w {args.wave} -p {args.ppg}")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     hp = OmegaConf.load(args.config)
     model = Generator(hp)
     load_svc_model(args.model, model)
 
-    ppg = np.load(ppg_path)
+    ppg = np.load(args.ppg)
     pos = [1, 2]
     pos = np.tile(pos, ppg.shape[0])
     ppg = np.repeat(ppg, 2, 0)  # 320 PPG -> 160 * 2
@@ -134,6 +135,8 @@ if __name__ == '__main__':
                         help="Path of raw audio.")
     parser.add_argument('-s', '--spk', type=str, required=True,
                         help="Path of speaker.")
+    parser.add_argument('-p', '--ppg', type=str,
+                        help="Path of content vector.")
     parser.add_argument('-t', '--statics', type=str,
                         help="Path of pitch statics.")
     args = parser.parse_args()

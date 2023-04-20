@@ -110,15 +110,23 @@ How to use
 https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-af37-74096d41c018.mp4
 
 ## Inference
-Export the generator, the discriminator will only be used in training
+- 1 Export the generator, the discriminator will only be used in training
 
-> python svc_inference_export.py --config config/maxgan.yaml --checkpoint_path chkpt/lora/lora_0090.pt
+    > python svc_inference_export.py --config config/maxgan.yaml --checkpoint_path chkpt/lora/lora_0090.pt
 
-The exported model is in the current folder `maxgan_g.pth`, the file size is 54.3M ; `maxgan_lora.pth` is the fine-tuning module, the file size is 0.94M.
+    The exported model is in the current folder `maxgan_g.pth`, the file size is 54.3M ; `maxgan_lora.pth` is the fine-tuning module, the file size is 0.94M.
 
-> python svc_inference.py --config config/maxgan.yaml --model maxgan_g.pth --spk ./data_svc/`lora_speaker.npy` --wave test.wav
+- 2 Use whisper to extract content encoding; One-key reasoning is not used, in order to reduce the occupation of memory.
 
-The generated file is in the current directory svc_out.wav; at the same time, svc_out_pitch.wav is generated to visually display the pitch extraction results.
+    > python svc_inference_ppg.py -w test.wav -p test.ppg.npy
+
+    out file is test.ppg.npy；If the ppg file is not specified in the next step, the next step will automatically generate it.
+
+- 3 Specify parameters and inference
+
+    > python svc_inference.py --config config/maxgan.yaml --model maxgan_g.pth --spk ./data_svc/`lora_speaker.npy` --wave test.wav
+
+    The generated file is in the current directory `svc_out.wav`; at the same time, `svc_out_pitch.wav` is generated to visually display the pitch extraction results.
 
 **What** ? The resulting sound is not quite like it!
 
