@@ -143,7 +143,7 @@ https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-
 
 ## Frequency extension：16K->48K
 
-> python svc_bandex_gpu.py -w svc_out.wav or python svc_bandex.py -w svc_out.wav
+> python svc_bandex.py -w svc_out.wav
 
 Generate svc_out_48k.wav in the current directory
 
