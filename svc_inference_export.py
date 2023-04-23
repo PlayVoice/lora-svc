@@ -38,13 +38,16 @@ def save_model(model, checkpoint_path):
 def save_lora(model, checkpoint_path):
     if hasattr(model, 'module'):
         state_dict_adapter = model.module.adapter.state_dict()
-        state_dict_post = model.module.conv_post.state_dict()
+        state_dict_conv_post = model.module.conv_post.state_dict()
+        state_dict_activation_post = model.module.activation_post.state_dict()
     else:
         state_dict_adapter = model.adapter.state_dict()
-        state_dict_post = model.conv_post.state_dict()
+        state_dict_conv_post = model.conv_post.state_dict()
+        state_dict_activation_post = model.activation_post.state_dict()
     torch.save({
         'lora_adapter': state_dict_adapter,
-        'lora_post': state_dict_post
+        'lora_conv_post': state_dict_conv_post,
+        'lora_activation_post': state_dict_activation_post,
     }, checkpoint_path)
 
 

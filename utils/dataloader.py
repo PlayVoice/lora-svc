@@ -87,11 +87,12 @@ class FeatureFromDisk(Dataset):
         wav = torch.from_numpy(wav).unsqueeze(0)
         pit = np.load(pit)
         ppg = np.load(ppg)
-        pos = [1, 2]
+        pos = [1, 2, 3, 4, 5, 6]
         pos = np.tile(pos, ppg.shape[0])
-        ppg = np.repeat(ppg, 2, 0) # 320 PPG -> 160 * 2
+        ppg = np.repeat(ppg, 6, 0) # 20ms:16k:320 -> 20ms:48k:960 960/160=6
         spk = np.load(spk)
 
+        pit = np.repeat(pit, 3, 0) # 10ms:16k:160 -> 10ms:48k:480 480/160=3
         spk = torch.FloatTensor(spk)
         pit = torch.FloatTensor(pit)
         ppg = torch.FloatTensor(ppg)

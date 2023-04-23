@@ -1,3 +1,3 @@
 Path for:
 
-    maxgan_pretrain.pth
+    maxgan_pretrain_48K_5L.pth

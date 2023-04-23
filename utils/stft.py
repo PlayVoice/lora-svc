@@ -20,20 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import math
-import os
-import random
 import torch
 import torch.utils.data
-import numpy as np
-from librosa.util import normalize
-from scipy.io.wavfile import read
 from librosa.filters import mel as librosa_mel_fn
 
 
 class TacotronSTFT(torch.nn.Module):
     def __init__(self, filter_length=512, hop_length=160, win_length=512,
-                 n_mel_channels=80, sampling_rate=16000, mel_fmin=0.0,
+                 n_mel_channels=80, sampling_rate=48000, mel_fmin=0.0,
                  mel_fmax=None, center=False, device='cpu'):
         super(TacotronSTFT, self).__init__()
         self.n_mel_channels = n_mel_channels
@@ -102,3 +96,12 @@ class TacotronSTFT(torch.nn.Module):
 
     def dynamic_range_compression_torch(self, x, C=1, clip_val=1e-5):
         return torch.log(torch.clamp(x, min=clip_val) * C)
+
+
+if __name__ == '__main__':
+    from utils.dataloader import read_wav_np
+
+    stft = TacotronSTFT()
+    sr, wav = read_wav_np('test.wav')
+    wav = torch.from_numpy(wav).unsqueeze(0)
+    mel_real = stft.mel_spectrogram(wav)

@@ -65,14 +65,20 @@ def main(args):
     hp = OmegaConf.load(args.config)
     model = Generator(hp)
     load_svc_model(args.model, model)
+    model.eval()
+    model.to(device)
+
+    spk = np.load(args.spk)
+    spk = torch.FloatTensor(spk)
 
     ppg = np.load(args.ppg)
-    pos = [1, 2]
+    pos = [1, 2, 3, 4, 5, 6]
     pos = np.tile(pos, ppg.shape[0])
-    ppg = np.repeat(ppg, 2, 0)  # 320 PPG -> 160 * 2
+    ppg = np.repeat(ppg, 6, 0)  # 20ms:16k:320 -> 20ms:48k:960 960/160=6
     ppg = torch.FloatTensor(ppg)
 
     pit = compute_f0_nn(args.wave, device)
+    pit = np.repeat(pit, 3, 0) # 10ms:16k:160 -> 10ms:48k:480 480/160=3
     if (args.statics == None):
         print("don't use pitch shift")
     else:
@@ -97,9 +103,6 @@ def main(args):
     pit = torch.FloatTensor(pit)
     pos = torch.LongTensor(pos)
 
-    spk = np.load(args.spk)
-    spk = torch.FloatTensor(spk)
-
     len_pit = pit.size()[0]
     len_ppg = ppg.size()[0]
     len_min = min(len_pit, len_ppg)
@@ -107,8 +110,6 @@ def main(args):
     ppg = ppg[:len_min, :]
     pos = pos[:len_min]
 
-    model.eval(inference=True)
-    model.to(device)
     with torch.no_grad():
         spk = spk.unsqueeze(0).to(device)
         ppg = ppg.unsqueeze(0).to(device)
@@ -120,7 +121,6 @@ def main(args):
         pitwav = model.pitch2wav(pit)
         pitwav = pitwav.cpu().detach().numpy()
 
-    # audio = svc_reverb(audio)
     write("svc_out.wav", hp.audio.sampling_rate, audio)
     write("svc_out_pitch.wav", hp.audio.sampling_rate, pitwav)
 
@@ -131,10 +131,10 @@ if __name__ == '__main__':
                         help="yaml file for config.")
     parser.add_argument('-m', '--model', type=str, required=True,
                         help="path of model for evaluation")
-    parser.add_argument('-w', '--wave', type=str, required=True,
-                        help="Path of raw audio.")
     parser.add_argument('-s', '--spk', type=str, required=True,
                         help="Path of speaker.")
+    parser.add_argument('-w', '--wave', type=str, required=True,
+                        help="Path of raw audio.")
     parser.add_argument('-p', '--ppg', type=str,
                         help="Path of content vector.")
     parser.add_argument('-t', '--statics', type=str,

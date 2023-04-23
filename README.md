@@ -5,7 +5,7 @@
 <img alt="GitHub issues" src="https://img.shields.io/github/issues/PlayVoice/lora-svc">
 <img alt="GitHub" src="https://img.shields.io/github/license/PlayVoice/lora-svc">
 
-[【中文说明】](README_zh_CN.md) 【48K model will come soon】
+[【中文说明】](README_zh_CN.md)
 
 ```
 Black technology based on the three giants of artificial intelligence:
@@ -30,20 +30,25 @@ The following is the customization process base on pre-trained model.
 
 ## Train
 
-- 1 Data preparation, segment the audio into less than 30S (recommended about 10S/you need not follow the end of the sentence), convert the sampling rate to 16000Hz, and put the audio data in `./data_svc/waves`
+- 1 Data preparation, segment the audio into less than 30S (recommended about 10S/you need not follow the end of the sentence)
+
+    convert the sampling rate to `16000Hz`, and put the audio data in `./data_svc/waves-16k`
+
+    convert the sampling rate to `48000Hz`, and put the audio data in `./data_svc/waves-48k`
+
     > I think you can handle~~~
 
 - 2 Download the timbre encoder: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3) , unzip the file, put `best_model.pth.tar` into the directory `speaker_pretrain/`
 
     Extract the timbre of each audio file
     
-    > python svc_preprocess_speaker.py ./data_svc/waves ./data_svc/speaker
+    > python svc_preprocess_speaker.py ./data_svc/waves-16k ./data_svc/speaker
 
 - 3 Download the whisper model multiple [multiple language medium model](https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt), make sure the download is `medium.pt` , put it in the folder `whisper_pretrain/` , and extract the content code of each audio
 
     > sudo apt update && sudo apt install ffmpeg
 
-    > python svc_preprocess_ppg.py -w ./data_svc/waves -p ./data_svc/whisper
+    > python svc_preprocess_ppg.py -w ./data_svc/waves-16k -p ./data_svc/whisper
 
 - 4 Extract the pitch and generate the training file `filelist/train.txt` at the same time, cut the first 5 items of the train to make `filelist/eval.txt`
 
@@ -55,7 +60,7 @@ The following is the customization process base on pre-trained model.
 
     Generate two files, lora_speaker.npy and lora_pitch_statics.npy
 
-- 6 Download the pre-training model [maxgan_pretrain_16K_5L.pth](https://github.com/PlayVoice/lora-svc/releases/tag/v0.5.5) from the release page and put it in the `model_pretrain` folder. The pre-training model contains the generator and the discriminator
+- 6 Download the pre-training model [maxgan_pretrain_48K_5L.pth](https://github.com/PlayVoice/lora-svc/releases/tag/v0.5.5) from the release page and put it in the `model_pretrain` folder. The pre-training model contains the generator and the discriminator
 
     https://github.com/PlayVoice/lora-svc/blob/622fafca87d877a89717aeb09337afbadd885941/config/maxgan.yaml#L17
 
@@ -86,7 +91,11 @@ Your file directory should look like this~~~
     │     ├── 000001.spk.npy
     │     ├── 000002.spk.npy
     │     └── 000003.spk.npy
-    └── waves
+    └── waves-16k
+    │     ├── 000001.wav
+    │     ├── 000002.wav
+    │     └── 000003.wav
+    └── waves-48k
     │     ├── 000001.wav
     │     ├── 000002.wav
     │     └── 000003.wav
@@ -145,7 +154,7 @@ https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-
     > python svc_inference.py --config config/maxgan.yaml --model maxgan_g.pth --spk ./data_svc/lora_speaker.npy --statics ./data_svc/lora_pitch_statics.npy --wave test.wav
 
 
-## Frequency extension：16K->48K
+## Frequency extension：16K->48K `No Need For 48K Ver.`
 
 > python svc_bandex.py -w svc_out.wav
 

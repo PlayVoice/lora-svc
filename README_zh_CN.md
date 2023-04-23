@@ -30,22 +30,27 @@ https://user-images.githubusercontent.com/16432329/231021007-6e34cbb4-e256-491d-
 
 ## 训练
 
-- 1 数据准备，将音频切分小于30S（推荐10S左右/可以不依照句子结尾）， 转换采样率为16000Hz, 将音频数据放到 **./data_svc/waves**
+- 1 数据准备，将音频切分小于30S（推荐10S左右/可以不依照句子结尾）
+
+    转换采样率为`16000Hz`, 将音频数据放到 `./data_svc/waves-16k`
+
+    转换采样率为`48000Hz`, 将音频数据放到 `./data_svc/waves-48k`
+
     > 这个我想你会~~~
 
-- 2 下载音色编码器: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3), 解压文件，把 **best_model.pth.tar**  放到目录 **speaker_pretrain/**
+- 2 下载音色编码器: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3), 解压文件，把 `best_model.pth.tar`  放到目录 `speaker_pretrain/`
 
     提取每个音频文件的音色
     
-    > python svc_preprocess_speaker.py ./data_svc/waves ./data_svc/speaker
+    > python svc_preprocess_speaker.py ./data_svc/waves-16k ./data_svc/speaker
 
-- 3 下载whisper模型 [multiple language medium model](https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt), 确定下载的是**medium.pt**，把它放到文件夹 **whisper_pretrain/** 中，提取每个音频的内容编码
+- 3 下载whisper模型 [multiple language medium model](https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt), 确定下载的是`medium.pt`，把它放到文件夹 `whisper_pretrain/` 中，提取每个音频的内容编码
 
     > sudo apt update && sudo apt install ffmpeg
 
-    > python svc_preprocess_ppg.py -w ./data_svc/waves -p ./data_svc/whisper
+    > python svc_preprocess_ppg.py -w ./data_svc/waves-16k -p ./data_svc/whisper
 
-- 4 提取基音，同时生成训练文件 **filelist/train.txt**，剪切train的前5条用于制作**filelist/eval.txt**
+- 4 提取基音，同时生成训练文件 `filelist/train.txt`，剪切train的前5条用于制作`filelist/eval.txt`
 
     > python svc_preprocess_f0.py
 
@@ -55,7 +60,7 @@ https://user-images.githubusercontent.com/16432329/231021007-6e34cbb4-e256-491d-
 
     生成 lora_speaker.npy 和 lora_pitch_statics.npy 两个文件
 
-- 6 从release页面下载预训练模型**maxgan_pretrain_5L.pth**，放到model_pretrain文件夹中，预训练模型中包含了生成器和判别器
+- 6 从release页面下载预训练模型`maxgan_pretrain_48K_5L.pth`，放到model_pretrain文件夹中，预训练模型中包含了生成器和判别器
 
     https://github.com/PlayVoice/lora-svc/blob/622fafca87d877a89717aeb09337afbadd885941/config/maxgan.yaml#L17
 
@@ -82,7 +87,11 @@ https://user-images.githubusercontent.com/16432329/231021007-6e34cbb4-e256-491d-
     │     ├── 000001.spk.npy
     │     ├── 000002.spk.npy
     │     └── 000003.spk.npy
-    └── waves
+    └── waves-16k
+    │     ├── 000001.wav
+    │     ├── 000002.wav
+    │     └── 000003.wav
+    └── waves-48k
     │     ├── 000001.wav
     │     ├── 000002.wav
     │     └── 000003.wav
@@ -115,7 +124,7 @@ https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-
 
     > python svc_inference_export.py --config config/maxgan.yaml --checkpoint_path chkpt/lora/lora_0090.pt
 
-    导出的模型在当前文件夹maxgan_g.pth，文件大小为**54.3M**；maxgan_lora.pth为微调模块，文件大小为**0.94M**。
+    导出的模型在当前文件夹maxgan_g.pth，文件大小为`54.3M`；maxgan_lora.pth为微调模块，文件大小为`0.94M`。
 
 - 2 使用whisper提取内容编码，没有采用一键推理，为了降低显存占用
 
@@ -125,7 +134,7 @@ https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-
 
 - 3 指定参数，推理
 
-    > python svc_inference.py --config config/maxgan.yaml --model maxgan_g.pth --spk ./data_svc/**lora_speaker.npy** --wave test.wav --ppg test.ppg.npy
+    > python svc_inference.py --config config/maxgan.yaml --model maxgan_g.pth --spk ./data_svc/`lora_speaker.npy` --wave test.wav --ppg test.ppg.npy
 
     生成文件在当前目录svc_out.wav；同时生成svc_out_pitch.wav，用于直观显示基音提取结果。
 
@@ -142,7 +151,7 @@ https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-
     > python svc_inference.py --config config/maxgan.yaml --model maxgan_g.pth --spk ./data_svc/lora_speaker.npy --statics ./data_svc/lora_pitch_statics.npy --wave test.wav
 
 
-## 频率扩展：16K->48K
+## 频率扩展：16K->48K `48K版本用不上`
 
 > python svc_bandex.py -w svc_out.wav
 

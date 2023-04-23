@@ -14,20 +14,21 @@ train:
   mel_lamb: 5
   stft_lamb: 2.5
   lora: True
-  pretrain: 'model_pretrain/maxgan_pretrain_5L.pth'
+  pretrain: 'model_pretrain/maxgan_pretrain_48K_5L.pth'
 #############################
 audio:
-  n_mel_channels: 100
-  segment_length: 8000 # Should be multiple of 160
+  n_mel_channels: 80
+  segment_length: 12000 # Should be multiple of 160
   pad_short: 2000
   filter_length: 512
   hop_length: 160 # WARNING: this can't be changed.
   win_length: 512
-  sampling_rate: 16000
+  sampling_rate: 48000
   mel_fmin: 0.0
-  mel_fmax: 8000.0
+  mel_fmax: 24000.0
 #############################
 gen:
+  input_channels: 100
   upsample_rates: [5,4,2,2,2]
   upsample_kernel_sizes: [15,12,4,4,4]
   upsample_initial_channel: 512
@@ -53,8 +54,8 @@ dist_config:
 #############################
 log:
   summary_interval: 10
-  validation_interval: 10
-  save_interval: 10
+  eval_interval: 1000
+  save_interval: 1000
   num_audio: 5
   chkpt_dir: 'chkpt'
   log_dir: 'logs'

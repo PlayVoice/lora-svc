@@ -23,7 +23,7 @@ if __name__ == "__main__":
     os.makedirs("filelists", exist_ok=True)
     files = open("./filelists/train.txt", "w", encoding="utf-8")
 
-    rootPath = "./data_svc/waves/"
+    rootPath = "./data_svc/waves-16k/"
     outPath = "./data_svc/pitch/"
     os.makedirs(outPath, exist_ok=True)
 
@@ -34,15 +34,15 @@ if __name__ == "__main__":
             featur_pit = compute_f0(wav_path)
 
             np.save(
-                f"{outPath}//{file}.nsf",
+                f"{outPath}//{file}.pit",
                 featur_pit,
                 allow_pickle=False,
             )
 
             path_spk = "./data_svc/lora_speaker.npy"
-            path_wave = f"./data_svc/waves//{file}.wav"
-            path_pitch = f"./data_svc/pitch//{file}.nsf.npy"
-            path_whisper = f"./data_svc/whisper//{file}.ppg.npy"
+            path_wave = f"./data_svc/waves-48k/{file}.wav"
+            path_pitch = f"./data_svc/pitch/{file}.pit.npy"
+            path_whisper = f"./data_svc/whisper/{file}.ppg.npy"
             print(
                 f"{path_wave}|{path_pitch}|{path_whisper}|{path_spk}",
                 file=files,
