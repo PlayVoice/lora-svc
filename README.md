@@ -62,7 +62,7 @@ The following is the customization process base on pre-trained model.
 
 - 6 Download the pre-training model [maxgan_pretrain_48K_5L.pth](https://github.com/PlayVoice/lora-svc/releases/tag/v0.5.5) from the release page and put it in the `model_pretrain` folder. The pre-training model contains the generator and the discriminator
 
-    https://github.com/PlayVoice/lora-svc/blob/622fafca87d877a89717aeb09337afbadd885941/config/maxgan.yaml#L17
+    https://github.com/PlayVoice/lora-svc/blob/ebf227950d8d84351497e02fad978b71676f15a9/config/maxgan.yaml#L17
 
     > python svc_trainer.py -c config/maxgan.yaml -n lora
     
@@ -106,10 +106,10 @@ Your file directory should look like this~~~
 
 ## Train LoRA
 
-https://github.com/PlayVoice/lora-svc/blob/d3a1df57e6019c12513bb34e1bd5c8162d5e5055/config/maxgan.yaml#L16
+https://github.com/PlayVoice/lora-svc/blob/ebf227950d8d84351497e02fad978b71676f15a9/config/maxgan.yaml#L16
 
 
-https://github.com/PlayVoice/lora-svc/blob/d3a1df57e6019c12513bb34e1bd5c8162d5e5055/utils/train.py#L34-L35
+https://github.com/PlayVoice/lora-svc/blob/ebf227950d8d84351497e02fad978b71676f15a9/utils/train.py#L34-L35
 
 How to use
 
@@ -125,7 +125,7 @@ https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-
 ## Inference
 - 1 Export the generator, the discriminator will only be used in training
 
-    > python svc_inference_export.py --config config/maxgan.yaml --checkpoint_path chkpt/lora/lora_0090.pt
+    > python svc_inference_export.py --config config/maxgan.yaml --checkpoint_path chkpt/lora/lora_00001000.pt
 
     The exported model is in the current folder `maxgan_g.pth`, the file size is 54.3M ; `maxgan_lora.pth` is the fine-tuning module, the file size is 0.94M.
 
