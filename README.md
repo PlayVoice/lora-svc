@@ -5,7 +5,7 @@
 <img alt="GitHub issues" src="https://img.shields.io/github/issues/PlayVoice/lora-svc">
 <img alt="GitHub" src="https://img.shields.io/github/license/PlayVoice/lora-svc">
 
-[【中文说明】](README_zh_CN.md)
+[【中文说明】](README_zh_CN.md) 【48K model will come soon】
 
 ```
 Black technology based on the three giants of artificial intelligence:
@@ -55,7 +55,7 @@ The following is the customization process base on pre-trained model.
 
     Generate two files, lora_speaker.npy and lora_pitch_statics.npy
 
-- 6 Download the pre-training model [maxgan_pretrain_5L.pth](https://github.com/PlayVoice/lora-svc/releases/tag/v0.5.5) from the release page and put it in the `model_pretrain` folder. The pre-training model contains the generator and the discriminator
+- 6 Download the pre-training model [maxgan_pretrain_16K_5L.pth](https://github.com/PlayVoice/lora-svc/releases/tag/v0.5.5) from the release page and put it in the `model_pretrain` folder. The pre-training model contains the generator and the discriminator
 
     https://github.com/PlayVoice/lora-svc/blob/622fafca87d877a89717aeb09337afbadd885941/config/maxgan.yaml#L17
 
