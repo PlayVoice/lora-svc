@@ -64,6 +64,10 @@ The following is the customization process base on pre-trained model.
     Resume training
     
     > python svc_trainer.py -c config/maxgan.yaml -n lora -p chkpt/lora/***.pth
+    
+    Check state
+    
+    > tensorboard --logdir logs/
 
 
 Your file directory should look like this~~~
