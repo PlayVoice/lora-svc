@@ -5,7 +5,7 @@
 <img alt="GitHub issues" src="https://img.shields.io/github/issues/PlayVoice/lora-svc">
 <img alt="GitHub" src="https://img.shields.io/github/license/PlayVoice/lora-svc">
 
-[【中文说明】](README_zh_CN.md)
+[【中文说明】](README_zh_CN.md)[【48K模型重构完成，训练中~】](https://github.com/PlayVoice/lora-svc/tree/lora-svc-for-pretrain-48k)
 
 ```
 Black technology based on the three giants of artificial intelligence:
