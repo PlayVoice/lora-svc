@@ -13,7 +13,7 @@ train:
     beta2: 0.99
   mel_lamb: 5
   stft_lamb: 2.5
-  lora: True
+  lora: False
   pretrain: 'model_pretrain/maxgan_pretrain_48K_5L.pth'
 #############################
 audio:
