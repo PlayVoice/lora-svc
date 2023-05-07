@@ -30,13 +30,15 @@ https://user-images.githubusercontent.com/16432329/231021007-6e34cbb4-e256-491d-
 
 ## 训练
 
-- 1 数据准备，将音频切分小于30S（推荐10S左右/可以不依照句子结尾）
+- 1 数据准备，将原始音频数据放到 `./data_svc/waves-raw` 目录下
 
-    转换采样率为`16000Hz`, 将音频数据放到 `./data_svc/waves-16k`
+    转换采样率为`16000Hz`
+    
+    > python svc_preprocess_wav.py --out_dir ./data_svc/waves-16k --sr 16000
 
     转换采样率为`48000Hz`, 将音频数据放到 `./data_svc/waves-48k`
 
-    > 这个我想你会~~~
+    > python svc_preprocess_wav.py --out_dir ./data_svc/waves-48k --sr 48000
 
 - 2 下载音色编码器: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3), 解压文件，把 `best_model.pth.tar`  放到目录 `speaker_pretrain/`
 
