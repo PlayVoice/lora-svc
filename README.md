@@ -30,13 +30,15 @@ The following is the customization process base on pre-trained model.
 
 ## Train
 
-- 1 Data preparation, segment the audio into less than 30S (recommended about 10S/you need not follow the end of the sentence)
+- 1 Data preparation: place the original audio data in the `./data_svc/waves-raw` directory.
 
-    convert the sampling rate to `16000Hz`, and put the audio data in `./data_svc/waves-16k`
+    convert the sampling rate to `16000Hz`
 
-    convert the sampling rate to `48000Hz`, and put the audio data in `./data_svc/waves-48k`
+    > python svc_preprocess_wav.py --out_dir ./data_svc/waves-16k --sr 16000
 
-    > I think you can handle~~~
+    convert the sampling rate to `48000Hz`
+
+    > python svc_preprocess_wav.py --out_dir ./data_svc/waves-48k --sr 48000
 
 - 2 Download the timbre encoder: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3) , unzip the file, put `best_model.pth.tar` into the directory `speaker_pretrain/`
 
