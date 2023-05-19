@@ -124,7 +124,7 @@ class Generator(torch.nn.Module):
         har_source = self.m_source(f0)
         har_source = har_source.transpose(1, 2)
         # pre conv
-        # x = x + torch.randn_like(x)       # for last train
+        x = x + torch.randn_like(x)         # Perturbation
         x = self.cond_pre(x)                # [B, L, D]
         p = self.cond_pos(pos)
         x = x + p
