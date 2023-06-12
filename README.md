@@ -14,163 +14,178 @@ Nvidia's bigvgan, anti-aliasing for speech generation
 
 Microsoft's adapter, high-efficiency for fine-tuning
 ```
-Open source plug-in singing voice library model, based on the LoRA principle:
-
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/16432329/225337790-392b958a-67ec-4643-b26a-018ee8e4cf56.jpg" />
-</p>
-
-Train the model from scratch based on a large amount of data, using the branch: [lora-svc-for-pretrain](https://github.com/PlayVoice/lora-svc/tree/lora-svc-for-pretrain)
 
 https://user-images.githubusercontent.com/16432329/231021007-6e34cbb4-e256-491d-8ab6-5ce4e822da21.mp4
 
-The following is the customization process base on pre-trained model.
+
+## Dataset preparation
+
+Necessary pre-processing:
+- 1 accompaniment separation
+- 2 band extension
+- 3 sound quality improvement
+- 4 cut audio, less than 30 seconds for whisper💗
+
+then put the dataset into the dataset_raw directory according to the following file structure
+```shell
+dataset_raw
+├───speaker0
+│   ├───000001.wav
+│   ├───...
+│   └───000xxx.wav
+└───speaker1
+    ├───000001.wav
+    ├───...
+    └───000xxx.wav
+```
+
+## Install dependencies
+
+- 1 software dependency
+  
+  > apt update && sudo apt install ffmpeg
+  
+  > pip install -r requirements.txt
+
+- 2 download the Timbre Encoder: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3), put `best_model.pth.tar`  into `speaker_pretrain/`
+
+- 3 download whisper model [multiple language medium model](https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt), Make sure to download `medium.pt`，put it into `whisper_pretrain/`
+
+- 4 whisper is built-in, do not install it additionally, it will conflict and report an error
+
+## Data preprocessing
+- 1， set working directory:
+
+    > export PYTHONPATH=$PWD
+
+- 2， re-sampling
+
+    generate audio with a sampling rate of 16000Hz：./data_svc/waves-16k
+
+    > python prepare/preprocess_a.py -w ./dataset_raw -o ./data_svc/waves-16k -s 16000
+
+    generate audio with a sampling rate of 32000Hz：./data_svc/waves-32k
+
+    > python prepare/preprocess_a.py -w ./dataset_raw -o ./data_svc/waves-32k -s 32000
+
+- 3， use 16K audio to extract pitch：f0_ceil=900, it needs to be modified according to the highest pitch of your data
+    > python prepare/preprocess_f0.py -w data_svc/waves-16k/ -p data_svc/pitch
+
+    or use next for low quality audio
+
+    > python prepare/preprocess_f0_crepe.py -w data_svc/waves-16k/ -p data_svc/pitch
+
+- 4， use 16K audio to extract ppg
+    > python prepare/preprocess_ppg.py -w data_svc/waves-16k/ -p data_svc/whisper
+
+- 5， use 16k audio to extract timbre code
+    > python prepare/preprocess_speaker.py data_svc/waves-16k/ data_svc/speaker
+
+- 6， extract the average value of the timbre code for inference; it can also replace a single audio timbre in generating the training index, and use it as the unified timbre of the speaker for training
+    > python prepare/preprocess_speaker_ave.py data_svc/speaker/ data_svc/singer
+
+- 7， use 32k audio to generate training index
+    > python prepare/preprocess_train.py
+
+- 8， training file debugging
+    > python prepare/preprocess_zzz.py
+
+```shell
+data_svc/
+└── waves-16k
+│    └── speaker0
+│    │      ├── 000001.wav
+│    │      └── 000xxx.wav
+│    └── speaker1
+│           ├── 000001.wav
+│           └── 000xxx.wav
+└── waves-32k
+│    └── speaker0
+│    │      ├── 000001.wav
+│    │      └── 000xxx.wav
+│    └── speaker1
+│           ├── 000001.wav
+│           └── 000xxx.wav
+└── pitch
+│    └── speaker0
+│    │      ├── 000001.pit.npy
+│    │      └── 000xxx.pit.npy
+│    └── speaker1
+│           ├── 000001.pit.npy
+│           └── 000xxx.pit.npy
+└── whisper
+│    └── speaker0
+│    │      ├── 000001.ppg.npy
+│    │      └── 000xxx.ppg.npy
+│    └── speaker1
+│           ├── 000001.ppg.npy
+│           └── 000xxx.ppg.npy
+└── speaker
+│    └── speaker0
+│    │      ├── 000001.spk.npy
+│    │      └── 000xxx.spk.npy
+│    └── speaker1
+│           ├── 000001.spk.npy
+│           └── 000xxx.spk.npy
+└── singer
+    ├── speaker0.spk.npy
+    └── speaker1.spk.npy
+```
 
 ## Train
+- 0， if fine-tuning based on the pre-trained model, you need to download the pre-trained model: maxgan_pretrain_32K.pth
 
-- 1 Data preparation: place the original audio data in the `./data_svc/waves-raw` directory.
+    > set pretrain: "./maxgan_pretrain_32K.pth" in configs/maxgan.yaml，and adjust the learning rate appropriately, eg 1e-5
 
-    convert the sampling rate to `16000Hz`
+- 1， set working directory
 
-    > python svc_preprocess_wav.py --out_dir ./data_svc/waves-16k --sr 16000
+    > export PYTHONPATH=$PWD
 
-    convert the sampling rate to `48000Hz`
+- 2， start training
 
-    > python svc_preprocess_wav.py --out_dir ./data_svc/waves-48k --sr 48000
+    > python svc_trainer.py -c configs/maxgan.yaml -n svc
 
-- 2 Download the timbre encoder: [Speaker-Encoder by @mueller91](https://drive.google.com/drive/folders/15oeBYf6Qn1edONkVLXe82MzdIi3O_9m3) , unzip the file, put `best_model.pth.tar` into the directory `speaker_pretrain/`
+- 3， resume training
 
-    Extract the timbre of each audio file
-    
-    > python svc_preprocess_speaker.py ./data_svc/waves-16k ./data_svc/speaker
+    > python svc_trainer.py -c configs/maxgan.yaml -n svc -p chkpt/svc/***.pth
 
-- 3 Download the whisper model multiple [multiple language medium model](https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt), make sure the download is `medium.pt` , put it in the folder `whisper_pretrain/` , and extract the content code of each audio
+- 4， view log
 
-    > sudo apt update && sudo apt install ffmpeg
-
-    > python svc_preprocess_ppg.py -w ./data_svc/waves-16k -p ./data_svc/whisper
-
-- 4 Extract the pitch and generate the training file `filelist/train.txt` at the same time, cut the first 5 items of the train to make `filelist/eval.txt`
-
-    > python svc_preprocess_f0.py
-
-- 5 Take the average of all audio timbres as the timbre of the target speaker, and complete the sound field analysis
-    
-    > python svc_preprocess_speaker_lora.py ./data_svc/
-
-    Generate two files, lora_speaker.npy and lora_pitch_statics.npy
-
-- 6 Download the pre-training model [maxgan_pretrain_48K_5L.pth](https://github.com/PlayVoice/lora-svc/releases/tag/v0.5.5) from the release page and put it in the `model_pretrain` folder. The pre-training model contains the generator and the discriminator
-
-    https://github.com/PlayVoice/lora-svc/blob/ebf227950d8d84351497e02fad978b71676f15a9/config/maxgan.yaml#L17
-
-    > python svc_trainer.py -c config/maxgan.yaml -n lora
-    
-    Resume training
-    
-    > python svc_trainer.py -c config/maxgan.yaml -n lora -p chkpt/lora/***.pth
-    
-    Check state
-    
     > tensorboard --logdir logs/
 
-
-Your file directory should look like this~~~
-
-    data_svc/
-    │
-    └── lora_speaker.npy
-    │
-    └── lora_pitch_statics.npy
-    │
-    └── pitch
-    │     ├── 000001.pit.npy
-    │     ├── 000002.pit.npy
-    │     └── 000003.pit.npy
-    └── speakers
-    │     ├── 000001.spk.npy
-    │     ├── 000002.spk.npy
-    │     └── 000003.spk.npy
-    └── waves-16k
-    │     ├── 000001.wav
-    │     ├── 000002.wav
-    │     └── 000003.wav
-    └── waves-48k
-    │     ├── 000001.wav
-    │     ├── 000002.wav
-    │     └── 000003.wav
-    └── whisper
-          ├── 000001.ppg.npy
-          ├── 000002.ppg.npy
-          └── 000003.ppg.npy
-
-## Train LoRA
-
-https://github.com/PlayVoice/lora-svc/blob/ebf227950d8d84351497e02fad978b71676f15a9/config/maxgan.yaml#L16
-
-
-https://github.com/PlayVoice/lora-svc/blob/ebf227950d8d84351497e02fad978b71676f15a9/utils/train.py#L34-L35
-
-How to use
-
-- Use for extremely low resources to prevent overfitting
-
-- Use for plug-in sound library development
-
-- Do not use for other
-
-## egs: log of using 50 sentences and training for ten minutes
-https://user-images.githubusercontent.com/16432329/228889388-d7658930-6187-48a8-af37-74096d41c018.mp4
-
 ## Inference
-- 1 Export the generator, the discriminator will only be used in training
 
-    > python svc_inference_export.py --config config/maxgan.yaml --checkpoint_path chkpt/lora/lora_00001000.pt
+- 1， set working directory
 
-    The exported model is in the current folder `maxgan_g.pth`, the file size is 54.3M ; `maxgan_lora.pth` is the fine-tuning module, the file size is 0.94M.
+    > export PYTHONPATH=$PWD
 
-- 2 Use whisper to extract content encoding; One-key reasoning is not used, in order to reduce the occupation of memory.
+- 2， export inference model
 
-    > python svc_inference_ppg.py -w test.wav -p test.ppg.npy
+    > python svc_export.py --config configs/maxgan.yaml --checkpoint_path chkpt/svc/***.pt
 
-    out file is test.ppg.npy；If the ppg file is not specified in the next step, the next step will automatically generate it.
+- 3， use whisper to extract content encoding, without using one-click reasoning, in order to reduce GPU memory usage
 
-- 3 Specify parameters and inference
+    > python whisper/inference.py -w test.wav -p test.ppg.npy
 
-    > python svc_inference.py --config config/maxgan.yaml --model maxgan_g.pth --spk ./data_svc/`lora_speaker.npy` --wave test.wav
+    generate test.ppg.npy; if no ppg file is specified in the next step, generate it automatically
 
-    The generated file is in the current directory `svc_out.wav`; at the same time, `svc_out_pitch.wav` is generated to visually display the pitch extraction results.
+- 4， extract the F0 parameter to the csv text format, open the csv file in Excel, and manually modify the wrong F0 according to Audition or SonicVisualiser
 
-**What** ? The resulting sound is not quite like it!
+    > python pitch/inference.py -w test.wav -p test.csv
 
-- 1 Statistics of the speaker's vocal range
+- 5，specify parameters and infer
 
-    Step 5 of training generates: lora_pitch_statics.npy
+    > python svc_inference.py --config configs/maxgan.yaml --model maxgan_g.pth --spk ./configs/singers/singer0001.npy --wave test.wav --ppg test.ppg.npy --pit test.csv
 
-- 2 Inferring with the range offset
+    when --ppg is specified, when the same audio is reasoned multiple times, it can avoid repeated extraction of audio content codes; if it is not specified, it will be automatically extracted;
 
-    Specify the pitch parameter:
-    
-    > python svc_inference.py --config config/maxgan.yaml --model maxgan_g.pth --spk ./data_svc/lora_speaker.npy --statics ./data_svc/lora_pitch_statics.npy --wave test.wav
+    when --pit is specified, the manually tuned F0 parameter can be loaded; if not specified, it will be automatically extracted;
 
+    generate files in the current directory:svc_out.wav
 
-## Frequency extension：16K->48K `No Need For 48K Ver.`
-
-> python svc_bandex.py -w svc_out.wav
-
-Generate svc_out_48k.wav in the current directory
-
-## Sound Quality Enhancement
-
-Download the pretrained vocoder-based enhancer from the [DiffSinger Community Vocoder Project](https://openvpi.github.io/vocoders) and extract it to a folder `nsf_hifigan_pretrain/`.
-
-NOTE: You should download the zip file with `nsf_hifigan` in the name, not `nsf_hifigan_finetune`.
-
-Copy the svc_out_48k.wav generated after frequency expansion to path\to\input\wavs, run
-
-> python svc_val_nsf_hifigan.py
-
-Generate enhanced files in path\to\output\wavs
+    | args |--config | --model | --spk | --wave | --ppg | --pit | --shift |
+    | ---  | --- | --- | --- | --- | --- | --- | --- |
+    | name | config path | model path | speaker | wave input | wave ppg | wave pitch | pitch shift |
 
 ## Source of code and References
 [Adapter-Based Extension of Multi-Speaker Text-to-Speech Model for New Speakers](https://arxiv.org/abs/2211.00585)
@@ -184,12 +199,6 @@ https://github.com/mindslab-ai/univnet [[paper]](https://arxiv.org/abs/2106.0788
 https://github.com/openai/whisper/ [[paper]](https://arxiv.org/abs/2212.04356)
 
 https://github.com/NVIDIA/BigVGAN [[paper]](https://arxiv.org/abs/2206.04658)
-
-https://github.com/brentspell/hifi-gan-bwe
-
-https://github.com/openvpi/DiffSinger
-
-https://github.com/chenwj1989/pafx
 
 ## Contributor
 
