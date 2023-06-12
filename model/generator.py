@@ -114,14 +114,15 @@ class Generator(torch.nn.Module):
         # weight initialization
         self.ups.apply(init_weights)
 
-    def forward(self, spk, x, f0):
+    def forward(self, spk, x, f0, train=True):
         # nsf
         f0 = f0[:, None]
         f0 = self.f0_upsamp(f0).transpose(1, 2)
         har_source = self.m_source(f0)
         har_source = har_source.transpose(1, 2)
         # pre conv
-        x = x + torch.randn_like(x)         # Perturbation
+        if train:
+            x = x + torch.randn_like(x)     # Perturbation
         x = torch.transpose(x, 1, -1)       # [B, D, L]
         x = self.conv_pre(x)
         x = x * torch.tanh(F.softplus(x))
@@ -164,7 +165,7 @@ class Generator(torch.nn.Module):
 
     def inference(self, spk, ppg, f0):
         MAX_WAV_VALUE = 32768.0
-        audio = self.forward(spk, ppg, f0)
+        audio = self.forward(spk, ppg, f0, False)
         audio = audio.squeeze()  # collapse all dimension except time axis
         audio = MAX_WAV_VALUE * audio
         audio = audio.clamp(min=-MAX_WAV_VALUE, max=MAX_WAV_VALUE-1)
