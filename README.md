@@ -15,6 +15,8 @@ Nvidia's bigvgan, anti-aliasing for speech generation
 Microsoft's adapter, high-efficiency for fine-tuning
 ```
 
+use pretrain model to fine tune
+
 https://user-images.githubusercontent.com/16432329/231021007-6e34cbb4-e256-491d-8ab6-5ce4e822da21.mp4
 
 
@@ -133,7 +135,7 @@ data_svc/
 ```
 
 ## Train
-- 0， if fine-tuning based on the pre-trained model, you need to download the pre-trained model: maxgan_pretrain_32K.pth
+- 0， if fine-tuning based on the pre-trained model, you need to download the pre-trained model: [maxgan_pretrain_32K.pth](https://github.com/PlayVoice/lora-svc/releases/download/v_final/maxgan_pretrain_32K.pth)
 
     > set pretrain: "./maxgan_pretrain_32K.pth" in configs/maxgan.yaml，and adjust the learning rate appropriately, eg 1e-5
 
