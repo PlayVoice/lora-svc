@@ -14,6 +14,7 @@ train:
   mel_lamb: 5
   stft_lamb: 2.5
   pretrain: ''
+  lora: False
 #############################
 audio:
   n_mel_channels: 100

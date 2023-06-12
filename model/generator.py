@@ -185,3 +185,11 @@ class Generator(torch.nn.Module):
         audio = audio.short()
         return audio
 
+    def train_lora(self):
+        print("~~~train_lora~~~")
+        for p in self.parameters():
+           p.requires_grad = False
+        for p in self.adapter.parameters():
+           p.requires_grad = True
+        for p in self.resblocks.parameters():
+           p.requires_grad = True
