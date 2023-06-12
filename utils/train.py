@@ -204,16 +204,16 @@ def train(rank, args, chkpt_path, hp, hp_str):
                 with torch.no_grad():
                     validate(hp, args, model_g, model_d, valloader, stft, writer, step, device)
 
-        if rank == 0 and epoch % hp.log.save_interval == 0:
-            save_path = os.path.join(pt_dir, '%s_%04d.pt'
-                                     % (args.name, epoch))
-            torch.save({
-                'model_g': (model_g.module if args.num_gpus > 1 else model_g).state_dict(),
-                'model_d': (model_d.module if args.num_gpus > 1 else model_d).state_dict(),
-                'optim_g': optim_g.state_dict(),
-                'optim_d': optim_d.state_dict(),
-                'step': step,
-                'epoch': epoch,
-                'hp_str': hp_str,
-            }, save_path)
-            logger.info("Saved checkpoint to: %s" % save_path)
+            if rank == 0 and step % hp.log.save_interval == 0:
+                save_path = os.path.join(pth_dir, '%s_%08d.pt'
+                                         % (args.name, step))
+                torch.save({
+                    'model_g': (model_g.module if args.num_gpus > 1 else model_g).state_dict(),
+                    'model_d': (model_d.module if args.num_gpus > 1 else model_d).state_dict(),
+                    'optim_g': optim_g.state_dict(),
+                    'optim_d': optim_d.state_dict(),
+                    'step': step,
+                    'epoch': epoch,
+                    'hp_str': hp_str,
+                }, save_path)
+                logger.info("Saved checkpoint to: %s" % save_path)

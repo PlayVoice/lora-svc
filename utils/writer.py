@@ -21,8 +21,8 @@ class MyWriter(SummaryWriter):
     def log_validation(self, mel_loss, generator, discriminator, step):
         self.add_scalar('validation/mel_loss', mel_loss, step)
 
-        self.log_histogram(generator, step)
-        self.log_histogram(discriminator, step)
+        # self.log_histogram(generator, step)
+        # self.log_histogram(discriminator, step)
         if self.is_first:
             self.is_first = False
 

@@ -24,7 +24,7 @@ Necessary pre-processing:
 - 1 accompaniment separation
 - 2 band extension
 - 3 sound quality improvement
-- 4 cut audio, less than 30 seconds for whisper💗
+- 4 cut audio, less than 30 seconds for whisper
 
 then put the dataset into the dataset_raw directory according to the following file structure
 ```shell
@@ -88,7 +88,7 @@ dataset_raw
     > python prepare/preprocess_train.py
 
 - 8， training file debugging
-    > python prepare/preprocess_zzz.py
+    > python prepare/preprocess_zzz.py -c configs/maxgan.yaml
 
 ```shell
 data_svc/
