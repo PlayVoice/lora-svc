@@ -1,10 +1,10 @@
 data:
-  train_file: 'filelists/train.txt'
-  val_file: 'filelists/eval.txt'
+  train_file: 'files/train.txt'
+  val_file: 'files/valid.txt'
 #############################
 train:
-  num_workers: 0
-  batch_size: 4
+  num_workers: 4
+  batch_size: 8
   optimizer: 'adam'
   seed: 1234
   adam:
@@ -13,25 +13,23 @@ train:
     beta2: 0.99
   mel_lamb: 5
   stft_lamb: 2.5
-  lora: False
-  pretrain: 'model_pretrain/maxgan_pretrain_48K_5L.pth'
+  pretrain: ''
 #############################
 audio:
-  n_mel_channels: 80
-  segment_length: 12000 # Should be multiple of 160
-  pad_short: 2000
-  filter_length: 512
-  hop_length: 160 # WARNING: this can't be changed.
-  win_length: 512
-  sampling_rate: 48000
-  mel_fmin: 0.0
-  mel_fmax: 24000.0
+  n_mel_channels: 100
+  segment_length: 12800 # Should be multiple of 320
+  filter_length: 1024
+  hop_length: 320 # WARNING: this can't be changed.
+  win_length: 1024
+  sampling_rate: 32000
+  mel_fmin: 50.0
+  mel_fmax: 16000.0
 #############################
 gen:
-  input_channels: 100
-  upsample_rates: [5,4,2,2,2]
-  upsample_kernel_sizes: [15,12,4,4,4]
-  upsample_initial_channel: 512
+  ppg_channels: 1024
+  upsample_rates: [5,4,2,2,2,2]
+  upsample_kernel_sizes: [15,8,4,4,4,4]
+  upsample_initial_channel: 320
   resblock_kernel_sizes: [3,7,11]
   resblock_dilation_sizes: [[1,3,5], [1,3,5], [1,3,5]]
 #############################
@@ -43,7 +41,7 @@ mpd:
   lReLU_slope: 0.2
 #############################
 mrd:
-  resolutions: "[(1024, 120, 600), (2048, 240, 1200), (512, 50, 240)]" # (filter_length, hop_length, win_length)
+  resolutions: "[(1024, 120, 600), (2048, 240, 1200), (4096, 480, 2400), (512, 50, 240)]" # (filter_length, hop_length, win_length)
   use_spectral_norm: False
   lReLU_slope: 0.2
 #############################
@@ -53,9 +51,9 @@ dist_config:
   world_size: 1
 #############################
 log:
-  summary_interval: 10
-  eval_interval: 1000
-  save_interval: 1000
-  num_audio: 5
-  chkpt_dir: 'chkpt'
+  info_interval: 100
+  eval_interval: 1
+  save_interval: 5
+  num_audio: 6
+  pth_dir: 'chkpt'
   log_dir: 'logs'

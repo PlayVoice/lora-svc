@@ -10,14 +10,13 @@ def validate(hp, args, generator, discriminator, valloader, stft, writer, step, 
 
     loader = tqdm.tqdm(valloader, desc='Validation loop')
     mel_loss = 0.0
-    for idx, (spk, ppg, pos, pit, audio) in enumerate(loader):
+    for idx, (spk, ppg, pit, audio) in enumerate(loader):
         spk = spk.to(device)
         ppg = ppg.to(device)
-        pos = pos.to(device)
         pit = pit.to(device)
         audio = audio.to(device)
 
-        fake_audio = generator(spk, ppg, pos, pit)[:,:,:audio.size(2)]
+        fake_audio = generator(spk, ppg, pit)[:,:,:audio.size(2)]
 
         mel_fake = stft.mel_spectrogram(fake_audio.squeeze(1))
         mel_real = stft.mel_spectrogram(audio.squeeze(1))

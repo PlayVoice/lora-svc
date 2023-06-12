@@ -1,5 +1,0 @@
-./data_svc/waves-48k/maolei0053.wav|./data_svc/pitch/maolei0053.pit.npy|./data_svc/whisper//maolei0053.ppg.npy|./data_svc/lora_speaker.npy
-./data_svc/waves-48k/maolei0054.wav|./data_svc/pitch/maolei0054.pit.npy|./data_svc/whisper//maolei0054.ppg.npy|./data_svc/lora_speaker.npy
-./data_svc/waves-48k/maolei0055.wav|./data_svc/pitch/maolei0055.pit.npy|./data_svc/whisper//maolei0055.ppg.npy|./data_svc/lora_speaker.npy
-./data_svc/waves-48k/maolei0058.wav|./data_svc/pitch/maolei0058.pit.npy|./data_svc/whisper//maolei0058.ppg.npy|./data_svc/lora_speaker.npy
-./data_svc/waves-48k/maolei0060.wav|./data_svc/pitch/maolei0060.pit.npy|./data_svc/whisper//maolei0060.ppg.npy|./data_svc/lora_speaker.npy

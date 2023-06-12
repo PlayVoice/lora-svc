@@ -39,7 +39,6 @@ def create_dataloader(hp, train):
                           num_workers=hp.train.num_workers, pin_memory=True, drop_last=False)
 
 
-
 class FeatureFromDisk(Dataset):
     def __init__(self, hp, train):
         self.hp = hp
@@ -87,16 +86,12 @@ class FeatureFromDisk(Dataset):
         wav = torch.from_numpy(wav).unsqueeze(0)
         pit = np.load(pit)
         ppg = np.load(ppg)
-        pos = [1, 2, 3, 4, 5, 6]
-        pos = np.tile(pos, ppg.shape[0])
-        ppg = np.repeat(ppg, 6, 0) # 20ms:16k:320 -> 20ms:48k:960 960/160=6
+        ppg = np.repeat(ppg, 2, 0)  # 20ms -> 10ms * 2
         spk = np.load(spk)
 
-        pit = np.repeat(pit, 3, 0) # 10ms:16k:160 -> 10ms:48k:480 480/160=3
         spk = torch.FloatTensor(spk)
         pit = torch.FloatTensor(pit)
         ppg = torch.FloatTensor(ppg)
-        pos = torch.LongTensor(pos)
 
         len_pit = pit.size()[0]
         len_ppg = ppg.size()[0]
@@ -105,17 +100,15 @@ class FeatureFromDisk(Dataset):
 
         pit = pit[:len_min]
         ppg = ppg[:len_min, :]
-        pos = pos[:len_min]
         wav = wav[:, :len_wav]
         if self.train:
             max_frame_start = ppg.size(0) - self.frame_segment_length - 1
             frame_start = random.randint(0, max_frame_start)
             frame_end = frame_start + self.frame_segment_length
-            ppg = ppg[frame_start:frame_end,:]
-            pos = pos[frame_start:frame_end]
+            ppg = ppg[frame_start:frame_end, :]
             pit = pit[frame_start:frame_end]
 
             wav_start = frame_start * self.hp.audio.hop_length
             wav_len = self.hp.audio.segment_length
             wav = wav[:, wav_start:wav_start + wav_len]
-        return spk, ppg, pos, pit, wav
+        return spk, ppg, pit, wav
