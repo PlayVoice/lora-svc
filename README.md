@@ -155,6 +155,8 @@ data_svc/
 
     > tensorboard --logdir logs/
 
+![final_model_loss](https://github.com/PlayVoice/lora-svc/assets/16432329/60b6f141-e20e-4a13-ac98-669efbf10472)
+
 ## Inference
 
 - 1， set working directory
