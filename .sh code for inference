@@ -1,0 +1,58 @@
+convert_to_wav() {
+  # get the file name and extension
+  file_name=$(basename $1)
+  file_ext=${file_name##*.}
+
+  # check if the file extension is wav
+  if [ $file_ext = "wav" ]; then
+    # no need to convert, just return the original file name
+    echo $file_name
+  else
+    # use ffmpeg to convert the file to wav format
+    new_file_name=${file_name%.*}.wav
+    ffmpeg -i $1 -acodec pcm_s16le -ac 1 -ar 16000 $new_file_name
+    echo $new_file_name
+  fi
+}
+
+# define a function that takes a wav file as an argument and runs all the commands
+run_all() {
+  # set working directory
+  export PYTHONPATH=$PWD
+
+  # export inference model
+  python3 svc_export.py --config configs/maxgan.yaml --checkpoint_path chkpt/svc/svc_00041000.pt
+
+  # use whisper to extract content encoding, without using one-click reasoning, in order to reduce GPU memory usage
+  python3 whisper/inference.py -w $1 -p $1.ppg.npy
+
+  # export LD_LIBRARY_PATH
+  export LD_LIBRARY_PATH=/usr/lib/wsl/lib:$LD_LIBRARY_PATH
+
+  # extract the F0 parameter to the csv text format, open the csv file in Excel, and manually modify the wrong F0 according to Audition or SonicVisualiser
+  python3 pitch/inference.py -w $1 -p $1.csv
+
+  # specify parameters and infer
+  python3 svc_inference.py --config configs/maxgan.yaml --model maxgan_g.pth --spk ./configs/singers/aaq20minute.spk.npy --wave $1 --ppg $1.ppg.npy --pit $1.csv
+
+  # rename the output file to include the input file name
+  new_file_name=svc_aaq_out_$1
+  mv svc_out.wav $new_file_name
+}
+
+# ask the user for the input file name and convert it to wav format if needed
+read -p "Enter the input file name (with extension): " input_file
+wav_file=$(convert_to_wav $input_file)
+
+# call the function with the wav file name as an argument
+run_all $wav_file
+
+# ask the user if they want to process another file and repeat until they say no
+while true; do
+  read -p "Do you want to process another file? (y/n): " answer
+  case $answer in
+    [Yy]* ) read -p "Enter the input file name (with extension): " input_file; wav_file=$(convert_to_wav $input_file); run_all $wav_file;;
+    [Nn]* ) break;;
+    * ) echo "Please answer y or n.";;
+  esac
+done
