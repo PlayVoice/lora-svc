@@ -15,44 +15,105 @@ convert_to_wav() {
   fi
 }
 
-# define a function that takes a wav file as an argument and runs all the commands
-run_all() {
-  # set working directory
-  export PYTHONPATH=$PWD
+# define a function that finds the highest numbered checkpoint file in a given directory
+find_highest_checkpoint() {
+  # get the directory name
+  dir_name=$1
 
-  # export inference model
-  python3 svc_export.py --config configs/maxgan.yaml --checkpoint_path chkpt/svc/svc_00041000.pt
+  # initialize the highest number and file name variables
+  highest_number=0
+  highest_file=""
+
+  # loop through all the files in the directory
+  for file in $dir_name/*; do
+    # get the file name and extension
+    file_name=$(basename $file)
+    file_ext=${file_name##*.}
+
+    # check if the file extension is pt
+    if [ $file_ext = "pt" ]; then
+      # extract the number from the file name
+      number=${file_name%.pt}
+      number=${number##*_}
+
+      # compare the number with the highest number so far
+      if [ $number -gt $highest_number ]; then
+        # update the highest number and file name variables
+        highest_number=$number
+        highest_file=$file
+      fi
+    fi
+  done
+
+  # return the highest file name
+  echo $highest_file
+}
+
+# define a function that takes a wav file as an argument and runs all the commands with a given spk file name 
+run_all() {
+  # set working directory and LD_LIBRARY_PATH variables using global variables defined earlier
+  export PYTHONPATH=$WORKING_DIR
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH
 
   # use whisper to extract content encoding, without using one-click reasoning, in order to reduce GPU memory usage
   python3 whisper/inference.py -w $1 -p $1.ppg.npy
 
-  # export LD_LIBRARY_PATH
-  export LD_LIBRARY_PATH=/usr/lib/wsl/lib:$LD_LIBRARY_PATH
-
   # extract the F0 parameter to the csv text format, open the csv file in Excel, and manually modify the wrong F0 according to Audition or SonicVisualiser
   python3 pitch/inference.py -w $1 -p $1.csv
 
-  # specify parameters and infer
-  python3 svc_inference.py --config configs/maxgan.yaml --model maxgan_g.pth --spk ./configs/singers/aaq20minute.spk.npy --wave $1 --ppg $1.ppg.npy --pit $1.csv
+  # specify parameters and infer using the maxgan_g.pth model and checkpoint file names defined earlier as global variables 
+  python3 svc_inference.py --config configs/maxgan.yaml --model $MODEL_FILE --spk ./configs/singers/$2 --wave $1 --ppg $1.ppg.npy --pit $1.csv
 
-  # rename the output file to include the input file name
-  new_file_name=svc_aaq_out_$1
-  mv svc_out.wav $new_file_name
+  # rename the output file to include the input file name and spk file name 
+  mv svc_out.wav svc_aaq_out_${1%.*}_${2##*/}.wav
+
+  # ask the user if they want to delete the wav file 
+  read -p "Do you want to delete the wav file ${1}? (y/n): " answer 
+  case $answer in 
+    [Yy]* ) rm ${1};;
+    [Nn]* ) ;;
+    * ) echo "Please answer y or n.";;
+  esac 
 }
 
-# ask the user for the input file name and convert it to wav format if needed
-read -p "Enter the input file name (with extension): " input_file
+# set global variables for working directory, LD_LIBRARY_PATH, model file and checkpoint file 
+WORKING_DIR=$PWD 
+LD_LIBRARY_PATH=/usr/lib/wsl/lib:$LD_LIBRARY_PATH 
+MODEL_FILE=maxgan_g.pth 
+CHECKPOINT_FILE=$(find_highest_checkpoint chkpt/svc)
+
+# export inference model using the checkpoint file name 
+python3 svc_export.py --config configs/maxgan.yaml --checkpoint_path $CHECKPOINT_FILE
+
+# find all the spk files in the configs/singers directory and store them in an array 
+spk_files=($(find configs/singers -name "*.spk.npy"))
+
+# create a menu of singers based on the spk files array 
+echo "Please choose a singer from the following options:"
+for i in ${!spk_files[@]}; do
+  echo "$((i+1)). ${spk_files[i]##*/}"
+done
+
+# ask the user for the input file name and convert it to wav format if needed 
+read -p "Enter the input file name (with extension): " input_file 
 wav_file=$(convert_to_wav $input_file)
 
-# call the function with the wav file name as an argument
-run_all $wav_file
-
-# ask the user if they want to process another file and repeat until they say no
+# ask the user for the singer number and validate the input 
 while true; do
-  read -p "Do you want to process another file? (y/n): " answer
-  case $answer in
-    [Yy]* ) read -p "Enter the input file name (with extension): " input_file; wav_file=$(convert_to_wav $input_file); run_all $wav_file;;
-    [Nn]* ) break;;
-    * ) echo "Please answer y or n.";;
-  esac
+  read -p "Enter the singer number: " singer_number 
+  if [[ $singer_number =~ ^[0-9]+$ ]] && [ $singer_number -ge 1 ] && [ $singer_number -le ${#spk_files[@]} ]; then
+    break
+  else
+    echo "Invalid input. Please enter a valid number."
+  fi
 done
+
+# get the spk file name based on the singer number 
+spk_file=${spk_files[$((singer_number-1))]}
+
+# run all commands for wav file and spk file in background using & operator 
+run_all $wav_file $spk_file &
+
+# wait for all background processes to finish using wait command 
+wait
+
