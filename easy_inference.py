@@ -291,7 +291,7 @@ if file_name_input == "-c":
         else:
             print("Invalid Input. Please enter 'setup' or 'switch'.")
             
-        file_name_input = input("Enter the file name (without extension): ")
+        file_name_input = input("Enter the file name: ")
         process_file(file_name_input, True)
     
 else:
@@ -303,7 +303,7 @@ while True:
     if answer.lower() == 'n':
         break
     elif answer.lower() == 'y':
-        file_name_input = input("Enter the file name (without extension): ")
+        file_name_input = input("Enter the file name: ")
 
         process_file(file_name_input, False)
 
