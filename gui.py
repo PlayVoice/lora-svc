@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # import tkinter module and other modules
 import tkinter as tk
 from tkinter import filedialog
@@ -68,8 +69,10 @@ def run_all(wav_file, spk_file):
     # specify parameters and infer using the maxgan_g.pth model and checkpoint file names defined earlier as global variables 
     subprocess.run(["python3", "svc_inference.py", "--config", "configs/maxgan.yaml", "--model", MODEL_FILE, "--spk", spk_file, "--wave", wav_file, "--ppg", wav_file + ".ppg.npy", "--pit", wav_file + ".csv"])
 
-    # rename the output file to include the output file name given as an argument 
-    output_file = "svc_aaq_out_" + os.path.basename(wav_file) + "_" + os.path.basename(spk_file) + ".wav"
+    # rename the output file to include the input file name and spk file name
+    input_file_name = os.path.splitext(os.path.basename(wav_file))[0]
+    spk_file_name = os.path.splitext(os.path.basename(spk_file))[0]
+    output_file = f"svc_{input_file_name}_out_{spk_file_name}.wav"
     output_path = os.path.join(WORKING_DIR, output_file)
     os.rename(os.path.join(WORKING_DIR, "svc_out.wav"), output_path)
 
