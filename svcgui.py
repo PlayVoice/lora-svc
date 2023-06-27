@@ -175,10 +175,10 @@ window.title("SVC GUI")
 window.geometry("600x400")
 
 # create a label widget to display instructions
-label = tk.Label(window, text="Select a wav file and a spk file to run the SVC process", font=("Arial", 16))
+label = tk.Label(window, text="Select any file and a spk file to run the SVC process", font=("Arial", 16))
 label.pack()
 
-# create a button widget to select a wav file
+# create a button widget to select any file
 wav_button = tk.Button(window, text="Select wav file", font=("Arial", 14), command=lambda: select_file("wav"))
 wav_button.pack()
 
