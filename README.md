@@ -56,6 +56,9 @@ dataset_raw
 - 4 whisper is built-in, do not install it additionally, it will conflict and report an error
 
 ## Data preprocessing
+- 0, use this command if you want to automate this:
+python3 prepare/easyprocess.py
+
 - 1， set working directory:
 
     > export PYTHONPATH=$PWD
@@ -158,6 +161,9 @@ data_svc/
 ![final_model_loss](https://github.com/PlayVoice/lora-svc/assets/16432329/60b6f141-e20e-4a13-ac98-669efbf10472)
 
 ## Inference
+
+- 0, use this command if you want a GUI that does all the commands below:
+python3 svcgui.py
 
 - 1， set working directory
 
