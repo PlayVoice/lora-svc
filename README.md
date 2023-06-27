@@ -162,6 +162,9 @@ data_svc/
 
 ## Inference
 
+- 0, use this command if you want a GUI that does all the commands below:
+python3 svcgui.py
+
 - 1， set working directory
 
     > export PYTHONPATH=$PWD
