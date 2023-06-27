@@ -56,6 +56,9 @@ dataset_raw
 - 4 whisper is built-in, do not install it additionally, it will conflict and report an error
 
 ## Data preprocessing
+- 0, use this command if you want to automate this:
+python3 prepare/easyprocess.py
+
 - 1， set working directory:
 
     > export PYTHONPATH=$PWD
