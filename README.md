@@ -57,7 +57,8 @@ dataset_raw
 
 ## Data preprocessing
 - 0, use this command if you want to automate this:
-python3 prepare/easyprocess.py
+
+    > python3 prepare/easyprocess.py
 
 - 1， set working directory:
 
@@ -163,7 +164,8 @@ data_svc/
 ## Inference
 
 - 0, use this command if you want a GUI that does all the commands below:
-python3 svcgui.py
+
+    > python3 svcgui.py
 
 - 1， set working directory
 
