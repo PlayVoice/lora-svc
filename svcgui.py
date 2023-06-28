@@ -179,7 +179,7 @@ label = tk.Label(window, text="Select any file and a spk file to run the SVC pro
 label.pack()
 
 # create a button widget to select any file
-wav_button = tk.Button(window, text="Select wav file", font=("Arial", 14), command=lambda: select_file("wav"))
+wav_button = tk.Button(window, text="Select any file", font=("Arial", 14), command=lambda: select_file("wav"))
 wav_button.pack()
 
 # create a button widget to select a spk file
