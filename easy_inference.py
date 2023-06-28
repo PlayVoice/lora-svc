@@ -1,26 +1,21 @@
-# (place the python script in your lora root directory)
+# (Place the python script in your lora root directory)
 #
 # NOTE: for this to work please make sure your directory is setup like this:
 #
 # trained_models/modelname/
 # │
-# └── lora_speaker.npy (copy this from the data_svc/ folder)
+# └── lora_speaker.npy (Copy this from the data_svc/ folder)
 # │
-# └── lora_pitch_statics.npy (copy this from the data_svc/ folder)
+# └── lora_pitch_statics.npy (Copy this from the data_svc/ folder)
 # │
-# └── maxgan.yaml (copy this from the config/ folder)
+# └── maxgan.yaml (Copy this from the config/ folder)
 # │
-# └── maxgan_g.pth (you get this file in the root directory when you run python svc_inference_export.py --config config/maxgan.yaml --checkpoint_path chkpt/modelname/modelname_00001000.pt)
+# └── maxgan_g.pth (You get this file in the root directory when you run python svc_inference_export.py --config config/maxgan.yaml --checkpoint_path chkpt/modelname/modelname_00001000.pt)
 #
 # You can also run the script and type -c in the file name and it will set it up for you
 #
 # Please avoid using any input files/model names with spaces / special characters as that will probably cause issues
 # Make sure what you call the model name matches the name you trained the model as in the chkpt/ folder when you set the name when you train and run this command: python svc_trainer.py -c config/maxgan.yaml -s MODEL_NAME
-
-#Dev Notes / Plans 
-#add an ability to queue an entire folder of files through the ai
-#add config option for convert_to_wav delete original files
-#try to implement a slicer by db to prevent cuda issues on long files?
 
 from pydub import AudioSegment
 import shutil
@@ -51,7 +46,7 @@ def convert_to_wav(input_file):
     # Export the audio to the WAV file
     audio.export(output_file, format='wav')
     
-    # Delete the original file
+    # Delete the original file 
     #os.remove(input_file)
 
     print(f"Conversion complete. The WAV file '{output_file}' has been created.")
@@ -63,7 +58,7 @@ def remove_extension(file_name):
 
 def cleanup_files():
     # Get the current script directory
-    cleanupConfirm = input(f"{name_prefix}Do you want to delete all input and output files or move and separate them into a raw/results/junkfiles folder to clean up the main directory? (delete/move/cancel): ")
+    cleanupConfirm = input("Do you want to delete all input/output files or them into raw/results/junkfiles folders? (delete/move/cancel): ")
     
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -83,6 +78,12 @@ def cleanup_files():
             elif file.endswith(".wav") and "svc_" in file:
                 file_path = os.path.join(script_dir, file)
                 # Delete the file
+                os.remove(file_path)
+
+            # Check if the file is a WAV, MP3, M4A, or FLAC file
+            if file.endswith((".wav",) + tuple(SUPPORTED_EXTENSIONS)):
+                file_path = os.path.join(script_dir, file)
+                # Move the file to the "raw" folder
                 os.remove(file_path)
 
         print("All input and output files have been deleted.")
@@ -111,6 +112,12 @@ def cleanup_files():
                 file_path = os.path.join(script_dir, file)
                 # Move the file to the "results" folder
                 shutil.move(file_path, os.path.join(results_dir, file))
+                
+            # Check if the file is a WAV, MP3, M4A, or FLAC file
+            if file.endswith((".wav",) + tuple(SUPPORTED_EXTENSIONS)):
+                file_path = os.path.join(script_dir, file)
+                # Move the file to the "raw" folder
+                shutil.move(file_path, os.path.join(raw_dir, file))
 
         print("Input and output files have been moved to separate folders.")
 
@@ -127,8 +134,7 @@ def configure():
     configOption = input("Are you creating a setup or switching to a different model? (setup/switch/cleanup): ")
     
     if configOption == "setup":
-        validInput = False
-        while validInput == False:
+        while True:
             model_name = input("Enter your model name: ")
             
             # Check if the model directory exists
@@ -176,8 +182,7 @@ def configure():
             break
 
     elif configOption == "switch":
-        validInput = False
-        while validInput == False:
+        while True:
             
             model_name = input("Enter your model name: ")
             
