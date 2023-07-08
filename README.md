@@ -1,5 +1,4 @@
 # singing voice conversion based on whisper & maxgan
-[![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/17PK5Vd-oyoxpsZ8nENktFcPZEwZmPrTb?usp=sharing)
 <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/PlayVoice/lora-svc">
 <img alt="GitHub forks" src="https://img.shields.io/github/forks/PlayVoice/lora-svc">
 <img alt="GitHub issues" src="https://img.shields.io/github/issues/PlayVoice/lora-svc">
