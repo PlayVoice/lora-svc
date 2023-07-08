@@ -1,8 +1,11 @@
-# singing voice conversion based on whisper & maxgan
+<div align="center">
+<h1> Singing Voice Conversion based on Whisper & neural source-filter BigVGAN </h1>
+
 <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/PlayVoice/lora-svc">
 <img alt="GitHub forks" src="https://img.shields.io/github/forks/PlayVoice/lora-svc">
 <img alt="GitHub issues" src="https://img.shields.io/github/issues/PlayVoice/lora-svc">
 <img alt="GitHub" src="https://img.shields.io/github/license/PlayVoice/lora-svc">
+</div>
 
 ```
 Black technology based on the three giants of artificial intelligence:
@@ -22,10 +25,8 @@ https://user-images.githubusercontent.com/16432329/231021007-6e34cbb4-e256-491d-
 ## Dataset preparation
 
 Necessary pre-processing:
-- 1 accompaniment separation
-- 2 band extension
-- 3 sound quality improvement
-- 4 cut audio, less than 30 seconds for whisper
+- 1 accompaniment separation, [UVR](https://github.com/Anjok07/ultimatevocalremovergui)
+- 2 cut audio, less than 30 seconds for whisper, [slicer](https://github.com/flutydeer/audio-slicer)
 
 then put the dataset into the dataset_raw directory according to the following file structure
 ```shell
@@ -52,7 +53,11 @@ dataset_raw
 
 - 3 download whisper model [multiple language medium model](https://openaipublic.azureedge.net/main/whisper/models/345ae4da62f9b3d59415adc60127b97c714f32e89e936602e85993674d08dcb1/medium.pt), Make sure to download `medium.pt`，put it into `whisper_pretrain/`
 
-- 4 whisper is built-in, do not install it additionally, it will conflict and report an error
+    **Tip: whisper is built-in, do not install it additionally, it will conflict and report an error**
+
+- 4 download pretrain model [maxgan_pretrain_32K.pth](https://github.com/PlayVoice/lora-svc/releases/download/v_final/maxgan_pretrain_32K.pth), and do test
+
+    > python svc_inference.py --config configs/maxgan.yaml --model maxgan_pretrain_32K.pth --spk ./configs/singers/singer0001.npy --wave test.wav
 
 ## Data preprocessing
 - 0, use this command if you want to automate this:
@@ -186,7 +191,7 @@ data_svc/
 
 - 5，specify parameters and infer
 
-    > python svc_inference.py --config configs/maxgan.yaml --model maxgan_g.pth --spk ./configs/singers/singer0001.npy --wave test.wav --ppg test.ppg.npy --pit test.csv
+    > python svc_inference.py --config configs/maxgan.yaml --model maxgan_g.pth --spk ./data_svc/singers/your_singer.npy --wave test.wav --ppg test.ppg.npy --pit test.csv
 
     when --ppg is specified, when the same audio is reasoned multiple times, it can avoid repeated extraction of audio content codes; if it is not specified, it will be automatically extracted;
 
@@ -195,7 +200,7 @@ data_svc/
     generate files in the current directory:svc_out.wav
 
     | args |--config | --model | --spk | --wave | --ppg | --pit | --shift |
-    | ---  | --- | --- | --- | --- | --- | --- | --- |
+    | :---:  | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
     | name | config path | model path | speaker | wave input | wave ppg | wave pitch | pitch shift |
 
 ## Source of code and References
