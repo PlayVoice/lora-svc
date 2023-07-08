@@ -22,26 +22,12 @@ if __name__ == "__main__":
                     assert os.path.isfile(path_whisper), path_whisper
                     all_items.append(
                         f"{path_wave}|{path_pitch}|{path_whisper}|{path_spk}")
-        else:
-            file = spks
-            if file.endswith(".wav"):
-                file = file[:-4]
-                path_spk = f"./data_svc/speaker/{file}.spk.npy"
-                path_wave = f"./data_svc/waves-32k/{file}.wav"
-                path_pitch = f"./data_svc/pitch/{file}.pit.npy"
-                path_whisper = f"./data_svc/whisper/{file}.ppg.npy"
-                assert os.path.isfile(path_spk), path_spk
-                assert os.path.isfile(path_wave), path_wave
-                assert os.path.isfile(path_pitch), path_pitch
-                assert os.path.isfile(path_whisper), path_whisper
-                all_items.append(
-                    f"{path_wave}|{path_pitch}|{path_whisper}|{path_spk}")
 
     random.shuffle(all_items)
     valids = all_items[:10]
     valids.sort()
     trains = all_items[10:]
-    trains.sort()
+    # trains.sort()
     fw = open("./files/valid.txt", "w", encoding="utf-8")
     for strs in valids:
         print(strs, file=fw)
