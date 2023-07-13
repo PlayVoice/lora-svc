@@ -221,10 +221,3 @@ https://github.com/NVIDIA/BigVGAN [[paper]](https://arxiv.org/abs/2206.04658)
 <a href="https://github.com/PlayVoice/lora-svc/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=PlayVoice/lora-svc" />
 </a>
-
-## Encouragement
-If you adopt the code or idea of this project, please list it in your project, which is the basic criterion for the continuation of the open source spirit.
-
-如果你采用了本项目的代码或创意，请在你的项目中列出，这是开源精神得以延续的基本准则。
-
-このプロジェクトのコードやアイデアを採用した場合は、オープンソースの精神が続く基本的なガイドラインであるプロジェクトにリストしてください。
