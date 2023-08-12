@@ -193,6 +193,10 @@ or step by step, as follows:
     | :---:  | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
     | name | config path | model path | speaker | wave input | wave ppg | wave pitch | pitch shift |
 
+- 5, post by vad
+
+    > python svc_inference_post.py --ref test.wav --svc svc_out.wav --out svc_post.wav
+
 ## Source of code and References
 [Adapter-Based Extension of Multi-Speaker Text-to-Speech Model for New Speakers](https://arxiv.org/abs/2211.00585)
 
