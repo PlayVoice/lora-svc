@@ -1,5 +1,4 @@
 fsspec
-pyworld
 librosa
 omegaconf
 tensorboard

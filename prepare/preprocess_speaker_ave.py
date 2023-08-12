@@ -34,7 +34,7 @@ if __name__ == "__main__":
                 speaker_ave, allow_pickle=False)
 
         # rewrite timbre code by average, if similarity is larger than cmp_val
-        rewrite_timbre_code = False
+        rewrite_timbre_code = True
         if not rewrite_timbre_code:
             continue
         cmp_src = torch.FloatTensor(speaker_ave)
