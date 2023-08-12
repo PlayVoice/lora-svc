@@ -11,8 +11,9 @@ def compute_f0_nn(filename, device):
     audio, sr = librosa.load(filename, sr=16000)
     assert sr == 16000
     audio = torch.tensor(np.copy(audio))[None]
+    audio = audio + torch.randn_like(audio) * 0.001
     # Here we'll use a 20 millisecond hop length
-    hop_length = 320
+    hop_length = 160
     fmin = 50
     fmax = 1000
     model = "full"
@@ -28,7 +29,6 @@ def compute_f0_nn(filename, device):
         device=device,
         return_periodicity=False,
     )
-    pitch = np.repeat(pitch, 2, -1)  # 320 -> 160 * 2
     pitch = torchcrepe.filter.mean(pitch, 5)
     pitch = pitch.squeeze(0)
     return pitch
@@ -56,9 +56,8 @@ def load_csv_pitch(path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.description = 'please enter embed parameter ...'
-    parser.add_argument("-w", "--wav", help="wav", dest="wav")
-    parser.add_argument("-p", "--pit", help="pit", dest="pit")  # csv for excel
+    parser.add_argument("-w", "--wav", help="wav", dest="wav", required=True)
+    parser.add_argument("-p", "--pit", help="pit", dest="pit", required=True)  # csv for excel
     args = parser.parse_args()
     print(args.wav)
     print(args.pit)
@@ -66,5 +65,5 @@ if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
     pitch = compute_f0_nn(args.wav, device)
     save_csv_pitch(pitch, args.pit)
-    #tmp = load_csv_pitch(args.pit)
-    #save_csv_pitch(tmp, "tmp.csv")
+    # tmp = load_csv_pitch(args.pit)
+    # save_csv_pitch(tmp, "tmp.csv")
