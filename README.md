@@ -17,6 +17,8 @@ Nvidia's bigvgan, anti-aliasing for speech generation
 Microsoft's adapter, high-efficiency for fine-tuning
 ```
 
+**LoRA is not fully implemented in this project**, but it can be found here: [LoRA TTS](https://github.com/NVIDIA/NeMo/blob/main/nemo/collections/tts/modules/adapters.py) & [paper](https://arxiv.org/abs/2211.00585)
+
 use pretrain model to fine tune
 
 https://user-images.githubusercontent.com/16432329/231021007-6e34cbb4-e256-491d-8ab6-5ce4e822da21.mp4
